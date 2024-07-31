@@ -122,11 +122,19 @@ export class Router {
 
     /** nano播放器兼容 */
     danmaku = {
-        close() { }
+        close() { },
+        isOpen() { return true }
     };
 
     /** nano播放器兼容 */
     #mediaElement = document.createElement('div');
+
+    /** nano播放器兼容 */
+    #element = new Proxy(<Record<string, HTMLElement>>{}, {
+        get: (target) => {
+            return this.#mediaElement;
+        },
+    });
 
     constructor() {
         switch (location.hostname) {
@@ -538,6 +546,26 @@ export class Router {
             } else {
                 console.error('解析课程出错~');
             }
+        } else if (this.ssid || this.epid) {
+            season(this.ssid ? { season_id: this.ssid } : { ep_id: this.epid })
+                .then(d => {
+                    this.ssid || (this.ssid = d.season_id);
+                    d.section && (d.episodes = d.episodes.concat(...d.section.map(d => d.episodes)));
+                    if (!this.epid) {
+                        this.epid = d.user_status?.progress?.last_ep_id || d.episodes[0]?.ep_id;
+                    }
+                    if (this.epid) {
+                        const ep = d.episodes.find(d => d.ep_id === this.epid);
+                        if (ep) {
+                            this.aid = ep.aid;
+                            this.cid = ep.cid;
+                        }
+                    }
+                    if (this.epid && this.cid) {
+                        this.$player.connect(this.aid, this.cid, this.ssid, this.epid, true);
+                        this.$player.getRelated();
+                    }
+                });
         } else if (this.aid) {
             cards({ av: this.aid }).then(d => {
                 const card = d[`av${this.aid}`];
@@ -666,6 +694,16 @@ export class Router {
     /** nano播放器兼容 */
     isInitialized() {
         return true;
+    }
+
+    /** nano播放器兼容 */
+    getElements() {
+        return this.#element;
+    }
+
+    /** nano播放器兼容 */
+    isPaused() {
+        return video.paused;
     }
 
     /** 拦截新版顶栏 */
