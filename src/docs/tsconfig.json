@@ -1,0 +1,16 @@
+{
+    "extends": "../tsconfig-base.json",
+    "include": [
+        "**/*",
+        "../interface",
+        "../player"
+    ],
+    "references": [
+        {
+            "path": "../interface"
+        },
+        {
+            "path": "../player"
+        }
+    ]
+}

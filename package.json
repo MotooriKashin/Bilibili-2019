@@ -1,7 +1,8 @@
 {
   "scripts": {
     "build": "node scripts/build.mjs",
-    "arbitrary-extensions": "node scripts/arbitrary-extensions.mjs"
+    "arbitrary-extensions": "node scripts/arbitrary-extensions.mjs",
+    "github-pages": "node scripts/github-pages.mjs"
   },
   "devDependencies": {
     "@types/chrome": "*",
