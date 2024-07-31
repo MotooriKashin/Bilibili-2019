@@ -22,9 +22,8 @@ import svg_bml from "../../../player/assets/svg/bml.svg";
 import svg_cheese from "../../../player/assets/svg/cheese.svg";
 import { exit } from "../../../io/com/bilibili/passport/login/exit/v2";
 import { unread } from "../../../io/com/bilibili/api/x/msgfeed/unread";
-import { dynamic_new, IDynamicNewCard, IDynamicNewCards, IDynamicArticle } from "../../../io/com/bilibili/vc/api/dynamic_svr/v1/dynamic_svr/dynamic_new";
+import { dynamic_new, IDynamicNewCard, IDynamicArticle } from "../../../io/com/bilibili/vc/api/dynamic_svr/v1/dynamic_svr/dynamic_new";
 import { dynamic_num } from "../../../io/com/bilibili/vc/api/dynamic_svr/v1/dynamic_svr/dynamic_num";
-import { AV } from "../../../utils/av";
 import { toviewWeb } from "../../../io/com/bilibili/api/x/v2/history/toview/web";
 import { medialistRecent } from "../../../io/com/bilibili/api/medialist/gateway/coll/resource/recent";
 import { history } from "../../../io/com/bilibili/api/x/v2/history";
@@ -59,9 +58,11 @@ export class Header extends HTMLDivElement {
     /** 每当元素被移动到新文档中时调用。 */
     // adoptedCallback() {}
 
-    private $banner = Element.add('div', { class: 'head-banner' }, this);
+    #host = this.attachShadow({ mode: 'closed' });
 
-    private $nav = Element.add('div', { class: 'nav-menu' }, this);
+    private $banner = this.#host.appendChild(Element.add('div', { class: 'head-banner' }));
+
+    private $nav = this.#host.appendChild(Element.add('div', { class: 'nav-menu' }));
 
     private $wrapper = Element.add('div', { class: 'bili-wrapper nav-wrapper' }, this.$nav);
 
@@ -82,13 +83,13 @@ export class Header extends HTMLDivElement {
 <a target="_blank" href="//www.bilibili.com/account/history" class="nav-item history">历史</a>
 <a target="_blank" href="//member.bilibili.com/v2#/upload/video/frame" class="nav-item up-load">投稿</a>`);
 
-    private $primary = Element.add('div', { class: 'bili-wrapper primary-wrapper' }, this);
+    private $primary = this.#host.appendChild(Element.add('div', { class: 'bili-wrapper primary-wrapper' }));
 
     private $menu = Element.add('a', { class: 'nav-primary' }, this.$primary);
 
     private $gift = Element.add('a', { class: 'nav-gif' }, this.$primary);
 
-    private $content = Element.add('div', { class: 'search' }, this, `<a href="//www.bilibili.com/ranking" target="_blank" class="link-ranking">${svg_icon_paihang}排行榜</a>`);
+    private $content = this.#host.appendChild(Element.add('div', { class: 'search' }, undefined, `<a href="//www.bilibili.com/ranking" target="_blank" class="link-ranking">${svg_icon_paihang}排行榜</a>`));
 
     private $form = Element.add('form', { class: 'searchform' }, this.$content);
 
@@ -199,7 +200,7 @@ export class Header extends HTMLDivElement {
 
     constructor() {
         super();
-        this.insertAdjacentHTML('beforeend', `<style>${__BILI_HEADER_STYLE__}</style>`);
+        this.$banner.insertAdjacentHTML('beforebegin', `<style>${__BILI_HEADER_STYLE__}</style>`);
 
         const id = crypto.randomUUID();
         this.$search.setAttribute('list', id);
@@ -426,6 +427,5 @@ export class Header extends HTMLDivElement {
 
 //////////////////////////// 全局增强 ////////////////////////////
 declare global {
-    /** 基于哈希消息认证码的一次性口令的密钥 */
     const __BILI_HEADER_STYLE__: string;
 }
