@@ -1,0 +1,1 @@
+ESNext和Web API新标准中未在TypeScript官方支持的的部分在此提供定义

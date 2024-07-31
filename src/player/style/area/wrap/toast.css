@@ -1,0 +1,41 @@
+.bofqi-toast {
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block-end: 10px;
+    display: flex;
+    flex-direction: column-reverse;
+    font-size: 14px;
+    color: #fff;
+    pointer-events: none;
+    z-index: 1;
+
+    .bofqi-toast-item {
+        cursor: default;
+        margin-inline-start: 10px;
+        padding-inline: 20px;
+        background-color: #191919e0;
+        border-radius: 4px;
+        line-height: 42px;
+        gap: 10px;
+        pointer-events: initial;
+        display: flex;
+        align-items: center;
+
+
+        /* 点击按钮备用 */
+        /* &::after {
+            content: "×";
+            padding-inline: 10px;
+            cursor: pointer;
+            line-height: 26px;
+            font-size: 24px;
+        } */
+    }
+}
+
+@container bofqi style(--mode-fullscreen:1) {
+
+    .bofqi-toast {
+        inset-block-end: 40px;
+    }
+}

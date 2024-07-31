@@ -1,0 +1,41 @@
+@import url(./choose.css);
+@import url(./color.css);
+@import url(./input.css);
+
+.bofqi-area-sendbar {
+    block-size: 38px;
+    flex-shrink: 0;
+    transition: all .2s;
+    background-color: var(--background-color);
+    display: flex;
+    align-items: center;
+    z-index: 1;
+
+    svg {
+        block-size: 1em;
+        aspect-ratio: 1;
+        fill: #99a2aa;
+    }
+}
+
+@container bofqi style(--mode-fullscreen:1) {
+
+    .bofqi-area-sendbar {
+        position: absolute;
+        inline-size: calc(anchor-size(inline) - 460px);
+        position-anchor: --control;
+        inset-area: block-start;
+    }
+
+    .bofqi-area.hide:not(:has(.bofqi-area-sendbar:hover), :has(.bofqi-area-control:hover)) .bofqi-area-sendbar {
+        inset-area: block-end;
+        opacity: 0;
+    }
+}
+
+@container bofqi (inline-size < 780px) {
+
+    .bofqi-area-sendbar {
+        display: none;
+    }
+}

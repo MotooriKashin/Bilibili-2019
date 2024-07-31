@@ -1,0 +1,320 @@
+@scope {
+    :scope {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-size: 12px;
+        min-inline-size: 980px;
+
+        &,
+        div {
+            box-sizing: border-box;
+        }
+
+        a {
+            outline: none;
+            text-decoration: none;
+        }
+    }
+}
+
+.desc {
+    padding-inline-end: 290px;
+    display: flex;
+    flex-direction: column;
+    inline-size: 980px;
+
+    @media screen and (min-width:1400px) {
+
+        & {
+            inline-size: 1160px;
+        }
+    }
+
+    @media screen and (min-width:2500px) {
+
+        & {
+            inline-size: 1920px;
+        }
+    }
+
+    >.tag {
+        padding-block: 30px;
+        border-block-end: 1px solid #e5e9ef;
+        display: flex;
+        flex-wrap: wrap;
+
+        >a {
+            color: #6d757a;
+            block-size: 22px;
+            margin-inline-end: 10px;
+            margin-block-end: 8px;
+            padding-inline: 10px;
+            border: 1px solid #e5e9ef;
+            border-radius: 20px;
+            transition: all .3s;
+            box-sizing: border-box;
+            cursor: pointer;
+
+            &:hover {
+                border-color: #00a1d6;
+                color: #00a1d6;
+            }
+        }
+
+        &:empty {
+            display: none;
+        }
+    }
+
+    >.m {
+        padding-block: 30px;
+        border-block-end: 1px solid #e5e9ef;
+        white-space: pre-line;
+        color: #6d757a;
+        overflow: hidden;
+
+        >a {
+            color: #00a1d6;
+        }
+
+        &:empty {
+            display: none;
+        }
+    }
+
+    &.bangumi {
+        padding-block-start: 24px;
+        padding-block-end: 20px;
+        padding-inline: 0;
+        border-block-end: 1px solid #e5e9ef;
+        flex-direction: row;
+
+        >.tag,
+        >.m {
+            display: none;
+        }
+
+        >.bangumi-cover {
+            flex-shrink: 0;
+            inline-size: 120px;
+            block-size: 160px;
+            border-radius: 4px;
+            overflow: hidden;
+
+            >img {
+                inline-size: inherit;
+                block-size: inherit;
+                object-fit: cover;
+            }
+        }
+
+        >.bangumi-info {
+            flex: 1;
+            margin-inline-start: 24px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+
+            >.bangumi-title {
+                margin-block-end: 30px;
+                display: flex;
+                justify-content: space-between;
+
+                >a {
+                    color: #222;
+                    font-weight: 400;
+                    font-size: 18px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                }
+
+                >button {
+                    padding-inline: 1em;
+                    background-color: #f36392;
+                    border: 1px solid #f36392;
+                    border-radius: 4px;
+                    color: #fff;
+                    font-size: 14px;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    column-gap: .5em;
+
+                    >svg {
+                        fill: #fff;
+                        inline-size: 1em;
+                        aspect-ratio: 1;
+                    }
+
+                    &.followed {
+                        color: #ccd0d7;
+                        border-color: #e2e2e2;
+                        background-color: #fff;
+
+                        >svg {
+                            fill: #ccd0d7;
+                        }
+                    }
+                }
+            }
+
+            >.bangumi-detail {
+                margin-block-start: 15px;
+
+                >p {
+                    >span {
+                        margin-inline-end: 10px;
+                        padding-inline: 4px;
+                        border: 1px solid #6d757a;
+                        border-radius: 3px;
+                    }
+
+                    &:last-child {
+                        color: #6d757a;
+                    }
+                }
+            }
+
+            >.bangumi-list {
+                display: flex;
+                flex-direction: column;
+
+                >.bangumi-section {
+                    block-size: 26px;
+                    border-block-end: 1px solid #e5e9ef;
+                    overflow-x: auto;
+                    scrollbar-width: thin;
+                    white-space: nowrap;
+                    content-visibility: auto;
+
+                    >.season-item {
+                        display: inline-block;
+                        vertical-align: top;
+                        margin-inline-end: 30px;
+                        line-height: 1;
+                        block-size: 24px;
+                        border-block-end: 1px solid rgba(0, 0, 0, 0);
+                        font-size: 12px;
+                        cursor: pointer;
+                        position: relative;
+
+                        >input {
+                            appearance: none;
+                        }
+
+                        &:has(input:checked) {
+                            color: #00a1d6;
+                            border-block-end-color: #00a1d6;
+
+                            &::after {
+                                content: "";
+                                position: absolute;
+                                inset-inline-start: 50%;
+                                inset-block-end: 0;
+                                transform: translateX(-3px);
+                                border-block-end: 3px solid #00a1d6;
+                                border-block-start: 0;
+                                border-inline-start: 3px solid rgba(0, 0, 0, 0);
+                                border-inline-end: 3px solid rgba(0, 0, 0, 0);
+                                box-sizing: border-box;
+                            }
+
+                        }
+
+                        &:last-child {
+                            margin-inline-end: 0;
+                        }
+                    }
+                }
+
+                >.bangumi-episode {
+                    padding-block-start: 14px;
+                    overflow-x: auto;
+                    scrollbar-width: thin;
+                    white-space: nowrap;
+                    content-visibility: auto;
+
+                    >.episode-item {
+                        inline-size: 118px;
+                        block-size: 66px;
+                        margin-inline-end: 10px;
+                        border-radius: 4px;
+                        padding: 8px;
+                        background-color: #fff;
+                        border: 1px solid #e5e9ef;
+                        cursor: pointer;
+                        box-sizing: border-box;
+                        display: inline-flex;
+                        flex-direction: column;
+                        content-visibility: auto;
+                        contain-intrinsic-inline-size: 118px;
+                        contain-intrinsic-block-size: 66px;
+                        position: relative;
+
+                        >span {
+                            display: -webkit-box;
+                            -webkit-line-clamp: 2;
+                            -webkit-box-orient: vertical;
+                            white-space: normal;
+                            max-height: 32px;
+                            color: #99a2aa;
+                            word-break: break-word;
+                            word-wrap: break-word;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+
+                            &.badge {
+                                position: absolute;
+                                padding-inline: 4px;
+                                background-color: #999;
+                                font-size: 12px;
+                                inset-block-start: 0px;
+                                inset-inline-end: 0px;
+                                color: #fff;
+                                border-radius: 9px;
+                            }
+                        }
+
+                        &.on,
+                        &.on:hover {
+                            background-color: #00a1d6;
+                            border-color: #00a1d6;
+
+                            >span,
+                            &::before {
+                                color: #fff;
+                            }
+                        }
+
+                        &:hover {
+                            border-color: #00a1d6;
+                            color: #00a1d6;
+                        }
+
+                        &::before {
+                            content: attr(data-index);
+                            color: #000;
+                            font-weight: 400;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            white-space: nowrap;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    &:not(.bangumi) {
+        >.bangumi-cover {
+            display: none;
+        }
+
+        >.bangumi-info {
+            display: none;
+        }
+    }
+}

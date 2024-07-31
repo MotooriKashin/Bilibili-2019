@@ -1,0 +1,118 @@
+.bofqi-control-danmaku {
+    anchor-name: --danmaku;
+
+    &>svg {
+        display: none;
+    }
+
+    &:not(.off)>svg:first-child {
+        display: block;
+        font-size: 14px;
+    }
+
+    &.off>svg:nth-child(2) {
+        display: block;
+    }
+
+    .bofqi-control-danmaku-wrap {
+        display: none;
+        position: absolute;
+        position-anchor: --danmaku;
+        inset-area: block-start span-inline-start;
+        background: var(--background-color);
+        border: 1px solid #e2e2e2;
+        inline-size: 222px;
+        line-height: 1.5;
+        border-start-start-radius: 4px;
+        border-start-end-radius: 4px;
+        padding-inline: 22px;
+        padding-block-start: 14px;
+        padding-block-end: 24px;
+        font-size: 12px;
+        row-gap: .5em;
+        text-align: start;
+        z-index: 1;
+
+        .bofqi-control-danmaku-opacity {
+            min-inline-size: 0;
+            inline-size: 120px;
+        }
+
+        .bofqi-control-danmaku-block {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: color .3s;
+            position: relative;
+
+            &::after {
+                content: attr(data-label);
+                display: block;
+            }
+
+            >svg {
+                &:not(:last-child) {
+                    font-size: 48px;
+                    fill: #99a2aa;
+                    transition: fill .3s;
+                    anchor-name: --danmaku-block;
+                }
+
+                &:last-child {
+                    position: absolute;
+                    inset-inline-end: anchor(--danmaku-block end);
+                    inset-block-end: anchor(--danmaku-block end);
+                    font-size: 24px;
+                    background-color: #fff;
+                    border: 3px solid #fff;
+                    fill: #99a2aa;
+                    border-radius: 50%;
+                    box-sizing: border-box;
+                    opacity: 0;
+                    transition: all .3s;
+                }
+            }
+
+            &:hover {
+
+                >svg {
+                    &:not(:last-child) {
+                        fill: #6d757a;
+                    }
+
+                    &:last-child {
+                        opacity: 1;
+                        fill: #6d757a;
+                    }
+                }
+            }
+
+            &.block {
+                color: #99a2aa;
+
+                >svg {
+
+                    &:last-child {
+                        opacity: 1;
+                        fill: #f25d8e;
+                    }
+                }
+            }
+        }
+
+        hr {
+            inline-size: 100%;
+            block-size: 0;
+            border: 0;
+        }
+    }
+
+    &:hover {
+        .bofqi-control-danmaku-wrap {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+        }
+    }
+}

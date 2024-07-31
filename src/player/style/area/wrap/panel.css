@@ -1,0 +1,41 @@
+.bofqi-panel {
+    position: absolute;
+    inline-size: 100%;
+    block-size: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    cursor: pointer;
+    z-index: 1;
+
+    .bofqi-panel-image {
+        inline-size: 90px;
+        block-size: 90px;
+        background-image: url(../../../assets/image/panel.gif);
+        background-repeat: no-repeat;
+    }
+
+    .bofqi-panel-text {
+        position: absolute;
+        color: #ccd0d7;
+        font-size: 12px;
+        inset-inline-start: 10px;
+        inset-block-end: 10px;
+        line-height: 20px;
+    }
+
+    .bofqi-panel-row {
+        &:not([data-stage]) {
+            display: none;
+        }
+
+        &::after {
+            content: "[" attr(data-stage) "]";
+        }
+    }
+
+    &:not(.active) {
+        display: none;
+    }
+}

@@ -1,0 +1,84 @@
+{
+    "action": {
+        "default_icon": {
+            "128": "assets/icon.png"
+        }
+    },
+    "author": "Akari",
+    "background": {
+        "service_worker": "sw/index.js",
+        "type": "module"
+    },
+    "content_scripts": [
+        {
+            "all_frames": true,
+            "js": [
+                "main/index.js"
+            ],
+            "matches": [
+                "*://*.bilibili.com/*"
+            ],
+            "run_at": "document_start",
+            "world": "MAIN"
+        },
+        {
+            "all_frames": true,
+            "js": [
+                "/main/WebRTC.js"
+            ],
+            "matches": [
+                "<all_urls>"
+            ],
+            "run_at": "document_start",
+            "world": "MAIN"
+        },
+        {
+            "all_frames": true,
+            "js": [
+                "/main/bilibili/space/index.js"
+            ],
+            "matches": [
+                "*://space.bilibili.com/*"
+            ],
+            "run_at": "document_start",
+            "world": "MAIN"
+        },
+        {
+            "all_frames": true,
+            "js": [
+                "/main/bilibili/id-card/index.js"
+            ],
+            "matches": [
+                "*://*.bilibili.com/*"
+            ],
+            "run_at": "document_end",
+            "world": "MAIN"
+        }
+    ],
+    "declarative_net_request": {
+        "rule_resources": [
+            {
+                "id": "track",
+                "enabled": true,
+                "path": "/assets/declarative_rules/track.json"
+            }
+        ]
+    },
+    "default_locale": "zh",
+    "description": "__MSG_description__",
+    "host_permissions": [
+        "<all_urls>"
+    ],
+    "icons": {
+        "128": "assets/icon.png"
+    },
+    "manifest_version": 3,
+    "name": "__MSG_name__",
+    "permissions": [
+        "storage",
+        "cookies",
+        "declarativeNetRequest",
+        "declarativeNetRequestWithHostAccess"
+    ],
+    "version": "1.0.0.0"
+}

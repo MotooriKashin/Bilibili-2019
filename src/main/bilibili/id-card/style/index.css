@@ -1,0 +1,166 @@
+@scope {
+    :scope {
+        background-color: #fff;
+        box-shadow: 0 0 2px rgba(0, 0, 0, .3);
+        border-radius: 4px;
+        inline-size: 375px;
+        margin: 0;
+        border: 0;
+        padding: 0;
+        font-size: 12px;
+        inset-area: inline-end span-block-end;
+        position-try:
+            flip-block,
+            flip-inline,
+            flip-block flip-inline;
+        position-visibility: anchors-visible;
+
+        &:popover-open,
+        &:hover {
+            display: flex;
+            flex-direction: column;
+        }
+    }
+}
+
+.idc-theme-img {
+    border-start-start-radius: 4px;
+    border-start-end-radius: 4px;
+    display: block;
+    block-size: 120px;
+    background-size: cover;
+    background-position: 50%;
+}
+
+.idc-info {
+    display: flex;
+    padding-block-start: 7px;
+    padding-block-end: 10px;
+
+    >.up-cover-components {
+        flex-shrink: 0;
+        inline-size: 100px;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+
+        >.avatar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+
+            >.avatar-face {
+                inline-size: 60px;
+                aspect-ratio: 1;
+                border-radius: 50%;
+            }
+
+            >.avatar-pendant {
+                position: absolute;
+                inline-size: 90px;
+                aspect-ratio: 1;
+            }
+
+            &::after {
+                position: absolute;
+                padding: .75em;
+                inset-inline-end: 0;
+                inset-block-end: 0;
+                background-size: cover;
+            }
+
+            &.personal::after {
+                content: "";
+                background-image: url(//i0.hdslb.com/bfs/seed/jinkela/short/user-avatar/personal.svg);
+            }
+
+            &.business::after {
+                content: "";
+                background-image: url(//i0.hdslb.com/bfs/seed/jinkela/short/user-avatar/business.svg);
+            }
+
+            &.small-vip::after {
+                content: "";
+                background-image: url(//i0.hdslb.com/bfs/seed/jinkela/short/user-avatar/small-vip.svg);
+            }
+
+            &.big-vip::after {
+                content: "";
+                background-image: url(//i0.hdslb.com/bfs/seed/jinkela/short/user-avatar/big-vip.svg);
+            }
+        }
+    }
+
+    >.idc-content {
+        display: flex;
+        flex-direction: column;
+        row-gap: .5em;
+        color: #6d757a;
+
+        >.idc-name {
+            display: flex;
+            align-items: center;
+            column-gap: .5em;
+
+            >.idc-username {
+                color: #222;
+                max-width: 9em;
+                text-decoration: none;
+                transition: color .2s ease, background-color .2s ease;
+                font-size: 14px;
+                font-weight: bold;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            >svg {
+                max-block-size: 1.5em;
+                aspect-ratio: 1;
+            }
+
+            >img {
+                max-block-size: 1.5em;
+            }
+        }
+
+        >.idc-meta {
+            display: flex;
+            align-items: center;
+            column-gap: 20px;
+            color: #222;
+        }
+
+        >.idc-auth-description {
+            color: #222;
+        }
+    }
+}
+
+.idc-action {
+    padding-block-end: 20px;
+    padding-inline: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    column-gap: 20px;
+
+    >button {
+        inline-size: 80px;
+        block-size: 26px;
+        color: #666;
+        background-color: #fff;
+        border-color: #d9d9d9;
+        border: 1px solid #d9d9d9;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: .2s;
+
+        &:hover {
+            color: #00a1d6;
+            background-color: #fff;
+            border-color: #00a1d6;
+        }
+    }
+}

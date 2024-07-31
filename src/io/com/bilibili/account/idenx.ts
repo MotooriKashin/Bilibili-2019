@@ -1,0 +1,1 @@
+export const Account = 'https://account.bilibili.com';

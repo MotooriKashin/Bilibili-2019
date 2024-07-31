@@ -1,0 +1,1 @@
+export const ApiLive = 'https://api.live.bilibili.com';

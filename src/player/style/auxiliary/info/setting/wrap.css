@@ -1,0 +1,102 @@
+.bofqi-auxiliary-setting {
+    position: absolute;
+    inset-inline-start: anchor(--bofqi-auxiliary start);
+    inset-block-start: anchor(--bofqi-auxiliary start);
+    inline-size: anchor-size(--bofqi-auxiliary inline);
+    block-size: anchor-size(--bofqi-auxiliary block);
+    scrollbar-width: thin;
+
+    &[popover]:popover-open:not(dialog) {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    >header {
+        flex-shrink: 0;
+        block-size: 60px;
+        color: #222;
+        font-size: 14px;
+        border-block-end: 1px solid #e2e2e2;
+        display: flex;
+        align-items: center;
+        padding-inline-start: 22px;
+    }
+
+    >.bofqi-setting {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        padding-inline-start: 22px;
+        padding-inline-end: 15px;
+
+        >hr {
+            inline-size: 100%;
+            border-color: #e2e2e2;
+        }
+
+        .bofqi-setting-title {
+            color: #222;
+            block-size: 50px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+        }
+
+        .bofqi-setting-content {
+            display: flex;
+            align-items: center;
+            block-size: 26px;
+
+            &:not(.compact, :last-child) {
+                margin-block-end: 14px;
+            }
+
+            > :last-child {
+                flex-grow: 1;
+            }
+
+            &::before {
+                content: attr(data-label);
+                flex-shrink: 0;
+                inline-size: 72px;
+                color: #99a2aa;
+                margin-inline-end: 9px;
+            }
+
+            >.bofqi-setting-font-border {
+                display: flex;
+                align-items: center;
+
+                >label {
+                    display: flex;
+                    align-items: center;
+                    block-size: 24px;
+                    margin-inline: 4px;
+                    padding-inline: 6px;
+                    border-radius: 4px;
+                    color: #222;
+                    border: 1px solid transparent;
+                    transition: all .3s;
+                    cursor: pointer;
+
+                    &:has(input:checked) {
+                        color: #00a1d6;
+                        border-color: #00a1d6;
+                    }
+
+                    >input {
+                        appearance: none;
+                    }
+                }
+            }
+
+            >.bpui-select {
+                block-size: 100%;
+            }
+        }
+    }
+}

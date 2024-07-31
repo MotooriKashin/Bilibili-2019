@@ -1,0 +1,60 @@
+.bofqi-statistic {
+    display: none;
+    background: rgba(28, 28, 28, .8);
+    border-radius: 4px;
+    color: #fff;
+    font-family: Noto Sans CJK SC DemiLight, Roboto, Segoe UI, Tahoma, Arial, Helvetica, sans-serif;
+    position: absolute;
+    inset-inline-start: 10px;
+    inset-block-start: 10px;
+    padding-block: 15px;
+    padding-inline-start: 15px;
+    padding-inline-end: 36px;
+    z-index: 64;
+    font-size: 12px;
+    font-weight: 500;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: stretch;
+
+    .bofqi-statistic-close::after {
+        content: '[x]';
+        color: #ddd;
+        font-size: 13px;
+        position: absolute;
+        inset-inline-end: 10px;
+        inset-block-start: 10px;
+        z-index: 49;
+        cursor: pointer;
+        font-style: initial;
+    }
+
+    .info-line {
+        display: none;
+
+        &.active {
+            display: block;
+        }
+
+        &>span {
+            font-weight: 400;
+
+            &.info-title {
+                inline-size: 100px;
+                display: inline-block;
+                text-align: right;
+                text-indent: -99em;
+                margin-inline-end: 10px;
+                font-weight: 500;
+            }
+
+            &.info-graph {
+                margin-inline-end: 10px;
+            }
+        }
+    }
+
+    &.active {
+        display: flex;
+    }
+}

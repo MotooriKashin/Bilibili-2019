@@ -1,0 +1,11 @@
+@import url(./number.css);
+@import url(./more/index.css);
+@import url(./setting/index.css);
+
+.bofqi-auxiliary-info {
+    flex-shrink: 0;
+    block-size: 60px;
+    display: flex;
+    align-items: center;
+    anchor-name: --bofqi-info;
+}

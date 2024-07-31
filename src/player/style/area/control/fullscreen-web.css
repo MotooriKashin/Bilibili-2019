@@ -1,0 +1,13 @@
+.bofqi-control-fullscreen-web {
+    position: absolute;
+    background-color: var(--background-color);
+    position-anchor: --fullscreen;
+    inset-area: block-start;
+    inline-size: anchor-size(inline);
+    anchor-name: --fullscreen-web;
+}
+
+.bofqi-area-control:not(:has(.bofqi-control-fullscreen:hover), :has(.bofqi-control-fullscreen-web:hover),
+    :has(.bofqi-control-fullscreen-pip:hover)) .bofqi-control-fullscreen-web {
+    display: none;
+}

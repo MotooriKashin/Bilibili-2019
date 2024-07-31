@@ -1,0 +1,74 @@
+.bofqi-control-progress {
+    flex-grow: 1;
+    block-size: inherit;
+    background-color: transparent;
+    anchor-name: --bofqi-progress;
+
+    &:hover+.bofqi-control-progress-detail {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+.bofqi-control-progress-detail {
+    --inline-start: 0px;
+
+    position: absolute;
+    overflow: visible;
+    inline-size: 160px;
+    text-align: center;
+    pointer-events: none;
+    display: none;
+    inset-inline-start: calc(anchor(--bofqi-progress start) + var(--inline-start));
+    inset-block-end: anchor(--slider-thumb end);
+    translate: -50%;
+    z-index: 1;
+
+    .bofqi-control-progress-detail-img {
+        inline-size: 160px;
+        block-size: 90px;
+        background-color: transparent;
+        translate: 0 12px;
+        color: #fb7299;
+        font-size: 36px;
+    }
+
+    .bofqi-control-progress-detail-time {
+        background-color: #e5e9ef;
+        color: #6b6b6b;
+        padding-block: 3px;
+        padding-inline: 5px;
+        border-radius: 4px;
+        translate: 0 -8px;
+    }
+
+    .bofqi-control-progress-detail-sign {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        &::before {
+            content: " ";
+            inline-size: 0;
+            block-size: 0;
+            border-block-start-width: 4px;
+            border-inline-width: 4px;
+            border-style: solid;
+            border-color: var(--border-hover) transparent transparent;
+            position: relative;
+        }
+
+        &::after {
+            content: " ";
+            padding-block-start: 2px;
+            inline-size: 0;
+            block-size: 0;
+            border-block-end-width: 4px;
+            border-inline-width: 4px;
+            border-style: solid;
+            border-color: transparent transparent var(--border-hover);
+            position: relative;
+        }
+    }
+}

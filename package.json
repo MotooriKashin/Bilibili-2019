@@ -1,0 +1,16 @@
+{
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "arbitrary-extensions": "node scripts/arbitrary-extensions.mjs"
+  },
+  "devDependencies": {
+    "@types/chrome": "*",
+    "esbuild": "*",
+    "navigation-api-types": "*"
+  },
+  "dependencies": {
+    "buffer": "*",
+    "events": "*",
+    "protobufjs": "*"
+  }
+}

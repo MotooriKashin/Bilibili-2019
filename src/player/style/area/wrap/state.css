@@ -1,0 +1,55 @@
+.bofqi-state {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 1;
+
+    .bofqi-state-play {
+        display: none;
+        position: absolute;
+        inline-size: 100px;
+        block-size: 100px;
+        inset-inline-end: 10px;
+        inset-block-end: 10px;
+        opacity: .6;
+
+        >svg {
+            inline-size: 100%;
+            block-size: 100%;
+        }
+    }
+
+    .bofqi-state-buff {
+        display: none;
+        inline-size: 48px;
+        block-size: 48px;
+        padding: 6px;
+        box-sizing: border-box;
+        border-radius: 4px;
+        background: rgba(0, 0, 0, .8);
+    }
+}
+
+@container bofqi style(--mode-fullscreen:1) {
+
+    .bofqi-state .bofqi-state-play {
+        inset-block-end: 42px;
+    }
+}
+
+@container bofqi style(--state: 0) {
+
+    .bofqi-state .bofqi-state-play {
+        display: block;
+    }
+}
+
+@container bofqi style(--state: 2) {
+
+    .bofqi-state .bofqi-state-buff {
+        display: block;
+    }
+}

@@ -1,0 +1,31 @@
+.go-top-m {
+    position: fixed;
+    inline-size: 48px;
+    aspect-ratio: 1;
+    inset-block-end: 50px;
+    inset-inline-end: 60px;
+    background-color: #f6f9fa;
+    border: 1px solid #e5e9ef;
+    overflow: hidden;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    >svg {
+        inline-size: 1em;
+        aspect-ratio: 1;
+        fill: #99a2aa;
+        rotate: -90deg;
+    }
+
+    &:hover {
+        background-color: #00a1d6;
+        border-color: #00a1d6;
+
+        >svg {
+            fill: #fff;
+        }
+    }
+}

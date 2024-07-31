@@ -1,0 +1,60 @@
+@import url(./toggle.css);
+@import url(./next.css);
+@import url(./progress.css);
+@import url(./time.css);
+@import url(./volume.css);
+@import url(./quality.css);
+@import url(./danmaku.css);
+@import url(./closed-caption.css);
+@import url(./repeat.css);
+@import url(./wide.css);
+@import url(./fullscreen.css);
+@import url(./fullscreen-web.css);
+@import url(./pip.css);
+
+.bofqi-area-control {
+    block-size: 30px;
+    flex-shrink: 0;
+    border-block: 1px solid var(--box-shadow);
+    display: flex;
+    transition: all .2s;
+    background-color: var(--background-color);
+    z-index: 2;
+
+    &>button {
+        font-size: 16px;
+        block-size: inherit;
+        aspect-ratio: 1;
+
+        --mode-wide: 0;
+    }
+
+    svg {
+        block-size: 1em;
+        aspect-ratio: 1;
+        fill: #99a2aa;
+    }
+}
+
+@container bofqi style(--mode-fullscreen:1) {
+
+    .bofqi-area-control {
+        position: absolute;
+        inset-inline: 0;
+        inset-block-end: 0;
+        anchor-name: --control;
+    }
+
+    .bofqi-area.hide:not(:has(.bofqi-area-sendbar:hover), :has(.bofqi-area-control:hover)) .bofqi-area-control {
+        position-anchor: --bofqi;
+        inset-area: block-end;
+        opacity: 0;
+    }
+}
+
+@container bofqi (inline-size < 780px) {
+
+    .bofqi-area-control {
+        display: none;
+    }
+}

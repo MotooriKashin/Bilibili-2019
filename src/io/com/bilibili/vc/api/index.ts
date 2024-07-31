@@ -1,0 +1,1 @@
+export const ApiVc = 'https://api.vc.bilibili.com';

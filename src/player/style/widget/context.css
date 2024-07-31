@@ -1,0 +1,32 @@
+[popover].bpui-context {
+    border: 1px solid #e2e2e2;
+    padding: initial;
+    margin: initial;
+    outline: initial;
+    inset: initial;
+    box-sizing: border-box;
+    background: #fff;
+    border-radius: 3px;
+    box-shadow: 0 0 5px #e2e2e2;
+    text-shadow: 0 0 #e2e2e2;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    opacity: 0;
+    transition: opacity .1s cubic-bezier(0, 0, .2, 1);
+    inline-size: fit-content;
+    block-size: fit-content;
+    overflow: visible;
+
+    &.black {
+        background-color: rgba(28, 28, 28, .9);
+        border: none;
+        text-shadow: 0 0 2px rgba(0, 0, 0, .5);
+        box-shadow: none;
+    }
+
+    &:popover-open {
+        opacity: 1;
+    }
+}

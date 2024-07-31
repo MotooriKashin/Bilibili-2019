@@ -1,0 +1,119 @@
+.bofqi-control-closed-caption {
+    anchor-name: --closed-caption;
+    --caption-color: #fffff;
+
+    &>svg {
+        display: none;
+        font-size: 28px;
+    }
+
+    &:not(.on)>svg:first-child {
+        display: block;
+    }
+
+    &.on>svg:nth-child(2) {
+        display: block;
+    }
+
+    .bofqi-control-closed-caption-wrap {
+        display: none;
+        position: absolute;
+        position-anchor: --closed-caption;
+        inset-area: block-start span-inline-start;
+        background: var(--background-color);
+        border: 1px solid #e2e2e2;
+        border-start-start-radius: 4px;
+        border-start-end-radius: 4px;
+        inline-size: 250px;
+        padding-inline: 10px;
+        padding-block: 14px;
+        font-size: 12px;
+        line-height: 2;
+        text-align: start;
+        z-index: 1;
+
+        .bofqi-control-closed-caption-title {
+            inline-size: 100%;
+        }
+
+        .bofqi-control-closed-caption-select {
+            max-inline-size: 75%;
+        }
+
+        .bpui-slider {
+            flex-grow: 1;
+            block-size: 1.5em;
+        }
+
+        .closed-caption-color {
+            flex-grow: 1;
+            block-size: 1.5em;
+            border: 1px solid #e2e2e2;
+            border-radius: 4px;
+            background-color: var(--caption-color);
+        }
+
+        .bpui-select {
+            flex-grow: 1;
+            color: #6d757a;
+            block-size: 1.5em;
+        }
+
+        hr {
+            inline-size: 100%;
+            block-size: 0;
+            border: 0;
+            margin: 0;
+        }
+    }
+
+    &:hover {
+        .bofqi-control-closed-caption-wrap {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+        }
+    }
+
+    &:disabled {
+        display: none;
+    }
+}
+
+[popover].popover-local-font {
+    inset-inline-start: 50%;
+    inset-block-start: 50%;
+    translate: -50% -50%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    border: 1px solid #ccd0d7;
+    border-radius: 4px;
+    padding: 4px;
+    align-items: center;
+    max-inline-size: 800px;
+    max-block-size: 600px;
+    overflow-y: auto;
+    scrollbar-width: none;
+
+    &>button {
+        appearance: none;
+        outline: none;
+        border: 1px solid #ccd0d7;
+        border-radius: 4px;
+        padding: 4px;
+        margin: 4px;
+        inline-size: fit-content;
+        block-size: fit-content;
+        background-color: white;
+        cursor: pointer;
+
+        &:hover {
+            background-color: white;
+            background-color: #f4f5f7;
+            color: #6d757a;
+        }
+    }
+}

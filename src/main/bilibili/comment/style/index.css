@@ -1,0 +1,482 @@
+@import url(./comment.css);
+
+@font-face {
+    font-family: 'fanscard';
+    src: url('//s1.hdslb.com/bfs/static/jinkela/mall-h5/asserts/fansCard.ttf');
+}
+
+@scope {
+    :scope {
+        padding-block: 30px;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+
+        &.bili-wrapper {
+            margin-inline: auto;
+            padding-inline-end: 290px;
+            inline-size: 980px;
+            min-inline-size: 980px;
+
+            @media screen and (min-width:1400px) {
+
+                & {
+                    inline-size: 1160px;
+                }
+            }
+
+            @media screen and (min-width:2500px) {
+
+                & {
+                    inline-size: 1920px;
+                }
+            }
+        }
+
+        &,
+        div {
+            box-sizing: border-box;
+        }
+
+        a {
+            outline: none;
+            text-decoration: none;
+        }
+    }
+}
+
+.comment-head {
+    font-size: 18px;
+    line-height: 24px;
+    color: #222;
+    margin-block-end: 20px;
+
+    &::before {
+        content: attr(data-num);
+        margin-inline-end: 10px;
+    }
+}
+
+.comment {
+    display: flex;
+    flex-direction: column;
+    color: #222;
+    font-size: 12px;
+
+    .comment-header {
+        margin-block-end: 24px;
+        border-block-end: 1px solid #e5e9ef;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .tabs-order {
+            font-size: 14px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            column-gap: 16px;
+
+            >label {
+                cursor: pointer;
+                border-block-end: 1px solid transparent;
+                padding-block: 8px;
+                position: relative;
+
+                &:has(input:checked) {
+                    border-block-end: 1px solid #00a1d6;
+                    color: #00a1d6;
+
+                    &::after {
+                        content: "";
+                        position: absolute;
+                        inset-inline-start: 50%;
+                        inset-block-end: 0;
+                        transform: translateX(-3px);
+                        border-block-end: 3px solid #00a1d6;
+                        border-block-start: 0;
+                        border-inline-start: 3px solid rgba(0, 0, 0, 0);
+                        border-inline-end: 3px solid rgba(0, 0, 0, 0);
+                        box-sizing: border-box;
+                    }
+                }
+
+                >input {
+                    appearance: none;
+                }
+            }
+        }
+
+        .interaction {
+            display: flex;
+            align-items: center;
+
+            &::before {
+                content: "共" attr(data-num) "页";
+                margin-inline-end: 10px;
+            }
+
+            >a {
+                margin-inline: 4px;
+                cursor: pointer;
+
+                &:hover {
+                    color: #00a1d6;
+                }
+
+                &.on,
+                &.more {
+                    pointer-events: none;
+                }
+
+                &.on {
+                    color: #00a1d6;
+                    font-weight: bold;
+                }
+            }
+        }
+    }
+
+    .comment-send {
+        margin-block: 10px;
+        padding-block: 15px;
+        display: flex;
+        align-items: center;
+
+        .user-face {
+            margin-inline: 16px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            >.face {
+                inline-size: 48px;
+                aspect-ratio: 1;
+                border-radius: 50%;
+            }
+
+            >.pendant {
+                position: absolute;
+                block-size: 72px;
+                inline-size: 72px;
+            }
+
+            >.auth {
+                position: absolute;
+                inline-size: 20px;
+                block-size: 20px;
+                inset-inline-end: 0;
+                inset-block-start: 0;
+                background-image: url(//s1.hdslb.com/bfs/static/jinkela/videoplay/asserts/user-auth.png);
+                background-repeat: no-repeat;
+                z-index: 3;
+
+                &.o-auth {
+                    background-position: -4px -53px;
+                }
+
+                &.p-auth {
+                    background-position: -38px -53px;
+                }
+            }
+        }
+
+        .ipt-txt {
+            box-sizing: border-box;
+            background-color: #f4f5f7;
+            border: 1px solid #e5e9ef;
+            border-radius: 4px;
+            color: #555;
+            padding-block: 5px;
+            padding-inline: 10px;
+            block-size: 65px;
+            outline: none;
+            resize: none;
+            anchor-name: --ipt-txt;
+
+            &:focus {
+                background-color: #fff;
+                border-color: #00a1d6;
+            }
+
+            &:disabled {
+                background-color: #e5e9ef;
+            }
+        }
+
+        .comment-submit {
+            block-size: 64px;
+            inline-size: 70px;
+            margin-inline-start: 10px;
+            padding-block: 4px;
+            padding-inline: 15px;
+            font-size: 14px;
+            color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+            background-color: #00a1d6;
+            border: 1px solid #00a1d6;
+            box-sizing: border-box;
+            transition: 0.1s;
+            user-select: none;
+            outline: none;
+
+            &:hover {
+                background-color: #00b5e5;
+                border-color: #00b5e5;
+            }
+
+            &:disabled {
+                cursor: not-allowed;
+                color: #b8c0cc;
+                background-color: #e5e9ef;
+                border-color: #e5e9ef;
+                padding: 4px 10px;
+
+            }
+        }
+
+        .comment-emote {
+            position: absolute;
+            font-size: 12px;
+            background-color: inherit;
+            padding-inline: 1em;
+            padding-block: .3em;
+            inset-inline-start: anchor(--ipt-txt start);
+            inset-block-start: anchor(--ipt-txt end);
+            color: #99a2aa;
+            border: 1px solid #e5e9ef;
+            border-radius: 4px;
+            box-shadow: 0px 1px 10px 0 rgba(106, 115, 133, 0.25);
+            cursor: pointer;
+            margin-block-start: .5em;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            column-gap: .3em;
+            anchor-name: --comment-emote;
+
+            >svg {
+                inline-size: 1.5em;
+                aspect-ratio: 1;
+                fill: #99a2aa;
+            }
+
+            &:disabled {
+                cursor: not-allowed;
+                color: #b8c0cc;
+                background-color: #e5e9ef;
+                border-color: #e5e9ef;
+            }
+
+            &:hover {
+                color: #6d757a;
+
+                >svg {
+                    fill: #6d757a;
+                }
+            }
+        }
+
+        .emote-popover {
+            position: absolute;
+            inset-inline-start: anchor(--comment-emote start);
+            inset-block-start: anchor(--comment-emote end);
+            inline-size: 363px;
+            margin-block-start: .5em;
+            border: 1px solid #E5E9EF;
+            box-shadow: 0 11px 12px 0 rgba(106, 115, 133, 0.3);
+            border-radius: 8px;
+            color: #222;
+
+            >.emoji-title {
+                line-height: 16px;
+                margin-block-start: 13px;
+                margin-inline: 15px;
+                color: #757575;
+            }
+
+            >.emoji-wrap {
+                margin-block-start: 6px;
+                margin-inline: 11px;
+                block-size: 196px;
+                overflow-y: auto;
+                scrollbar-width: thin;
+                word-break: break-word;
+                display: flex;
+                flex-wrap: wrap;
+                gap: .1em;
+
+                >label {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: .3em;
+                    border-radius: 4px;
+                    transition: all 0.2s;
+                    cursor: pointer;
+
+                    >img {
+                        inline-size: 24px;
+                        block-size: 24px;
+                    }
+
+                    >input {
+                        appearance: none;
+                    }
+
+                    &:hover {
+                        background-color: #ddd;
+                        scale: 2;
+                    }
+                }
+            }
+
+            >.emoji-tabs {
+                block-size: 36px;
+                background-color: #f4f4f4;
+                display: flex;
+                overflow-x: auto;
+                scrollbar-width: thin;
+
+                >label {
+                    inline-size: 58px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    transition: background-color 0.2s;
+                    cursor: pointer;
+
+                    >img {
+                        inline-size: 24px;
+                        block-size: 24px;
+                    }
+
+                    >input {
+                        appearance: none;
+                    }
+
+                    &:has(input:checked) {
+                        background-color: #fff;
+                    }
+
+                    &:hover {
+                        background: #e7e7e7;
+                    }
+                }
+            }
+        }
+
+        &[popover] {
+            inset-area: block-end;
+            border: 0;
+            box-shadow: 0 0 20px 3px #0000005c;
+            border-radius: 10px;
+            padding-inline: 18px;
+            padding-block-end: 40px;
+        }
+    }
+
+    .comment-list {
+        padding-block-start: 20px;
+    }
+
+    .comment-paging {
+        inline-size: 100%;
+        position: relative;
+
+        >a {
+            font-size: 14px;
+            block-size: 36px;
+            border-radius: 4px;
+            min-inline-size: 15px;
+            margin-inline: 2px;
+            padding-inline: 10px;
+            background-color: #fff;
+            border: solid 1px #ddd;
+            cursor: pointer;
+            transition: 0.2s all;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            &.prev,
+            &.next {
+                padding-inline: 15px;
+            }
+
+            &.on,
+            &.more {
+                pointer-events: none;
+            }
+
+            &.more {
+                border: 0;
+            }
+
+            &:hover,
+            &.on {
+                background-color: #00a1d6;
+                color: #fff;
+                border: 1px solid #00a1d6;
+            }
+        }
+
+        >.page-jump {
+            color: #99a2aa;
+            position: absolute;
+            inset-inline-end: 0;
+
+            >input {
+                inline-size: 24px;
+                block-size: 24px;
+                margin-inline: 5px;
+                padding-inline: 10px;
+                border-radius: 4px;
+                font-size: 12px;
+                border: 1px solid #ddd;
+                text-align: center;
+                outline: none;
+                box-shadow: none;
+            }
+        }
+
+        &:empty {
+            display: none;
+        }
+    }
+}
+
+.comment-popover {
+    inline-size: 100vi;
+    block-size: 100vb;
+    border: 0;
+    background: rgba(24, 25, 28, 0.85);
+    transition: all .5s allow-discrete;
+
+    @starting-style {
+        scale: 0;
+    }
+
+    &:not(:popover-open):not(dialog[open]) {
+        scale: 0;
+    }
+
+    >.image-con {
+        inline-size: 100%;
+        block-size: 100%;
+        padding-inline: 100px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow-y: auto;
+        scrollbar-width: none;
+        cursor: zoom-out;
+
+        >img {
+            max-inline-size: 100%;
+            cursor: default;
+        }
+    }
+}

@@ -1,0 +1,57 @@
+@import url(./danmaku.css);
+@import url(./context.css);
+
+.bofqi-auxiliary-danmaku {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    overflow-y: hidden;
+
+    .bofqi-auxiliary-danmaku-header {
+        flex-shrink: 0;
+        block-size: 32px;
+        display: flex;
+        align-items: center;
+
+        .bofqi-auxiliary-danmaku-progress,
+        .bofqi-auxiliary-danmaku-content,
+        .bofqi-auxiliary-danmaku-sent {
+            display: flex;
+            align-items: center;
+        }
+
+        .bofqi-auxiliary-danmaku-progress {
+            inline-size: 60px;
+            justify-content: center;
+        }
+
+        .bofqi-auxiliary-danmaku-content {
+            flex-grow: 1;
+        }
+
+        .bofqi-auxiliary-danmaku-sent {
+            inline-size: 88px;
+        }
+    }
+
+    .bofqi-auxiliary-danmaku-list {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-gutter: stable;
+        content-visibility: auto;
+
+        &:empty {
+            pointer-events: none;
+            align-items: center;
+            justify-content: center;
+
+            &::after {
+                content: '左舷弹幕太稀薄了';
+            }
+        }
+    }
+}

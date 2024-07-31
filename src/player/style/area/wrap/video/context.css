@@ -1,0 +1,124 @@
+.bofqi-video-context-menu.black {
+    &>li {
+        inline-size: 100%;
+        padding-block: 4px;
+        padding-inline-start: 20px;
+        padding-inline-end: 12px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        block-size: 38px;
+        line-height: 30px;
+        min-inline-size: 380px;
+        transition: all .3s ease-in-out;
+        font-size: 12px;
+        white-space: nowrap;
+        color: #eee;
+        cursor: default;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-sizing: border-box;
+
+        &.context-playback-rate {
+            overflow: visible;
+
+            &::before {
+                content: '播放速率';
+            }
+
+            &>input[type="range" i].bpui-slider {
+                flex-grow: 1;
+                margin-inline-start: 20px;
+                margin-inline-end: 10px;
+
+                &.hint::after {
+                    inset-area: block-satrt;
+                }
+            }
+        }
+
+        &.context-playback-ratio {
+            &::before {
+                content: '画面比例';
+            }
+
+            &>div {
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+                flex-grow: 1;
+                animation: all .3s;
+
+                &>button {
+                    margin-inline-start: 20px;
+                    padding: 4px;
+
+                    &.active {
+                        color: #00a1d6;
+                        pointer-events: none;
+                    }
+
+                    &:hover {
+                        background-color: hsla(0, 0%, 100%, .2);
+                    }
+                }
+            }
+        }
+
+        &.context-playback-deglim {
+            cursor: pointer;
+
+            &::before {
+                content: attr(data-value);
+            }
+        }
+
+        &.context-playback-mirror {
+            cursor: pointer;
+
+            &::before {
+                content: '镜像';
+            }
+
+            &.active {
+                color: #00a1d6;
+            }
+        }
+
+        &.context-playback-history {
+            cursor: pointer;
+
+            &::before {
+                content: '更新历史 8c739d8a';
+            }
+        }
+
+        &.context-playback-statistic {
+            cursor: pointer;
+
+            &::before {
+                content: '视频统计信息';
+            }
+
+            &.active {
+                color: #00a1d6;
+            }
+        }
+
+        &:not(:first-child) {
+            border-block-start: 1px solid hsla(0, 0%, 100%, .12);
+        }
+
+        &:hover {
+            background-color: hsla(0, 0%, 100%, .12);
+        }
+    }
+}
+
+body.deglim {
+    background-color: black;
+
+    &>* {
+        background-color: black;
+    }
+}

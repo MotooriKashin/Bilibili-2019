@@ -1,0 +1,21 @@
+.bpui-select {
+    flex-grow: 1;
+    appearance: none;
+    cursor: pointer;
+    border: 1px solid #e2e2e2;
+    border-radius: 4px;
+    white-space: nowrap;
+    outline: none;
+    min-inline-size: 0;
+
+    &:empty {
+        pointer-events: none;
+        cursor: default;
+        background-color: #f4f5f7;
+    }
+
+    &:disabled {
+        cursor: not-allowed;
+        color: #ccd0d7;
+    }
+}

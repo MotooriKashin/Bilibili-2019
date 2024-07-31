@@ -1,0 +1,144 @@
+[
+    {
+        "id": 1,
+        "action": {
+            "type": "redirect",
+            "redirect": {
+                "transform": {
+                    "queryTransform": {
+                        "removeParams": [
+                            "spm_id_from",
+                            "from_source",
+                            "msource",
+                            "bsource",
+                            "seid",
+                            "source",
+                            "session_id",
+                            "visit_id",
+                            "sourceFrom",
+                            "from_spmid",
+                            "share_source",
+                            "share_medium",
+                            "share_plat",
+                            "share_session_id",
+                            "share_tag",
+                            "unique_k",
+                            "vd_source",
+                            "csource",
+                            "tab",
+                            "is_story_h5",
+                            "share_from",
+                            "plat_id",
+                            "-Arouter",
+                            "spmid",
+                            "broadcast_type",
+                            "is_room_feed",
+                            "live_from"
+                        ]
+                    }
+                }
+            }
+        },
+        "condition": {
+            "requestDomains": [
+                "bilibili.com"
+            ],
+            "resourceTypes": [
+                "main_frame",
+                "sub_frame",
+                "stylesheet",
+                "script",
+                "image",
+                "font",
+                "object",
+                "xmlhttprequest",
+                "ping",
+                "csp_report",
+                "media",
+                "websocket",
+                "webtransport",
+                "webbundle",
+                "other"
+            ]
+        }
+    },
+    {
+        "id": 2,
+        "action": {
+            "type": "block"
+        },
+        "condition": {
+            "requestDomains": [
+                "s1.hdslb.com"
+            ],
+            "urlFilter": "log-reporter",
+            "resourceTypes": [
+                "script"
+            ]
+        }
+    },
+    {
+        "id": 3,
+        "priority": 1,
+        "action": {
+            "type": "block"
+        },
+        "condition": {
+            "requestDomains": [
+                "s1.hdslb.com"
+            ],
+            "urlFilter": "spmid",
+            "resourceTypes": [
+                "script"
+            ]
+        }
+    },
+    {
+        "id": 4,
+        "priority": 1,
+        "action": {
+            "type": "block"
+        },
+        "condition": {
+            "requestDomains": [
+                "cm.bilibili.com"
+            ],
+            "resourceTypes": [
+                "xmlhttprequest"
+            ],
+            "requestMethods": [
+                "post"
+            ]
+        }
+    },
+    {
+        "id": 5,
+        "priority": 1,
+        "action": {
+            "type": "block"
+        },
+        "condition": {
+            "requestDomains": [
+                "data.bilibili.com"
+            ],
+            "resourceTypes": [
+                "xmlhttprequest"
+            ]
+        }
+    },
+    {
+        "id": 6,
+        "priority": 1,
+        "action": {
+            "type": "block"
+        },
+        "condition": {
+            "requestDomains": [
+                "data.bilivideo.com"
+            ],
+            "resourceTypes": [
+                "xmlhttprequest"
+            ]
+        }
+    }
+]

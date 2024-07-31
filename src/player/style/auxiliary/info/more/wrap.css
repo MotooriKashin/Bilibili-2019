@@ -1,0 +1,52 @@
+.bofqi-auxiliary-setting-more {
+    position: absolute;
+    position-anchor: --bofqi-more;
+    inset-area: block-end span-inline-start;
+    margin-block-start: 5px;
+    padding-block: 10px;
+    border: 1px solid #99a2aa;
+    border-radius: 4px;
+    box-shadow: 0 2px 1px 0 #e2e2e2;
+
+    &[popover]:popover-open:not(dialog) {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        overflow: initial;
+    }
+
+    &>.bofqi-auxiliary-setting-more-triangle {
+        position: absolute;
+        inset-block-start: -4px;
+        inset-inline-end: 10px;
+        inline-size: 6px;
+        block-size: 6px;
+        border: 1px solid #99a2aa;
+        rotate: 45deg;
+        border-block-end-color: #fafafa;
+        border-inline-end-color: #fafafa;
+    }
+
+    &>.bofqi-auxiliary-setting-more-list {
+        block-size: 30px;
+        padding-block: 0;
+        padding-inline-end: 14px;
+        padding-inline-start: 22px;
+        cursor: pointer;
+        text-align: start;
+        color: #222;
+        transition: background-color .3s;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+
+        &:hover {
+            background-color: #e5e9ef;
+        }
+
+        &:disabled {
+            cursor: not-allowed;
+            color: #ccd0d7;
+        }
+    }
+}

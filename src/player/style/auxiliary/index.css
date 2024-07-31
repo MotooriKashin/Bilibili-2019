@@ -1,0 +1,37 @@
+@import url(./info/index.css);
+@import url(./filter.css);
+@import url(./recommend/index.css);
+@import url(./danmaku/index.css);
+@import url(./block/index.css);
+
+.bofqi-auxiliary {
+    flex-shrink: 0;
+    inline-size: 300px;
+    border-inline-start: 1px solid var(--box-shadow);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    color: #99a2aa;
+    anchor-name: --bofqi-auxiliary;
+
+    svg {
+        display: block;
+        block-size: 1em;
+        aspect-ratio: 1;
+        fill: #99a2aa;
+    }
+}
+
+@container bofqi (inline-size < 780px) {
+
+    .bofqi-auxiliary {
+        display: none;
+    }
+}
+
+@container bofqi style(--mode-wide: 1) or style(--mode-fullscreen:1) {
+
+    .bofqi-auxiliary {
+        display: none;
+    }
+}

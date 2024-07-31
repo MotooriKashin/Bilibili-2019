@@ -1,0 +1,264 @@
+.bili-timeline {
+    display: flex;
+    justify-content: space-between;
+    column-gap: 20px;
+    block-size: calc(100cqi / 391 * 132 + 60px);
+
+    >.l-con {
+        flex: 1;
+
+        .bili-tab {
+            flex: 1;
+            display: flex;
+
+            >label {
+                flex: 1 0;
+                border-block-end: 1px solid #e5e9ef;
+                font-size: 18px;
+                padding-block-end: .5em;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                position: relative;
+                cursor: pointer;
+                transition: all .2s;
+
+                >input {
+                    appearance: none;
+                }
+
+                &:has(input:checked) {
+                    border-block-end: 1px solid #00a1d6;
+                    color: #00a1d6;
+
+                    &::after {
+                        content: "";
+                        position: absolute;
+                        inset-inline-start: 50%;
+                        inset-block-end: 0;
+                        transform: translateX(-3px);
+                        border-block-end: 3px solid #00a1d6;
+                        border-block-start: 0;
+                        border-inline-start: 3px solid rgba(0, 0, 0, 0);
+                        border-inline-end: 3px solid rgba(0, 0, 0, 0);
+                        box-sizing: border-box;
+                    }
+                }
+            }
+        }
+
+        .c-clink {
+            border: 1px solid #f25d8e;
+            block-size: 34px;
+            color: #f25d8e;
+            font-size: 14px;
+            border-radius: 4px;
+            transition: .1s;
+            padding-inline: .5em;
+            cursor: pointer;
+            background-color: initial;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+            user-select: none;
+
+            >svg {
+                inline-size: 1em;
+                aspect-ratio: 1;
+                fill: #f25d8e;
+            }
+
+            &:hover {
+                color: #fff;
+                background-color: #f25d8e;
+
+                >svg {
+                    fill: #fff;
+                }
+            }
+        }
+
+        .timing-box {
+            block-size: calc(100cqi / 391 * 132);
+            margin-block-start: 26px;
+            margin-block-end: 40px;
+            display: flex;
+            flex-wrap: wrap;
+            align-content: flex-start;
+            column-gap: 34px;
+            row-gap: 36px;
+            overflow-y: auto;
+            scrollbar-width: none;
+
+            >.timing-card {
+                inline-size: calc((100cqi / 391* 88 - 20px) / 6 * 5);
+                block-size: calc((100cqi / 391* 88 - 20px) / 3);
+                border-radius: 4px;
+                display: grid;
+                grid-template-columns: repeat(5, 1fr);
+                grid-template-areas:
+                    "pc pc t t t"
+                    "pc pc t t t"
+                    "pc pc t t t"
+                    "pc pc ud ud ud";
+                column-gap: 12px;
+
+                >a {
+                    color: #222;
+                    transition: color .2s;
+
+                    &:hover {
+                        color: #00a1d6;
+                    }
+                }
+
+                >.pic {
+                    grid-area: pc;
+                    aspect-ratio: 1;
+                    overflow: hidden;
+                    border-radius: 4px;
+
+                    >img {
+                        inline-size: 100%;
+                        block-size: 100%;
+                        object-fit: none;
+                    }
+                }
+
+                >.t {
+                    grid-area: t;
+                    word-break: break-all;
+                    word-wrap: break-word;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+
+                >.update {
+                    grid-area: ud;
+                    color: #aaa;
+                    white-space: nowrap;
+                    display: flex;
+                    align-items: center;
+
+                    >a {
+                        color: #fff;
+                        border-radius: 9px;
+                        padding-inline: 4px;
+                        text-overflow: ellipsis;
+                        overflow: hidden;
+                        background: #b8c0cc;
+                    }
+
+                    &.published>a {
+                        background: #ff8eb3;
+                    }
+                }
+            }
+
+            &:empty {
+                justify-content: center;
+
+                &::before {
+                    content: url(https://s1.hdslb.com/bfs/static/jinkela/home/asserts/bgm-nodata.png);
+                }
+            }
+        }
+    }
+
+    >.r-con {
+        flex-shrink: 0;
+        inline-size: 260px;
+        display: flex;
+        flex-direction: column;
+        row-gap: 20px;
+
+        >header {
+            flex-shrink: 0;
+            block-size: 24px;
+            font-size: 18px;
+            display: flex;
+        }
+
+        >.tab-box {
+            flex: 1 0;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            scrollbar-width: none;
+            row-gap: 20px;
+            overflow-y: auto;
+            scrollbar-width: none;
+
+            >.item {
+                display: flex;
+                column-gap: .5em;
+                cursor: pointer;
+                position: relative;
+
+                >.number>span {
+                    color: #fff;
+                    background-color: #b8c0cc;
+                    border-radius: 4px;
+                    padding-inline: 3px;
+                }
+
+                >.ri-title {
+                    display: contents;
+                    color: #222;
+                    overflow: hidden;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+
+                    >.ri-total {
+                        color: #99a2aa;
+                        overflow: hidden;
+                        white-space: nowrap;
+                        text-overflow: ellipsis;
+                    }
+                }
+
+                &:nth-child(1)>.number>span,
+                &:nth-child(2)>.number>span,
+                &:nth-child(3)>.number>span {
+                    background-color: #f25d8e;
+                }
+
+                a {
+                    color: #99a2aa;
+
+                    &:hover {
+                        color: #00a1d6;
+                    }
+                }
+            }
+
+            &:empty {
+                align-items: center;
+
+                &::before {
+                    content: "没有数据(-_-#)";
+                    color: #99a2aa;
+                }
+            }
+        }
+
+        >.more-link {
+            flex-shrink: 0;
+            block-size: 24px;
+            background-color: #e5e9ef;
+            border: 1px solid #e0e6ed;
+            color: #222;
+            border-radius: 4px;
+            transition: .2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            >svg {
+                inline-size: 1em;
+                aspect-ratio: 1;
+            }
+        }
+    }
+}

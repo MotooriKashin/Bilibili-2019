@@ -1,0 +1,66 @@
+.bpui-button {
+    color: #fff;
+    cursor: pointer;
+    border-radius: 4px;
+    background-color: #00a1d6;
+    border: 1px solid #00a1d6;
+    padding-inline: 10px;
+    min-block-size: 26px;
+    transition: .2s;
+    transition-property: background-color, border, color;
+    outline: none;
+    user-select: none;
+    overflow: visible;
+
+    &:active,
+    &:hover,
+    &:link,
+    &:visited {
+        text-decoration: none;
+    }
+
+    &:hover {
+        background-color: #00b5e5;
+        border-color: #00b5e5;
+    }
+
+    &:disabled {
+        cursor: default;
+        background-color: #ccd0d7;
+        border-color: #ccd0d7;
+    }
+
+    &.small {
+        font-size: 12px;
+        color: #99a2aa;
+        border: 1px solid #ccd0d7;
+        border-radius: 4px;
+        background-color: #fff;
+        padding: 0 8px;
+        block-size: 20px;
+        line-height: 20px;
+
+        &:hover {
+            color: #222;
+            border-color: #6d757a;
+        }
+
+        &:disabled {
+            color: #ccd0d7;
+            border-color: #e2e2e2;
+        }
+    }
+
+    &.text-only {
+        border: 1px solid transparent;
+        color: inherit;
+        padding: 0;
+        background: transparent;
+        font-weight: 100;
+        line-height: initial;
+
+        &:hover {
+            color: inherit;
+        }
+    }
+}

@@ -1,0 +1,48 @@
+.bas-danmaku-item {
+    pointer-events: none;
+    user-select: none;
+    position: absolute;
+    animation-fill-mode: forwards;
+    line-height: 1;
+    transform-origin: 0 0;
+
+    .bas-danmaku-item {
+        position: absolute;
+        inset-inline-start: 0;
+        inset-block-start: 0;
+    }
+
+    &.bas-danmaku-item-button {
+        pointer-events: auto;
+        padding-block: 10px;
+        padding-inline: 20px;
+        border-radius: 3px;
+    }
+}
+
+.bas-danmaku-item-wrap {
+    pointer-events: none;
+    user-select: none;
+    position: absolute;
+    inset-inline: 0;
+    inset-block-start: 0;
+    block-size: 100cqb;
+    z-index: 10;
+    perspective: calc(100cqi / 2 / tan((3.14 / 180) * (55 / 2)));
+}
+
+.bas-danmaku-item-inner {
+    border: 0;
+    transform-origin: 0 0;
+}
+
+.bas-danmaku-item-text .bas-danmaku-item-inner {
+    pointer-events: none;
+    border-style: solid;
+}
+
+@container danmaku style(--animation-play-state: paused) {
+    .bas-danmaku-item {
+        animation-play-state: paused !important;
+    }
+}

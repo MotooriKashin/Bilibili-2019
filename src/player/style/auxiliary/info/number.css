@@ -1,0 +1,14 @@
+.bofqi-auxiliary-info-number {
+    margin-inline-start: 20px;
+
+    &:before {
+        content: attr(data-count);
+        font-size: 18px;
+        font-weight: 700;
+        color: #222;
+    }
+
+    &:after {
+        content: attr(data-danmaku);
+    }
+}

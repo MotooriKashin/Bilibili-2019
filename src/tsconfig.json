@@ -1,0 +1,33 @@
+{
+    "files": [],
+    "include": [],
+    "references": [
+        {
+            "path": "./danmaku"
+        },
+        {
+            "path": "./dash-player"
+        },
+        {
+            "path": "./flv.js"
+        },
+        {
+            "path": "./interface"
+        },
+        {
+            "path": "./io"
+        },
+        {
+            "path": "./main"
+        },
+        {
+            "path": "./player"
+        },
+        {
+            "path": "./sw"
+        },
+        {
+            "path": "./utils"
+        }
+    ]
+}

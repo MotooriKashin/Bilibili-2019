@@ -1,0 +1,55 @@
+.bofqi-area-message {
+    block-size: 48px;
+    flex-shrink: 0;
+    background-color: #353535;
+    display: flex;
+    padding: 6px;
+    gap: 12px;
+
+    >.bofqi-message-prev,
+    >.bofqi-message-next {
+        flex-shrink: 0;
+        inline-size: 16px;
+        border-radius: 3px;
+        background: #262626;
+
+        >svg {
+            fill: #fff;
+            inline-size: 1em;
+            aspect-ratio: 1;
+            transition: fill .3s;
+        }
+
+        &:hover>svg {
+            fill: #00a1d6;
+        }
+    }
+
+    >.bofqi-message-prev {
+        rotate: 180deg;
+    }
+
+    >.bofqi-message-panel {
+        flex-grow: 1;
+        background: #262626;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        color: #fff;
+    }
+}
+
+@container bofqi (inline-size < 780px) {
+
+    .bofqi-area-message {
+        display: none;
+    }
+}
+
+@container bofqi style(--mode-wide: 1) or style(--mode-fullscreen:1) {
+
+    .bofqi-area-message {
+        display: none;
+    }
+}

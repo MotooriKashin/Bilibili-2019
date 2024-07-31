@@ -1,0 +1,167 @@
+@scope {
+    :scope {
+        inline-size: 100%;
+        min-inline-size: 980px;
+        padding-block-start: 20px;
+        color: #99a2aa;
+        font-size: 12px;
+        background-color: #f6f9fa;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        &,
+        div {
+            box-sizing: border-box;
+        }
+    }
+}
+
+.footer-cnt {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    inline-size: 980px;
+
+    @media screen and (min-width:1400px) {
+
+        & {
+            inline-size: 1160px;
+        }
+    }
+
+    @media screen and (min-width:2500px) {
+
+        & {
+            inline-size: 1920px;
+        }
+    }
+
+    .boston-postcards {
+        inline-size: 100%;
+        display: flex;
+        justify-content: center;
+        font-size: 14px;
+        row-gap: 30px;
+
+        >div {
+            flex: 1;
+            display: flex;
+            flex-wrap: wrap;
+            align-content: flex-start;
+            box-sizing: border-box;
+            row-gap: 10px;
+
+            >a {
+
+                &:first-child {
+                    inline-size: 100%;
+                }
+
+                &:not(:first-child) {
+                    min-inline-size: 100px;
+                }
+
+                &.icon {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    position: relative;
+
+                    >svg {
+                        inline-size: 1em;
+                        aspect-ratio: 1;
+                        font-size: 56px;
+                    }
+
+                    &:nth-child(2)>svg {
+                        fill: #585f69;
+                    }
+
+                    &:nth-child(3)>svg {
+                        fill: #fe596c;
+                    }
+
+                    &:last-child>svg {
+                        fill: #42c86b;
+                    }
+
+                    >img {
+                        position: absolute;
+                        background: #fff;
+                        border: 1px solid #eee;
+                        padding: 10px;
+                        inset-block-end: calc(100% + 1em);
+                    }
+
+                    &:not(:hover)>img {
+                        display: none;
+                    }
+                }
+            }
+
+            &:not(:first-child) {
+                border-inline-start: solid 1px #e5e9ef;
+                padding-inline-start: 15px;
+            }
+
+        }
+    }
+
+    .partner {
+        inline-size: 100%;
+        display: flex;
+
+        .pic-box {
+            display: flex;
+            flex-direction: column;
+            inline-size: 100px;
+
+            .jvs-cert {
+                aspect-ratio: 66 / 25;
+                background-repeat: no-repeat;
+                background-size: contain;
+                animation-name: jvs-cert;
+                animation-play-state: running;
+                animation-duration: 6s;
+                animation-delay: 3s;
+                animation-iteration-count: infinite;
+                animation-direction: alternate-reverse;
+            }
+        }
+
+        .content-box {
+            line-height: 2;
+            margin-inline-start: 15px;
+
+            p {
+                margin-block-end: 5px;
+            }
+        }
+
+        a {
+            color: inherit;
+        }
+    }
+
+    a {
+        transition: color .2s;
+        outline: none;
+        text-decoration: none;
+        color: #222;
+
+        &:hover {
+            color: #00a1d6;
+        }
+    }
+}
+
+@keyframes jvs-cert {
+    from {
+        background-image: url(//backup.hdslb.com/bfs/mainfront/websafe.png);
+    }
+
+    to {
+        background-image: url(//backup.hdslb.com/bfs/mainfront/confirm.png);
+    }
+}
