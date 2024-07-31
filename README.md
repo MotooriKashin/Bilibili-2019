@@ -37,12 +37,13 @@
 
 ---
 # 安装
-要求使用最新的[Google Chrome](https://www.google.com/chrome/)浏览器，暂无暇处理任何兼容性需求。
-1. 在[RELEASE](https://github.com/MotooriKashin/Bilibili-2019/releases)页面下载最新的版本
-2. 解压到本地磁盘任意目录
-3. 打开 Chrome [管理扩展程序](chrome://extensions/)页面打开右上角的【开发者模式】
-4. 点击【加载已解压的扩展程序】按钮加载刚解压出的文件所在目录
-5. 更新版本请重复上述步骤
+- 欢迎在安装之前访问核心[播放器页面](https://motoorikashin.github.io/Bilibili-2019/)体验一下旧版播放器  
+- 若要安装，则要求使用最新的[Google Chrome](https://www.google.com/chrome/)浏览器（当前要求核心版本 125 以上，以后只会更高，恕不另行通知，且暂时无暇理会任何兼容性需求）。
+   1. 在[RELEASE](https://github.com/MotooriKashin/Bilibili-2019/releases)页面下载最新的版本
+   2. 解压到本地磁盘任意目录
+   3. 打开 Chrome [管理扩展程序](chrome://extensions/)页面打开右上角的【开发者模式】
+   4. 点击【加载已解压的扩展程序】按钮加载刚解压出的文件所在目录
+   5. 更新版本请重复上述步骤
 
 另外，也可以克隆项目到本地手动构建，参看[代码贡献指南](.github/contributing.md)
 
