@@ -1,0 +1,22 @@
+body {
+    block-size: 100vb;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .tips {
+        position: absolute;
+        position-anchor: --bofqi-example;
+        inset-area: block-start;
+    }
+
+    >figure {
+        anchor-name: --bofqi-example;
+
+        &:not(.mode-fullscreen-web) {
+            inline-size: 1920px !important;
+            block-size: calc(1920px / 16* 9 + 68px) !important;
+        }
+    }
+}
