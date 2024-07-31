@@ -9,7 +9,7 @@
 ---
 这是一个[Google Chrome](https://www.google.com/chrome/)的[manifest V3](https://developer.chrome.com/docs/extensions/mv3/manifest/)扩展项目，恢复 2019 年 12 月 09 日前的部分[B站](https://www.bilibili.com/)页面，尤其是那个小电视播放器。  
 项目前身是[Bilibili-Old](https://github.com/MotooriKashin/Bilibili-Old)油猴脚本，在B站原始页面的基础上修修补补了四年多，奈何实在老旧，难以为继，于是有了推倒重来的念头。加上[manifest V3](https://developer.chrome.com/docs/extensions/mv3/manifest/)标准的推行，油猴脚本前途未卜，索性转为扩展项目。  
-由于 HTML + js + css 都不在复用，从零开始手搓，肯定做不到完全复刻当年的模样，请多见谅！
+由于 HTML + js + css 都不再复用，从零开始手搓，肯定做不到完全复刻当年的模样，请多见谅！
 
 ---
 # 功能
