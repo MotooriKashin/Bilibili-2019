@@ -7,6 +7,8 @@
     scrollbar-width: thin;
     scrollbar-gutter: stable;
     content-visibility: auto;
+    --margin-block-start: 0;
+    --margin-block-end: 0;
 
     &:empty {
         align-items: center;
@@ -125,6 +127,14 @@
                 content: "▶";
                 color: #00a1d6;
             }
+        }
+
+        &:first-child {
+            margin-block-start: var(--margin-block-start);
+        }
+
+        &:last-child {
+            margin-block-end: var(--margin-block-end);
         }
     }
 }

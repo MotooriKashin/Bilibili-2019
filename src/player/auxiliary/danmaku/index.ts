@@ -135,7 +135,7 @@ export class Danmaku extends HTMLDivElement {
         });
 
         new ResizeObserver(this.observeResizeCallback).observe(this.$list);
-        new IntersectionObserver(this.observeCallback).observe(this.$list);
+        new IntersectionObserver(this.observeIntersectionCallback).observe(this.$list);
         this.$list.addEventListener('scroll', () => {
             const { scrollTop } = this.$list;
             const startindex = Math.floor(scrollTop / 24);
@@ -157,7 +157,7 @@ export class Danmaku extends HTMLDivElement {
         });
     }
 
-    private observeCallback = (entries: IntersectionObserverEntry[]) => {
+    private observeIntersectionCallback = (entries: IntersectionObserverEntry[]) => {
         let isIntersecting = false;
         for (const entry of entries) {
             isIntersecting = entry.isIntersecting;

@@ -393,8 +393,8 @@ export class Router {
                 const path = url.pathname.split('/');
                 const ml = +path[2].slice(2);
                 if (ml) {
-                    favResourceList(ml).then(media => {
-                        this.aid = Number(url.searchParams.get('aid')) || media.medias[0].id;
+                    favResourceList(ml).then(({ medias, has_more }) => {
+                        this.aid = Number(url.searchParams.get('aid')) || medias[0].id;
                         if (this.aid) {
                             Promise.allSettled([cards({ av: this.aid }), pagelist(this.aid), detail(this.aid)])
                                 .then(([cards, pagelist, detail]) => {
@@ -423,7 +423,7 @@ export class Router {
                                         }
                                         if (this.cid) {
                                             this.$player.connect(this.aid, this.cid, this.ssid, this.epid);
-                                            page ? this.$player.partMedialist(media, page) : this.$player.partMedialist(media);
+                                            page ? this.$player.partMedialist(medias, page) : this.$player.partMedialist(medias);
                                             if (de && de.View) {
                                                 this.$info.avDetail(de);
                                                 this.$desc.update(de);
@@ -433,6 +433,17 @@ export class Router {
                                             }
                                         }
                                     }
+
+                                    // 请求更多媒体
+                                    let pn = 2;
+                                    const getMore = () => {
+                                        favResourceList(ml, pn).then(({ medias, has_more }) => {
+                                            pn++;
+                                            this.$player.partMedialist(medias);
+                                            has_more && getMore();
+                                        })
+                                    }
+                                    has_more && getMore();
                                 });
                             this.$comment.oid = this.aid;
                         } else {
