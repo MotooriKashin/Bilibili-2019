@@ -110,6 +110,10 @@
     }
 }
 
+body:has(.mode-fullscreen-web:not(:fullscreen)) {
+    overflow: hidden;
+}
+
 @media (display-mode: picture-in-picture) {
     body {
         margin: 0;

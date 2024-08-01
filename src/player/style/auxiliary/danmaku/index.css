@@ -43,6 +43,8 @@
         scrollbar-width: thin;
         scrollbar-gutter: stable;
         content-visibility: auto;
+        --margin-block-start: 0;
+        --margin-block-end: 0;
 
         &:empty {
             pointer-events: none;
@@ -52,6 +54,14 @@
             &::after {
                 content: '左舷弹幕太稀薄了';
             }
+        }
+
+        >.danmaku-elem:first-child {
+            margin-block-start: var(--margin-block-start);
+        }
+
+        >.danmaku-elem:last-child {
+            margin-block-end: var(--margin-block-end);
         }
     }
 }

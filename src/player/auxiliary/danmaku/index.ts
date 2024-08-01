@@ -77,11 +77,9 @@ export class Danmaku extends HTMLDivElement {
     /** 右键菜单·导出弹幕 */
     private $export = Element.add('li', { class: 'context-danmaku-border-top' }, this.$context, '导出弹幕');
 
-    /** 渲染锚 */
-    private $i = 0;
+    private $startIndex = 0;
 
-    /** 渲染句柄 */
-    private $timer?: number;
+    private $seeLength = 0;
 
     constructor() {
         super();
@@ -136,7 +134,27 @@ export class Danmaku extends HTMLDivElement {
             });
         });
 
+        new ResizeObserver(this.observeResizeCallback).observe(this.$list);
         new IntersectionObserver(this.observeCallback).observe(this.$list);
+        this.$list.addEventListener('scroll', () => {
+            const { scrollTop } = this.$list;
+            const startindex = Math.floor(scrollTop / 24);
+            const { length } = this.$dms;
+            if (this.$startIndex < startindex) {
+                // 向下滚动
+                for (; (this.$startIndex < startindex && (this.$startIndex + this.$seeLength) < length); this.$startIndex++) {
+                    this.$list.appendChild(new DanmakuElem(this.$dms[this.$startIndex + this.$seeLength]));
+                    this.$list.firstElementChild?.remove();
+                }
+            } else {
+                // 向上滚动
+                for (; (this.$startIndex > startindex && (this.$startIndex - 1) >= 0); this.$startIndex--) {
+                    this.$list.prepend(new DanmakuElem(this.$dms[this.$startIndex - 1]));
+                    this.$list.lastElementChild?.remove();
+                }
+            }
+            this.marginFix();
+        });
     }
 
     private observeCallback = (entries: IntersectionObserverEntry[]) => {
@@ -145,44 +163,45 @@ export class Danmaku extends HTMLDivElement {
             isIntersecting = entry.isIntersecting;
         }
 
-        if (isIntersecting) {
-            // 显示弹幕列表
-            // const part = document.createDocumentFragment();
-            // for (const dm of this.$dms) {
-            //     part.appendChild(new DanmakuElem(dm))
-            // }
-            // this.$list.appendChild(part);
-            this.appendDmFrame();
-        } else {
-            // 清除弹幕
-            this.cancelDmFrame();
-            // this.$list.replaceChildren();
+        if (!isIntersecting) {
+            this.$startIndex = 0;
         }
     }
 
-    private appendDmFrame() {
-        if (this.$i < this.$dms.length) {
-            this.$timer = requestAnimationFrame(() => {
-                // 显示弹幕列表
-                const part = document.createDocumentFragment();
-                for (let i = 0; i < 20 && this.$i < this.$dms.length; i++, this.$i++) {
-                    part.appendChild(new DanmakuElem(this.$dms[this.$i]));
-                }
-                this.$list.appendChild(part);
-                this.appendDmFrame();
-            })
+    private observeResizeCallback = (entries: ResizeObserverEntry[]) => {
+        let blockSize = 0;
+        for (const entry of entries) {
+            for (const borderBoxSize of entry.borderBoxSize) {
+                borderBoxSize.blockSize && (blockSize = borderBoxSize.blockSize);
+            }
+        }
+
+        if (blockSize) {
+            this.render(blockSize);
         }
     }
 
-    private cancelDmFrame() {
-        this.$timer && cancelAnimationFrame(this.$timer);
-        this.$i = 0;
+    private render(blockSize: number) {
         this.$list.replaceChildren();
+        const { length } = this.$dms;
+        const max = Math.ceil(blockSize / 24) + 5;
+        for (let i = 0; (i < max && (this.$startIndex + i) < length); i++) {
+            this.$list.appendChild(new DanmakuElem(this.$dms[this.$startIndex + i]));
+            this.$seeLength = i + 1;
+        }
+        this.marginFix();
     }
+
+    private marginFix() {
+        const { length } = this.$dms;
+        this.$list.style.setProperty('--margin-block-start', `${this.$startIndex * 24}px`);
+        this.$list.style.setProperty('--margin-block-end', `${(length - this.$seeLength - this.$startIndex) * 24}px`);
+    }
+
 
     private identify = () => {
         this.$dmSelected.length = 0;
         this.$dms.length = 0;
-        this.cancelDmFrame();
+        this.$startIndex = 0;
     }
 }
