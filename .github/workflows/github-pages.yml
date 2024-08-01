@@ -6,11 +6,10 @@ name: github-pages
 on:
   # Triggers the workflow on push or pull request events but only for the "master" branch
   push:
+    branches:
+      - 'master'
     paths:
-      - './src/docs/**'
-  pull_request:
-    paths:
-      - './src/docs/**'
+      - 'src/docs/**'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
