@@ -141,7 +141,9 @@ export class Recommend extends HTMLDivElement {
     }
 
     private identify = () => {
+        this.$startIndex = 0;
         this.$items.length = 0;
+        this.replaceChildren();
     }
 }
 

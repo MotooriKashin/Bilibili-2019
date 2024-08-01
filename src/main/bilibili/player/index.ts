@@ -661,10 +661,10 @@ export class BilibiliPlayer extends Player {
     }
 
     /** 播放列表分P管理 */
-    partMedialist(page: Awaited<ReturnType<typeof favResourceList>>, part?: Awaited<ReturnType<typeof pagelist>>) {
+    partMedialist(page: Awaited<ReturnType<typeof favResourceList>>['medias'], part?: Awaited<ReturnType<typeof pagelist>>) {
         const ids: string[] = [];
         let ci = 0;
-        this.$auxiliary.$recommend.add(page.medias.map(d => {
+        this.$auxiliary.$recommend.add(page.map(d => {
             d.id === this.aid && (ci = ids.length);
             if (d.page === 1) {
                 const url = new URL(location.href);
