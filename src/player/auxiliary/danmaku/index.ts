@@ -77,6 +77,11 @@ export class Danmaku extends HTMLDivElement {
     /** 右键菜单·导出弹幕 */
     private $export = Element.add('li', { class: 'context-danmaku-border-top' }, this.$context, '导出弹幕');
 
+    /** 渲染锚 */
+    private $i = 0;
+
+    /** 渲染句柄 */
+    private $timer?: number;
 
     constructor() {
         super();
@@ -142,20 +147,42 @@ export class Danmaku extends HTMLDivElement {
 
         if (isIntersecting) {
             // 显示弹幕列表
-            const part = document.createDocumentFragment();
-            for (const dm of this.$dms) {
-                part.appendChild(new DanmakuElem(dm))
-            }
-            this.$list.appendChild(part);
+            // const part = document.createDocumentFragment();
+            // for (const dm of this.$dms) {
+            //     part.appendChild(new DanmakuElem(dm))
+            // }
+            // this.$list.appendChild(part);
+            this.appendDmFrame();
         } else {
             // 清除弹幕
-            this.$list.replaceChildren();
+            this.cancelDmFrame();
+            // this.$list.replaceChildren();
         }
+    }
+
+    private appendDmFrame() {
+        if (this.$i < this.$dms.length) {
+            this.$timer = requestAnimationFrame(() => {
+                // 显示弹幕列表
+                const part = document.createDocumentFragment();
+                for (let i = 0; i < 20 && this.$i < this.$dms.length; i++, this.$i++) {
+                    part.appendChild(new DanmakuElem(this.$dms[this.$i]));
+                }
+                this.$list.appendChild(part);
+                this.appendDmFrame();
+            })
+        }
+    }
+
+    private cancelDmFrame() {
+        this.$timer && cancelAnimationFrame(this.$timer);
+        this.$i = 0;
+        this.$list.replaceChildren();
     }
 
     private identify = () => {
         this.$dmSelected.length = 0;
         this.$dms.length = 0;
-        this.$list.replaceChildren();
+        this.cancelDmFrame();
     }
 }
