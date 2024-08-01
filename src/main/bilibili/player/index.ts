@@ -2,7 +2,7 @@ import { IDanmaku } from "../../../danmaku";
 import DashPlayer from "../../../dash-player";
 import { pgcPlayurl } from "../../../io/com/bilibili/api/pgc/player/web/playurl";
 import { recommend } from "../../../io/com/bilibili/api/pgc/season/web/related/recommend";
-import { season } from "../../../io/com/bilibili/api/pgc/view/web/season";
+import { pgcAppSeason } from "../../../io/com/bilibili/api/pgc/view/v2/app/season";
 import { pugvPlayurl } from "../../../io/com/bilibili/api/pugv/player/web/playurl";
 import { HEARTBEAT_PLAY_TYPE, HEARTBEAT_TYPE, heartbeat } from "../../../io/com/bilibili/api/x/click-interface/web/heartbeat";
 import { total } from "../../../io/com/bilibili/api/x/player/online/total";
@@ -597,8 +597,16 @@ export class BilibiliPlayer extends Player {
      * 
      * @param page Bangumi数据
      */
-    partBangumi(page: Awaited<ReturnType<typeof season>>) {
-        this.$area.$control.$next.update(page.episodes.map(d => `/bangumi/play/ep${d.ep_id}`), page.episodes.findIndex(d => d.cid === this.cid) || 0);
+    async partBangumi(page: Awaited<ReturnType<typeof pgcAppSeason>>) {
+        page.modules.forEach(d => {
+            switch (d.style) {
+                case "positive": {
+                    this.$area.$control.$next.update(d.data.episodes.map(d => `/bangumi/play/ep${d.ep_id}`), d.data.episodes.findIndex(d => d.cid === this.cid) || 0);
+                    break;
+                }
+            }
+        });
+
         if (page.bkg_cover) {
             this.style.backgroundImage = `url(${https(page.bkg_cover)}@.webp)`;
             this.style.backgroundSize = `cover`;

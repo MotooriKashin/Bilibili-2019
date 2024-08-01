@@ -1,4 +1,5 @@
-import { season } from "../../../io/com/bilibili/api/pgc/view/web/season";
+import { pgcAppSeason } from "../../../io/com/bilibili/api/pgc/view/v2/app/season";
+import { IEpisode, pgcSection } from "../../../io/com/bilibili/api/pgc/view/web/season/user/section";
 import { followAdd } from "../../../io/com/bilibili/api/pgc/web/follow/add";
 import { followDel } from "../../../io/com/bilibili/api/pgc/web/follow/del";
 import { ICardsOut } from "../../../io/com/bilibili/api/x/article/cards";
@@ -72,8 +73,12 @@ export class Desc extends HTMLDivElement {
             const d = new FormData(this.$section);
             const i = +[...d.values()][0];
             if (i) {
-                season({ season_id: i }).then(d => {
-                    this.bangumi(d);
+                pgcSection(i).then(d => {
+                    const eps = d.main_section.episodes.concat(...d.section.map(d => d.episodes));
+                    if (eps.length) {
+                        this.$episode.replaceChildren();
+                        this.banggumiEpisode(eps);
+                    }
                 })
             }
         });
@@ -103,7 +108,7 @@ export class Desc extends HTMLDivElement {
         this.$m.innerHTML = Format.superLink(data.desc);
     }
 
-    bangumi(data: Awaited<ReturnType<typeof season>>, epid?: number) {
+    async bangumi(data: Awaited<ReturnType<typeof pgcAppSeason>>, epid?: number) {
         this.identify();
         this.$desc.classList.add('bangumi');
         this.$cover.href = this.$a.href = `//www.bilibili.com/bangumi/media/md${data.media_id}`;
@@ -112,16 +117,33 @@ export class Desc extends HTMLDivElement {
         this.$follow.dataset.ssid = <any>data.season_id;
 
         const id = crypto.randomUUID();
-        this.$section.innerHTML = data.seasons.map(d => {
-            return `<label class="season-item">${d.season_title}<input type="radio" name=${id} value="${d.season_id}" ${d.season_id === data.season_id ? ' checked' : ''}></label>`;
-        }).join('');
-        this.$episode.innerHTML = data.episodes.map(d => {
-            return `<a class="episode-item${d.ep_id === epid ? ' on' : ''}" href="/bangumi/play/ep${d.ep_id}" data-index="${/^\d+$/.test(d.title) ? `第${d.title}话` : d.title}"><span>${d.long_title}</span><span class="badge" style="background-color: ${d.badge_info.bg_color || '#fb7299'};">${d.badge_info.text}</span></a>`
-        }).join('');
-        this.$detail.innerHTML = `<p><label>风格：</label>${data.styles.map(d => `<span>${d}</span>`).join('')}</p>
-<p><label>主创：</label>${data.staff}</p>
-<p><label>演员：</label>${data.actors}</p>
+        data.modules.forEach(d => {
+            switch (d.style) {
+                case "season": {
+                    this.$section.innerHTML = d.data.seasons.map(d => {
+                        return `<label class="season-item">${d.season_title}<input type="radio" name=${id} value="${d.season_id}" ${d.season_id === data.season_id ? ' checked' : ''}></label>`;
+                    }).join('');
+                    break;
+                }
+                case "positive":
+                case "section": {
+                    this.$episode.insertAdjacentHTML('beforeend', d.data.episodes.map(d => {
+                        return `<a class="episode-item${d.ep_id === epid ? ' on' : ''}" href="/bangumi/play/ep${d.ep_id}" data-index="${/^\d+$/.test(d.title) ? `第${d.title}话` : d.title}"><span>${d.long_title}</span><span class="badge" style="background-color: ${d.badge_info.bg_color || '#fb7299'};">${d.badge_info.text}</span></a>`
+                    }).join(''));
+                    break;
+                }
+            }
+        });
+        this.$detail.innerHTML = `<p><label>风格：</label>${data.styles.map(d => `<span>${d.name}</span>`).join('')}</p>
+<p><label>主创：</label>${data.staff.info}</p>
+<p><label>演员：</label>${data.actor.info}</p>
 <p><label>简介：</label>${data.evaluate}</p>`;
+    }
+
+    async banggumiEpisode(eps: IEpisode[], epid?: number) {
+        this.$episode.insertAdjacentHTML('beforeend', eps.map(d => {
+            return `<a class="episode-item${d.id === epid ? ' on' : ''}" href="/bangumi/play/ep${d.id}" data-index="${/^\d+$/.test(d.title) ? `第${d.title}话` : d.title}"><span>${d.long_title}</span><span class="badge" style="background-color: ${d.badge_info.bg_color || '#fb7299'};">${d.badge_info.text}</span></a>`
+        }).join(''));
     }
 
     private identify = () => {

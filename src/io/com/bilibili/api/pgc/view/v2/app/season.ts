@@ -1,20 +1,26 @@
 import { Api } from "../../../..";
 import { sign } from "../../../../../../../sign";
+import { EP_STATUS } from "../../../../../../../stat";
 
 /** APP端pgc信息，或可用于查询区域限制番剧 */
 export async function pgcAppSeason({ season_id, ep_id, access_key }: IPgcAppSeasonIn) {
+    const key = ep_id ? `ep_id=${ep_id}` : `season_id=${season_id}`;
+    if (CATCH[key]) return CATCH[key];
     const url = new URL(Api + '/pgc/view/v2/app/season');
     ep_id ? url.searchParams.set('ep_id', <any>ep_id) : (season_id && url.searchParams.set('season_id', <any>season_id));
     access_key && url.searchParams.set('access_key', <any>access_key);
     const response = await fetch(sign(url, '1d8b6e7d45233436'), access_key ? undefined : { credentials: 'include' });
-    return <IPgcAppSeason>(await response.json()).data;
+    return <IPgcAppSeason>(CATCH[key] = (await response.json()).data);
 }
+
+/** 同一请求缓存 */
+const CATCH: Record<string, IPgcAppSeason> = {};
 
 interface IPgcAppSeasonIn {
     /** 必须二选一 */
-    season_id?: string;
+    season_id?: number | string;
     /** 必须二选一 */
-    ep_id?: string;
+    ep_id?: number | string;
     /** 使用access_key鉴权而不是cookie */
     access_key?: string;
 }
@@ -34,6 +40,7 @@ interface IPgcAppSeason {
         bg_color_night: String;
         text: String;
     };
+    bkg_cover?: string;
     cover: string;
     detail: string;
     dialog: {
@@ -71,7 +78,7 @@ interface IPgcAppSeason {
     };
     media_id: number;
     mode: number;
-    modules: [];
+    modules: IModule[];
     new_ep: {
         desc: string;
         id: number;
@@ -152,7 +159,7 @@ interface IPgcAppSeason {
     staff: {
         info: string;
         title: String;
-    }[];
+    };
     stat: {
         coins: number;
         danmakus: number;
@@ -230,3 +237,181 @@ interface IPgcAppSeason {
         };
     }
 }
+
+type IModule = IModulePositive | IModuleSeason | IModuleSection | IModulePugv;
+
+interface IModuleBase {
+    id: number;
+    module_style: { hidden: number; line: number; };
+    more: string;
+    title: string;
+}
+
+interface IModulePositive extends IModuleBase {
+    data: {
+        episodes: IModulePositiveEpisode[];
+    };
+    style: 'positive';
+}
+
+interface IModuleSeason extends IModuleBase {
+    data: {
+        seasons: {
+            badge: string;
+            badge_info: {
+                bg_color: string;
+                bg_color_night: string;
+                text: string;
+            };
+            badge_type: number;
+            cover: string;
+            horizontal_cover: string;
+            is_new: number;
+            link: string;
+            new_ep: {
+                cover: string;
+                id: number;
+                is_new: number;
+                title: string;
+            };
+            resource: string;
+            season_id: number;
+            season_title: string;
+            title: string;
+        }[];
+    }
+    style: 'season';
+}
+
+interface IModuleSection extends IModuleBase {
+    data: {
+        attr: number;
+        episode_id: number;
+        episode_ids: number[];
+        episodes: {
+            aid: number;
+            badge: string;
+            badge_info: { bg_color: string; bg_color_night: string; text: string };
+            badge_type: number;
+            cid: number;
+            cover: string;
+            duration: number;
+            enable_vt: boolean;
+            ep_id: number;
+            ep_index: number;
+            from: string;
+            id: number;
+            is_view_hide: boolean;
+            link: string;
+            long_title: string;
+            pub_time: number;
+            pv: number;
+            release_date: string;
+            share_copy: string;
+            share_url: string;
+            short_link: string;
+            showDrmLoginDialog: boolean;
+            skip: { ed: { end: number; start: number }; op: { end: number; start: number } };
+            stat: {
+                coin: number;
+                danmakus: number;
+                likes: number;
+                play: number;
+                reply: number;
+            };
+            status: EP_STATUS;
+            subtitle: string;
+            title: string;
+            vid: string;
+        }[];
+        id: number;
+        more: string;
+        split_text: string;
+        title: string;
+        type: number;
+    }
+    style: 'section';
+}
+
+interface IModulePugv extends IModuleBase {
+    data: {
+        attr: number;
+        episode_id: number;
+        episodes: {
+            aid: number;
+            archive_attr: number;
+            badge: string;
+            badge_info: { bg_color: string; bg_color_night: string; text: string };
+            badge_type: number;
+            cid: number;
+            cover: string;
+            enable_vt: boolean;
+            ep_id: number;
+            ep_index: number;
+            id: number;
+            is_view_hide: boolean;
+            link: string;
+            pub_time: number;
+            pv: number;
+            section_index: number;
+            showDrmLoginDialog: boolean;
+            stat: {
+                coin: number;
+                danmakus: number;
+                likes: number;
+                play: number;
+                reply: number;
+            };
+            status: EP_STATUS;
+            title: string;
+            up_info: {
+                avatar: string;
+                follower: number;
+                is_follow: number;
+                mid: number;
+                uname: string;
+                verify_type: number;
+            }
+        }[];
+        id: number;
+        type: number;
+    }
+    style: 'pugv';
+}
+
+interface IModulePositiveEpisode {
+    aid: number;
+    badge: string;
+    badge_info: { bg_color: string; bg_color_night: string; text: string };
+    badge_type: number;
+    cid: number;
+    cover: string;
+    duration: number;
+    enable_vt: boolean;
+    ep_id: number;
+    ep_index: number;
+    from: string;
+    id: number;
+    is_view_hide: boolean;
+    link: string;
+    long_title: string;
+    pub_time: number;
+    pv: number;
+    release_date: string;
+    share_copy: string;
+    share_url: string;
+    short_link: string;
+    showDrmLoginDialog: boolean;
+    skip: { ed: { end: number; start: number }; op: { end: number; start: number } };
+    stat: {
+        coin: number;
+        danmakus: number;
+        likes: number;
+        play: number;
+        reply: number;
+    };
+    status: EP_STATUS;
+    subtitle: string;
+    title: string;
+    vid: string;
+};
