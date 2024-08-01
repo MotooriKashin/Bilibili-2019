@@ -1,4 +1,5 @@
-import { season } from "../../../io/com/bilibili/api/pgc/view/web/season";
+import { pgcAppSeason } from "../../../io/com/bilibili/api/pgc/view/v2/app/season";
+import { IEpisode } from "../../../io/com/bilibili/api/pgc/view/web/season/user/section";
 import { status } from "../../../io/com/bilibili/api/pgc/view/web/season/user/status";
 import { followAdd } from "../../../io/com/bilibili/api/pgc/web/follow/add";
 import { followDel } from "../../../io/com/bilibili/api/pgc/web/follow/del";
@@ -272,36 +273,33 @@ ${card.stat.his_rank ? `<span title="本日日排行数据过期后，再纳入�
         data.View.staff && (this.$upStaff.innerHTML = https(data.View.staff.map(d => `<a target="_blank" href="//space.bilibili.com/${d.mid}"${d.vip.nickname_color ? ` style="color: ${d.vip.nickname_color};"` : ''} data-title="${d.title}"><img loading="lazy" src="${d.face}@.webp">${d.name}</a>`).join('')));
     }
 
-    bangumi(data: Awaited<ReturnType<typeof season>>, epid: number) {
+    async bangumi(data: Awaited<ReturnType<typeof pgcAppSeason>>, ep: IEpisode) {
         this.identify();
-        const ep = data.episodes.find(d => d.ep_id === epid) || data.episodes[0];
-        if (ep) {
-            this.#aid = ep.aid;
-            navigator.mediaSession.metadata = new MediaMetadata({
-                title: document.title = this.$title.textContent = this.$title.title = `${data.title}：${/^\d+$/.test(ep.title) ? `第${ep.title}话` : ep.title} ${ep.long_title}`,
-                artist: data.staff,
-                album: data.title,
-                artwork: [
-                    {
-                        src: https(ep.cover, true)
-                    }
-                ]
-            });
-            this.$tm.innerHTML = `<span>
+        this.#aid = ep.aid;
+        navigator.mediaSession.metadata = new MediaMetadata({
+            title: document.title = this.$title.textContent = this.$title.title = `${data.title}：${/^\d+$/.test(ep.title) ? `第${ep.title}话` : ep.title} ${ep.long_title}`,
+            artist: data.actor.info,
+            album: data.title,
+            artwork: [
+                {
+                    src: https(ep.cover, true)
+                }
+            ]
+        });
+        this.$tm.innerHTML = `<span>
     <a target="_blank" href="//www.bilibili.com/anime/">番剧</a>
     ${data.areas.length ? `<span>${data.areas.map(d => d.name).join(',')}</span>` : ''}
     <span>${data.new_ep.desc}</span>
     <a target="_blank" href="//www.bilibili.com/video/av${ep.aid}">AV${ep.aid}</a>
 </span>`;
-            this.$number.innerHTML = `<span title="播放数${data.stat.views}">${svg_icon_played}${Format.carry(data.stat.views)}</span>
+        this.$number.innerHTML = `<span title="播放数${data.stat.views}">${svg_icon_played}${Format.carry(data.stat.views)}</span>
 <span title="弹幕数${data.stat.danmakus}">${svg_icon_danmaku}${Format.carry(data.stat.danmakus)}</span>
 <button class="like" title="点赞人数${data.stat.likes}">${svg_like_number}点赞 ${Format.carry(data.stat.likes)}</button>
 <button class="coin" title="投硬币枚数${data.stat.coins}" popovertarget="${this.$coinId}">${svg_coin}硬币 ${Format.carry(data.stat.coins)}</button>
-<button class="heart" title="追番人数${data.stat.favorites}" data-ssid="${data.season_id}">${svg_heart}${data.stat.follow_text}</button>`;
-            this.$number.insertAdjacentElement('beforeend', this.$coinPop);
+<button class="heart" title="追番人数${data.stat.favorites}" data-ssid="${data.season_id}">${svg_heart}${data.stat.followers}</button>`;
+        this.$number.insertAdjacentElement('beforeend', this.$coinPop);
 
-            this.updateNumber(data.season_id);
-        }
+        this.updateNumber(data.season_id);
     }
 
     updateNumber(ssid?: number) {

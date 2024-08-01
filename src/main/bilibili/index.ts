@@ -1,4 +1,5 @@
-import { season } from "../../io/com/bilibili/api/pgc/view/web/season";
+import { pgcAppSeason } from "../../io/com/bilibili/api/pgc/view/v2/app/season";
+import { pgcSection } from "../../io/com/bilibili/api/pgc/view/web/season/user/section";
 import { pugvSeason } from "../../io/com/bilibili/api/pugv/view/web/season";
 import { cards } from "../../io/com/bilibili/api/x/article/cards";
 import { pagelist } from "../../io/com/bilibili/api/x/player/pagelist";
@@ -279,19 +280,37 @@ export class Router {
                     }
                 }
                 if (this.ssid || this.epid) {
-                    season(this.ssid ? { season_id: this.ssid } : { ep_id: this.epid })
-                        .then(d => {
-                            this.ssid || (this.ssid = d.season_id);
-                            d.section && (d.episodes = d.episodes.concat(...d.section.map(d => d.episodes)));
-                            if (!this.epid) {
-
-                                this.epid = d.user_status?.progress?.last_ep_id || d.episodes[0]?.ep_id;
-                            }
-                            if (this.epid) {
-                                const ep = d.episodes.find(d => d.ep_id === this.epid);
+                    pgcAppSeason(this.ssid ? { season_id: this.ssid } : { ep_id: this.epid })
+                        .then(async season => {
+                            this.ssid || (this.ssid = season.season_id);
+                            season.modules.forEach(d => {
+                                switch (d.style) {
+                                    case "positive":
+                                    case "section": {
+                                        this.epid || (this.epid = d.data.episodes[0]?.ep_id);
+                                        if (this.epid) {
+                                            const ep = d.data.episodes.find(d => d.ep_id === this.epid);
+                                            if (ep) {
+                                                this.aid = ep.aid;
+                                                this.cid = ep.cid;
+                                                this.$info.bangumi(season, ep);
+                                            }
+                                        }
+                                        break;
+                                    }
+                                }
+                            });
+                            this.$desc.bangumi(season, this.epid);
+                            if (!this.cid && this.ssid) {
+                                const d = await pgcSection(this.ssid);
+                                const eps = d.main_section.episodes.concat(...d.section.map(d => d.episodes));
+                                const ep = this.epid ? eps.find(d => d.id === this.epid) : eps[0];
                                 if (ep) {
+                                    this.epid = ep.id;
                                     this.aid = ep.aid;
                                     this.cid = ep.cid;
+                                    this.$info.bangumi(season, ep);
+                                    this.$desc.banggumiEpisode(eps, this.epid);
                                 }
                             }
                             if (this.epid && this.cid) {
@@ -299,9 +318,7 @@ export class Router {
                                 this.$player.getRelated();
                                 this.aid && (this.$comment.oid = this.aid);
                             }
-                            this.$player.partBangumi(d);
-                            this.$info.bangumi(d, this.epid);
-                            this.$desc.bangumi(d, this.epid);
+                            this.$player.partBangumi(season);
                         });
                 } else {
                     console.error('解析Bangumi出错~');
@@ -558,16 +575,31 @@ export class Router {
                 console.error('解析课程出错~');
             }
         } else if (this.ssid || this.epid) {
-            season(this.ssid ? { season_id: this.ssid } : { ep_id: this.epid })
-                .then(d => {
-                    this.ssid || (this.ssid = d.season_id);
-                    d.section && (d.episodes = d.episodes.concat(...d.section.map(d => d.episodes)));
-                    if (!this.epid) {
-                        this.epid = d.user_status?.progress?.last_ep_id || d.episodes[0]?.ep_id;
-                    }
-                    if (this.epid) {
-                        const ep = d.episodes.find(d => d.ep_id === this.epid);
+            pgcAppSeason(this.ssid ? { season_id: this.ssid } : { ep_id: this.epid })
+                .then(async season => {
+                    this.ssid || (this.ssid = season.season_id);
+                    season.modules.forEach(d => {
+                        switch (d.style) {
+                            case "positive":
+                            case "section": {
+                                this.epid || (this.epid = d.data.episodes[0]?.ep_id);
+                                if (this.epid) {
+                                    const ep = d.data.episodes.find(d => d.ep_id === this.epid);
+                                    if (ep) {
+                                        this.aid = ep.aid;
+                                        this.cid = ep.cid;
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                    });
+                    if (!this.cid && this.ssid) {
+                        const d = await pgcSection(this.ssid);
+                        const eps = d.main_section.episodes.concat(...d.section.map(d => d.episodes));
+                        const ep = this.epid ? eps.find(d => d.id === this.epid) : eps[0];
                         if (ep) {
+                            this.epid = ep.id;
                             this.aid = ep.aid;
                             this.cid = ep.cid;
                         }
