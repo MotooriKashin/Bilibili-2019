@@ -36,6 +36,11 @@
     }
 }
 
+ul {
+    margin: 0;
+    padding: 0;
+}
+
 .head-banner {
     background-size: cover;
     background-position: center;
