@@ -56,11 +56,13 @@ export class BilibiliPlayer extends Player {
     /** 每当元素添加到文档中时调用。 */
     connectedCallback() {
         this.insertAdjacentElement('beforebegin', this.#part);
+        super.connectedCallback();
     }
 
     /** 每当元素从文档中移除时调用。 */
     disconnectedCallback() {
         this.#part.remove();
+        super.disconnectedCallback();
     }
 
     /** 每当元素被移动到新文档中时调用。 */

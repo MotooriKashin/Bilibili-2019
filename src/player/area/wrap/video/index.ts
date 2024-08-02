@@ -167,6 +167,10 @@ class Video extends HTMLVideoElement {
     seek(t: number) {
         this.currentTime = t;
     }
+
+    toggle() {
+        this.paused ? this.play() : this.pause();
+    }
 }
 
 /** 
