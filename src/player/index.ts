@@ -28,10 +28,14 @@ export class Player extends HTMLElement {
     // attributeChangedCallback(name: IobservedAttributes, oldValue: string, newValue: string) {}
 
     /** 每当元素添加到文档中时调用。 */
-    // connectedCallback(){}
+    connectedCallback() {
+        self.addEventListener('keydown', this.onKeyDown);
+    }
 
     /** 每当元素从文档中移除时调用。 */
-    // disconnectedCallback() {}
+    disconnectedCallback() {
+        self.removeEventListener('keydown', this.onKeyDown);
+    }
 
     /** 每当元素被移动到新文档中时调用。 */
     // adoptedCallback() {}
@@ -162,6 +166,7 @@ export class Player extends HTMLElement {
                 this.identify();
             } catch { }
         });
+
 
         ev.trigger(PLAYER_EVENT.INITED, void 0);
     }
@@ -345,6 +350,54 @@ export class Player extends HTMLElement {
             ev.trigger(PLAYER_EVENT.MEDIA_ERROR, void 0);
         });
 
+    }
+
+    protected onKeyDown = ({ key, code, shiftKey, ctrlKey, altKey, metaKey, isComposing }: KeyboardEvent) => {
+        try {
+            const { activeElement } = document;
+            if (
+                activeElement?.hasAttribute('contenteditable')
+                || activeElement instanceof HTMLInputElement
+                || activeElement instanceof HTMLTextAreaElement
+            ) { } else {
+                switch (key) {
+                    // 不能区分小键盘，但能识别 Shift 后的值
+                    case 'F': case 'f': {
+                        // 全屏
+                        shiftKey || ctrlKey || altKey || metaKey || ev.trigger(PLAYER_EVENT.PLAYER_MODE, PLAYER_STATE.mode ^= PLAYER_MODE.FULL);
+                        break;
+                    }
+                    case 'd': case 'D': {
+                        // 弹幕开关
+                        shiftKey || ctrlKey || altKey || metaKey || (options.danmaku.visible = !options.danmaku.visible);
+                        break;
+                    }
+                    case 'm': case 'M': {
+                        // 音量开关
+                        shiftKey || ctrlKey || altKey || metaKey || (video.muted = !video.muted);
+                        break;
+                    }
+                    case ' ': {
+                        // 播放/暂停
+                        shiftKey || ctrlKey || altKey || metaKey || (PLAYER_STATE.mode & PLAYER_MODE.FULL && video.toggle());
+                        break;
+                    }
+                    case 'ArrowRight': {
+                        // 快进 5 秒
+                        shiftKey || ctrlKey || altKey || metaKey || (video.currentTime += 5);
+                        break;
+                    }
+                    case 'ArrowLeft': {
+                        // 快退 5 秒
+                        shiftKey || ctrlKey || altKey || metaKey || (video.currentTime -= 5);
+                        break;
+                    }
+                }
+                // switch (code) {
+                //     // 能区分小键盘，但不识别 Shift 后的值
+                // }
+            }
+        } catch { }
     }
 
     /** 销毁当前播放器 */
