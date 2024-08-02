@@ -27,6 +27,7 @@ import { dynamic_num } from "../../../io/com/bilibili/vc/api/dynamic_svr/v1/dyna
 import { toviewWeb } from "../../../io/com/bilibili/api/x/v2/history/toview/web";
 import { medialistRecent } from "../../../io/com/bilibili/api/medialist/gateway/coll/resource/recent";
 import { history } from "../../../io/com/bilibili/api/x/v2/history";
+import { ROUTER } from "..";
 
 /** 顶栏 */
 @customElement('div')
@@ -422,6 +423,25 @@ export class Header extends HTMLDivElement {
 
     private past(tsp: number) {
         return tsp <= 0 ? "今日" : tsp > 0 && tsp <= 864e5 ? "昨日" : tsp > 864e5 && tsp <= 6048e5 ? "近1周" : tsp > 6048e5 && tsp <= 2592e6 ? "1周前" : tsp > 2592e6 && tsp <= 7776e6 ? "1个月前" : "last";
+    }
+
+    async navigate(router: ROUTER, url: URL | Location) {
+        this.identify();
+        url instanceof Location && (url = new URL(url.href));
+        switch (router) {
+            case ROUTER.AV:
+            case ROUTER.BANGUMI:
+            case ROUTER.HOME:
+            case ROUTER.TOVIEW:
+            case ROUTER.MEDIALIST: {
+                this.resource_id = 142;
+                break;
+            }
+        }
+    }
+
+    private identify = () => {
+        this.classList.remove('mini');
     }
 }
 

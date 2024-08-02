@@ -1,11 +1,16 @@
+import { ROUTER } from "..";
+import { pgcAppSeason } from "../../../io/com/bilibili/api/pgc/view/v2/app/season";
+import { pgcSection } from "../../../io/com/bilibili/api/pgc/view/web/season/user/section";
 import { emoteWeb } from "../../../io/com/bilibili/api/x/emote/user/panel/web";
+import { toviewWeb } from "../../../io/com/bilibili/api/x/v2/history/toview/web";
 import { reply } from "../../../io/com/bilibili/api/x/v2/reply";
 import { action } from "../../../io/com/bilibili/api/x/v2/reply/action";
 import { replyAdd } from "../../../io/com/bilibili/api/x/v2/reply/add";
-import { hate } from "../../../io/com/bilibili/api/x/v2/reply/hate";
 import { replyMain } from "../../../io/com/bilibili/api/x/v2/reply/main";
+import { favResourceList } from "../../../io/com/bilibili/api/x/v3/fav/resource/list";
 import { nav } from "../../../io/com/bilibili/api/x/web-interface/nav";
 import svg_emoji from "../../../player/assets/svg/emoji.svg";
+import { AV } from "../../../utils/av";
 import { cookie } from "../../../utils/cookie";
 import { customElement } from "../../../utils/Decorator/customElement";
 import { Element } from "../../../utils/element";
@@ -132,6 +137,12 @@ export class Comment extends HTMLDivElement {
     seek_rpid?: number;
 
     #emote?: Awaited<ReturnType<typeof emoteWeb>>;
+
+    #aid = 0;
+
+    #ssid = 0;
+
+    #epid = 0;
 
     constructor() {
         super();
@@ -263,6 +274,116 @@ export class Comment extends HTMLDivElement {
         })
     }
 
+    async navigate(router: ROUTER, url: URL | Location) {
+        url instanceof Location && (url = new URL(url.href));
+        switch (router) {
+            case ROUTER.AV: {
+                const path = url.pathname.split('/');
+                switch (true) {
+                    case /^av\d+$/i.test(path[2]): {
+                        this.#aid = +path[2].slice(2);
+                        break;
+                    }
+                    case /^bv1[a-z0-9]{9}$/i.test(path[2]): {
+                        this.#aid = +AV.fromBV(path[2]);
+                        break;
+                    }
+                }
+                if (this.#aid) {
+                    this.oid = this.#aid;
+                } else {
+                    console.error('解析av号出错~');
+                }
+                break;
+            }
+            case ROUTER.BANGUMI: {
+                const path = url.pathname.split('/');
+                switch (true) {
+                    case /^ss\d+$/i.test(path[3]): {
+                        this.#ssid = +path[3].slice(2);
+                        break;
+                    }
+                    case /^ep\d+$/i.test(path[3]): {
+                        this.#epid = +path[3].slice(2);
+                        break;
+                    }
+                }
+                if (this.#ssid || this.#epid) {
+                    pgcAppSeason(this.#ssid ? { season_id: this.#ssid } : { ep_id: this.#epid })
+                        .then(async season => {
+                            this.#ssid || (this.#ssid = season.season_id);
+                            season.modules.forEach(d => {
+                                switch (d.style) {
+                                    case "positive":
+                                    case "section": {
+                                        this.#epid || (this.#epid = d.data.episodes[0]?.ep_id);
+                                        if (this.#epid) {
+                                            const ep = d.data.episodes.find(d => d.ep_id === this.#epid);
+                                            if (ep) {
+                                                this.#aid = ep.aid;
+                                            }
+                                        }
+                                        break;
+                                    }
+                                }
+                            });
+                            if (!this.#aid && this.#ssid) {
+                                const d = await pgcSection(this.#ssid);
+                                const eps = d.main_section.episodes.concat(...d.section.map(d => d.episodes));
+                                const ep = this.#epid ? eps.find(d => d.id === this.#epid) : eps[0];
+                                if (ep) {
+                                    this.#aid = ep.aid;
+                                }
+                            }
+                            this.#aid && (this.oid = this.#aid);
+                        });
+                } else {
+                    console.error('解析Bangumi出错~');
+                }
+                break;
+            }
+            case ROUTER.TOVIEW: {
+                const path = url.hash.split('/');
+                switch (true) {
+                    case /^av\d+$/i.test(path[1]): {
+                        this.#aid = +path[1].slice(2);
+                        break;
+                    }
+                    case /^bv1[a-z0-9]{9}$/i.test(path[1]): {
+                        this.#aid = +AV.fromBV(path[1]);
+                        break;
+                    }
+                }
+                toviewWeb().then(toview => {
+                    this.#aid || (toview.length && (this.#aid = toview[0].aid));
+                    if (this.#aid) {
+                        this.oid = this.#aid;
+                    } else {
+                        console.error('解析稍后再看出错~');
+                    }
+                })
+                break;
+            }
+            case ROUTER.MEDIALIST: {
+                const path = url.pathname.split('/');
+                const ml = +path[2].slice(2);
+                if (ml) {
+                    favResourceList(ml).then(({ medias }) => {
+                        this.#aid = Number(url.searchParams.get('aid')) || medias[0].id;
+                        if (this.#aid) {
+                            this.oid = this.#aid;
+                        } else {
+                            console.error('解析播放列表出错~');
+                        }
+                    })
+                } else {
+                    console.error('解析播放列表出错~');
+                }
+                break;
+            }
+        }
+    }
+
     init(
         oid?: number | string,
         pn?: number,
@@ -384,6 +505,9 @@ export class Comment extends HTMLDivElement {
     }
 
     private identify = () => {
+        this.#aid = 0;
+        this.#ssid = 0;
+        this.#epid = 0;
         this.#oid = 0;
         this.#pn = 1;
         this.#sort = 2;

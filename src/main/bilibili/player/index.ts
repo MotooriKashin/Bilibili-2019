@@ -1,9 +1,12 @@
+import { ROUTER } from "..";
 import { IDanmaku } from "../../../danmaku";
 import DashPlayer from "../../../dash-player";
 import { pgcPlayurl } from "../../../io/com/bilibili/api/pgc/player/web/playurl";
 import { recommend } from "../../../io/com/bilibili/api/pgc/season/web/related/recommend";
 import { pgcAppSeason } from "../../../io/com/bilibili/api/pgc/view/v2/app/season";
+import { pgcSection } from "../../../io/com/bilibili/api/pgc/view/web/season/user/section";
 import { pugvPlayurl } from "../../../io/com/bilibili/api/pugv/player/web/playurl";
+import { cards } from "../../../io/com/bilibili/api/x/article/cards";
 import { HEARTBEAT_PLAY_TYPE, HEARTBEAT_TYPE, heartbeat } from "../../../io/com/bilibili/api/x/click-interface/web/heartbeat";
 import { total } from "../../../io/com/bilibili/api/x/player/online/total";
 import { pagelist } from "../../../io/com/bilibili/api/x/player/pagelist";
@@ -25,6 +28,7 @@ import { PLAYER_EVENT, ev } from "../../../player/event-target";
 import { options } from "../../../player/option";
 import { POLICY } from "../../../player/policy";
 import { customElement } from "../../../utils/Decorator/customElement";
+import { AV } from "../../../utils/av";
 import { cookie } from "../../../utils/cookie";
 import { https } from "../../../utils/https";
 import { ClosedCaption } from "./closed-caption";
@@ -264,57 +268,284 @@ export class BilibiliPlayer extends Player {
         });
     }
 
+    async navigate(router: ROUTER, url: URL | Location) {
+        this.identify();
+        url instanceof Location && (url = new URL(url.href));
+        switch (router) {
+            case ROUTER.AV: {
+                const path = url.pathname.split('/');
+                switch (true) {
+                    case /^av\d+$/i.test(path[2]): {
+                        this.aid = +path[2].slice(2);
+                        break;
+                    }
+                    case /^bv1[a-z0-9]{9}$/i.test(path[2]): {
+                        this.aid = +AV.fromBV(path[2]);
+                        break;
+                    }
+                }
+                if (this.aid) {
+                    Promise.allSettled([cards({ av: this.aid }), pagelist(this.aid), detail(this.aid)])
+                        .then(([cards, pagelist, detail]) => {
+                            const d = cards.status === "fulfilled" && cards.value;
+                            const page = pagelist.status === "fulfilled" && pagelist.value;
+                            const de = detail.status === "fulfilled" && detail.value;
+                            if (d) {
+                                const card = d[`av${this.aid}`];
+                                card.cid && (this.cid = card.cid);
+                                if (page) {
+                                    const p = Number(url.searchParams.get('p')) || 1;
+                                    this.cid = page[p - 1].cid;
+                                }
+                                if (card.redirect_url) {
+                                    const path = card.redirect_url.split('/');
+                                    switch (true) {
+                                        case /^ep\d+$/i.test(path[6]): {
+                                            this.epid = +path[6].slice(2);
+                                            break;
+                                        }
+                                        case /^ss\d+$/i.test(path[6]): {
+                                            this.ssid = +path[6].slice(2);
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (this.cid) {
+                                    this.connect(this.aid, this.cid, this.ssid, this.epid);
+                                    (de && de.View.ugc_season) ? this.partUgcSeason(de) : de ? this.getRelated(de.Related.map(d => {
+                                        return {
+                                            src: d.pic + '@.webp',
+                                            title: d.title,
+                                            duration: d.duration,
+                                            view: d.stat.view,
+                                            danmaku: d.stat.danmaku,
+                                            author: d.owner.name,
+                                            callback() {
+                                                navigation?.navigate(`/video/av${d.aid}`);
+                                            },
+                                        }
+                                    })) : this.getRelated();
+                                    page && this.partAv(page);
+                                }
+                            }
+                        });
+                } else {
+                    console.error('解析av号出错~');
+                }
+                break;
+            }
+            case ROUTER.BANGUMI: {
+                const path = url.pathname.split('/');
+                switch (true) {
+                    case /^ss\d+$/i.test(path[3]): {
+                        this.ssid = +path[3].slice(2);
+                        break;
+                    }
+                    case /^ep\d+$/i.test(path[3]): {
+                        this.epid = +path[3].slice(2);
+                        break;
+                    }
+                }
+                if (this.ssid || this.epid) {
+                    pgcAppSeason(this.ssid ? { season_id: this.ssid } : { ep_id: this.epid })
+                        .then(async season => {
+                            this.ssid || (this.ssid = season.season_id);
+                            season.modules.forEach(d => {
+                                switch (d.style) {
+                                    case "positive":
+                                    case "section": {
+                                        this.epid || (this.epid = d.data.episodes[0]?.ep_id);
+                                        if (this.epid) {
+                                            const ep = d.data.episodes.find(d => d.ep_id === this.epid);
+                                            if (ep) {
+                                                this.aid = ep.aid;
+                                                this.cid = ep.cid;
+                                            }
+                                        }
+                                        break;
+                                    }
+                                }
+                            });
+                            if (!this.cid && this.ssid) {
+                                const d = await pgcSection(this.ssid);
+                                const eps = d.main_section.episodes.concat(...d.section.map(d => d.episodes));
+                                const ep = this.epid ? eps.find(d => d.id === this.epid) : eps[0];
+                                if (ep) {
+                                    this.epid = ep.id;
+                                    this.aid = ep.aid;
+                                    this.cid = ep.cid;
+                                }
+                            }
+                            if (this.epid && this.cid) {
+                                this.connect(this.aid, this.cid, this.ssid, this.epid);
+                                this.getRelated();
+                            }
+                            this.partBangumi(season);
+                        });
+                } else {
+                    console.error('解析Bangumi出错~');
+                }
+                break;
+            }
+            case ROUTER.TOVIEW: {
+                const path = url.hash.split('/');
+                switch (true) {
+                    case /^av\d+$/i.test(path[1]): {
+                        this.aid = +path[1].slice(2);
+                        break;
+                    }
+                    case /^bv1[a-z0-9]{9}$/i.test(path[1]): {
+                        this.aid = +AV.fromBV(path[1]);
+                        break;
+                    }
+                }
+                toviewWeb().then(toview => {
+                    this.aid || (toview.length && (this.aid = toview[0].aid));
+                    if (this.aid) {
+                        Promise.allSettled([cards({ av: this.aid }), pagelist(this.aid)])
+                            .then(([cards, pagelist]) => {
+                                const d = cards.status === "fulfilled" && cards.value;
+                                const page = pagelist.status === "fulfilled" && pagelist.value;
+                                if (d) {
+                                    const card = d[`av${this.aid}`];
+                                    card.cid && (this.cid = card.cid);
+                                    if (page && path[2]) {
+                                        const p = +path[2].slice(1);
+                                        this.cid = page[p - 1].cid;
+                                    }
+                                    if (card.redirect_url) {
+                                        const path = card.redirect_url.split('/');
+                                        switch (true) {
+                                            case /^ep\d+$/i.test(path[6]): {
+                                                this.epid = +path[6].slice(2);
+                                                break;
+                                            }
+                                            case /^ss\d+$/i.test(path[6]): {
+                                                this.ssid = +path[6].slice(2);
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    if (this.cid) {
+                                        this.connect(this.aid, this.cid, this.ssid, this.epid);
+                                        page ? this.partToView(toview, page) : this.partToView(toview);
+                                    }
+                                }
+                            });
+                    } else {
+                        console.error('解析稍后再看出错~');
+                    }
+                })
+                break;
+            }
+            case ROUTER.MEDIALIST: {
+                const path = url.pathname.split('/');
+                const ml = +path[2].slice(2);
+                if (ml) {
+                    favResourceList(ml).then(({ medias, has_more }) => {
+                        this.aid = Number(url.searchParams.get('aid')) || medias[0].id;
+                        if (this.aid) {
+                            Promise.allSettled([cards({ av: this.aid }), pagelist(this.aid)])
+                                .then(([cards, pagelist]) => {
+                                    const d = cards.status === "fulfilled" && cards.value;
+                                    const page = pagelist.status === "fulfilled" && pagelist.value;
+                                    if (d) {
+                                        const card = d[`av${this.aid}`];
+                                        card.cid && (this.cid = card.cid);
+                                        if (page) {
+                                            const p = Number(url.searchParams.get('p')) || 1;
+                                            this.cid = page[p - 1].cid;
+                                        }
+                                        if (card.redirect_url) {
+                                            const path = card.redirect_url.split('/');
+                                            switch (true) {
+                                                case /^ep\d+$/i.test(path[6]): {
+                                                    this.epid = +path[6].slice(2);
+                                                    break;
+                                                }
+                                                case /^ss\d+$/i.test(path[6]): {
+                                                    this.ssid = +path[6].slice(2);
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        if (this.cid) {
+                                            this.connect(this.aid, this.cid, this.ssid, this.epid);
+                                            page ? this.partMedialist(medias, page) : this.partMedialist(medias);
+                                        }
+                                    }
+
+                                    // 请求更多媒体
+                                    let pn = 2;
+                                    const getMore = () => {
+                                        favResourceList(ml, pn).then(({ medias, has_more }) => {
+                                            pn++;
+                                            this.partMedialist(medias);
+                                            has_more && getMore();
+                                        })
+                                    }
+                                    has_more && getMore();
+                                });
+                        } else {
+                            console.error('解析播放列表出错~');
+                        }
+                    })
+                } else {
+                    console.error('解析播放列表出错~');
+                }
+                break;
+            }
+        }
+    }
+
     connect(
         aid: number,
         cid: number,
         ssid?: number,
         epid?: number,
-        force = false,
         kind?: GroupKind,
     ) {
-        if (this.cid !== cid || force) {
-            this.identify();
-            Reflect.set(self, 'aid', this.aid = aid);
-            Reflect.set(self, 'cid', this.cid = cid);
-            ssid && (this.ssid = ssid);
-            epid && (this.epid = epid);
-            this.qn = +cookie.get('CURRENT_QUALITY') || 0;
-            if (kind === GroupKind.Pugv && epid) {
-                pugvPlayurl(aid, cid, epid, this.qn)
-                    .then(d => {
-                        this.attachMedia(d);
-                        d.is_preview && ev.trigger(PLAYER_EVENT.TOAST, '正在观看预览');
-                    })
-                    .finally(() => {
-                        video.addEventListener('canplay', () => {
-                            this.getDanmaku();
-                            this.getUser();
-                            this.getVideoShot();
-                        }, { once: true });
-                    });
-            } else if (epid) {
-                pgcPlayurl(aid, cid, epid, this.qn).then(d => {
+        this.identify();
+        Reflect.set(self, 'aid', this.aid = aid);
+        Reflect.set(self, 'cid', this.cid = cid);
+        ssid && (this.ssid = ssid);
+        epid && (this.epid = epid);
+        this.qn = +cookie.get('CURRENT_QUALITY') || 0;
+        if (kind === GroupKind.Pugv && epid) {
+            pugvPlayurl(aid, cid, epid, this.qn)
+                .then(d => {
                     this.attachMedia(d);
-                    d.record_info?.record && this.$area.$wrap.$record.addRecord(d.record_info.record);
                     d.is_preview && ev.trigger(PLAYER_EVENT.TOAST, '正在观看预览');
-                }).finally(() => {
+                })
+                .finally(() => {
                     video.addEventListener('canplay', () => {
                         this.getDanmaku();
                         this.getUser();
                         this.getVideoShot();
                     }, { once: true });
                 });
-            } else {
-                playurl(aid, cid, this.qn)
-                    .then(this.attachMedia)
-                    .finally(() => {
-                        video.addEventListener('canplay', () => {
-                            this.getDanmaku();
-                            this.getUser();
-                            this.getVideoShot();
-                        }, { once: true });
-                    });
-            }
+        } else if (epid) {
+            pgcPlayurl(aid, cid, epid, this.qn).then(d => {
+                this.attachMedia(d);
+                d.record_info?.record && this.$area.$wrap.$record.addRecord(d.record_info.record);
+                d.is_preview && ev.trigger(PLAYER_EVENT.TOAST, '正在观看预览');
+            }).finally(() => {
+                video.addEventListener('canplay', () => {
+                    this.getDanmaku();
+                    this.getUser();
+                    this.getVideoShot();
+                }, { once: true });
+            });
+        } else {
+            playurl(aid, cid, this.qn)
+                .then(this.attachMedia)
+                .finally(() => {
+                    video.addEventListener('canplay', () => {
+                        this.getDanmaku();
+                        this.getUser();
+                        this.getVideoShot();
+                    }, { once: true });
+                });
         }
     }
 
@@ -430,7 +661,7 @@ export class BilibiliPlayer extends Player {
      * @param success 成功获取对应画质的回调
      * @param fail 获取对应画质失败回调
      */
-    updateSource(qn?: number, success?: Function, fail?: Function) {
+    private updateSource(qn?: number, success?: Function, fail?: Function) {
         const ajax = this.epid ? pgcPlayurl(this.aid, this.cid, this.epid, this.qn) : playurl(this.aid, this.cid, this.qn);
         ajax.then(d => {
             if (d) {
@@ -470,7 +701,7 @@ export class BilibiliPlayer extends Player {
     }
 
     /** 选择画质 */
-    setQualityFor(qn = 0) {
+    private setQualityFor(qn = 0) {
         if (qn === 0) {
             this.dashPlayer?.setAutoSwitchQualityFor('video', true);
         } else {
@@ -587,7 +818,7 @@ export class BilibiliPlayer extends Player {
      * @param page 分P数据
      * @param toview 是否稍后再看页面
      */
-    partAv(page: Awaited<ReturnType<typeof pagelist>>) {
+    private partAv(page: Awaited<ReturnType<typeof pagelist>>) {
         this.$area.$control.$next.update(page.map((d, i) => `/video/av${this.aid}?p=${i + 1}`), page.findIndex(d => d.cid === this.cid) || 0);
         this.#part.update(page, this.aid, this.cid);
     }
@@ -597,7 +828,7 @@ export class BilibiliPlayer extends Player {
      * 
      * @param page Bangumi数据
      */
-    async partBangumi(page: Awaited<ReturnType<typeof pgcAppSeason>>) {
+    private async partBangumi(page: Awaited<ReturnType<typeof pgcAppSeason>>) {
         page.modules.forEach(d => {
             switch (d.style) {
                 case "positive": {
@@ -618,7 +849,7 @@ export class BilibiliPlayer extends Player {
      * 
      * @param page 合集数据
      */
-    partUgcSeason(page: Awaited<ReturnType<typeof detail>>) {
+    private partUgcSeason(page: Awaited<ReturnType<typeof detail>>) {
         if (page.View.ugc_season) {
             this.$auxiliary.$recommend.add(page.View.ugc_season.sections[0].episodes.map(d => {
                 return {
@@ -638,7 +869,7 @@ export class BilibiliPlayer extends Player {
     }
 
     /** 稍后再看分P管理 */
-    partToView(page: Awaited<ReturnType<typeof toviewWeb>>, part?: Awaited<ReturnType<typeof pagelist>>) {
+    private partToView(page: Awaited<ReturnType<typeof toviewWeb>>, part?: Awaited<ReturnType<typeof pagelist>>) {
         const ids: string[] = [];
         let ci = 0;
         this.$auxiliary.$recommend.add(page.map(d => {
@@ -669,7 +900,7 @@ export class BilibiliPlayer extends Player {
     }
 
     /** 播放列表分P管理 */
-    partMedialist(page: Awaited<ReturnType<typeof favResourceList>>['medias'], part?: Awaited<ReturnType<typeof pagelist>>) {
+    private partMedialist(page: Awaited<ReturnType<typeof favResourceList>>['medias'], part?: Awaited<ReturnType<typeof pagelist>>) {
         const ids: string[] = [];
         let ci = 0;
         this.$auxiliary.$recommend.add(page.map(d => {
@@ -723,6 +954,7 @@ export class BilibiliPlayer extends Player {
         this.style.backgroundImage = '';
         this.style.backgroundSize = '';
         this.$auxiliary.$filter.$recommend.textContent = '推荐视频';
+        this.classList.remove('nano');
     }
 }
 

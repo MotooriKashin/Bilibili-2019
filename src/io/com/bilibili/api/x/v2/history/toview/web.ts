@@ -3,9 +3,12 @@ import { Api } from "../../../..";
 export async function toviewWeb(ps?: number) {
     const url = new URL(Api + '/x/v2/history/toview/web');
     ps && url.searchParams.set('ps', <any>ps);
-    const response = await fetch(url, { credentials: 'include' });
-    return <IToviewWeb[]>(await response.json()).data.list;
+    CATCH[ps || -1] || (CATCH[ps || -1] = fetch(url, { credentials: 'include' }));
+    return <IToviewWeb[]>(await (await CATCH[ps || -1]).clone().json()).data.list;
 }
+
+/** 同一请求缓存 */
+const CATCH: Record<number, Promise<Response>> = {};
 
 export interface IToviewWeb {
     add_at: number;

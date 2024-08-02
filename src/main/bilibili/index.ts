@@ -2,10 +2,6 @@ import { pgcAppSeason } from "../../io/com/bilibili/api/pgc/view/v2/app/season";
 import { pgcSection } from "../../io/com/bilibili/api/pgc/view/web/season/user/section";
 import { pugvSeason } from "../../io/com/bilibili/api/pugv/view/web/season";
 import { cards } from "../../io/com/bilibili/api/x/article/cards";
-import { pagelist } from "../../io/com/bilibili/api/x/player/pagelist";
-import { toviewWeb } from "../../io/com/bilibili/api/x/v2/history/toview/web";
-import { favResourceList } from "../../io/com/bilibili/api/x/v3/fav/resource/list";
-import { detail } from "../../io/com/bilibili/api/x/web-interface/view/detail";
 import { video } from "../../player/area/wrap/video";
 import { ev, PLAYER_EVENT } from "../../player/event-target";
 import { PLAYER_MODE, PLAYER_STATE } from "../../player/state";
@@ -191,74 +187,11 @@ export class Router {
                     document.body.replaceChildren(this.$header, this.$info, this.$player, this.$desc, this.$comment, this.$footer);
                     this.#p_router = router;
                 }
-                this.$header.resource_id = 142;
-                const path = url.pathname.split('/');
-                switch (true) {
-                    case /^av\d+$/i.test(path[2]): {
-                        this.aid = +path[2].slice(2);
-                        break;
-                    }
-                    case /^bv1[a-z0-9]{9}$/i.test(path[2]): {
-                        this.aid = +AV.fromBV(path[2]);
-                        break;
-                    }
-                }
-                if (this.aid) {
-                    Promise.allSettled([cards({ av: this.aid }), pagelist(this.aid), detail(this.aid)])
-                        .then(([cards, pagelist, detail]) => {
-                            const d = cards.status === "fulfilled" && cards.value;
-                            const page = pagelist.status === "fulfilled" && pagelist.value;
-                            const de = detail.status === "fulfilled" && detail.value;
-                            if (d) {
-                                const card = d[`av${this.aid}`];
-                                card.cid && (this.cid = card.cid);
-                                if (page) {
-                                    const p = Number(url.searchParams.get('p')) || 1;
-                                    this.cid = page[p - 1].cid;
-                                }
-                                if (card.redirect_url) {
-                                    const path = card.redirect_url.split('/');
-                                    switch (true) {
-                                        case /^ep\d+$/i.test(path[6]): {
-                                            this.epid = +path[6].slice(2);
-                                            break;
-                                        }
-                                        case /^ss\d+$/i.test(path[6]): {
-                                            this.ssid = +path[6].slice(2);
-                                            break;
-                                        }
-                                    }
-                                }
-                                if (this.cid) {
-                                    this.$player.connect(this.aid, this.cid, this.ssid, this.epid);
-                                    (de && de.View.ugc_season) ? this.$player.partUgcSeason(de) : de ? this.$player.getRelated(de.Related.map(d => {
-                                        return {
-                                            src: d.pic + '@.webp',
-                                            title: d.title,
-                                            duration: d.duration,
-                                            view: d.stat.view,
-                                            danmaku: d.stat.danmaku,
-                                            author: d.owner.name,
-                                            callback() {
-                                                navigation?.navigate(`/video/av${d.aid}`);
-                                            },
-                                        }
-                                    })) : this.$player.getRelated();
-                                    if (de && de.View) {
-                                        this.$info.avDetail(de);
-                                        this.$desc.update(de);
-                                    } else {
-                                        this.$info.avCards(card);
-                                        this.$desc.desc(card);
-                                    }
-                                    page && this.$player.partAv(page);
-                                }
-                            }
-                        });
-                    this.$comment.oid = this.aid;
-                } else {
-                    console.error('解析av号出错~');
-                }
+                this.$header.navigate(router, url);
+                this.$info.navigate(router, url);
+                this.$player.navigate(router, url);
+                this.$desc.navigate(router, url);
+                this.$comment.navigate(router, url);
                 break;
             }
             case ROUTER.BANGUMI: {
@@ -267,62 +200,11 @@ export class Router {
                     document.body.replaceChildren(this.$header, this.$info, this.$player, this.$desc, this.$comment, this.$footer);
                     this.#p_router = router;
                 }
-                this.$header.resource_id = 142;
-                const path = url.pathname.split('/');
-                switch (true) {
-                    case /^ss\d+$/i.test(path[3]): {
-                        this.ssid = +path[3].slice(2);
-                        break;
-                    }
-                    case /^ep\d+$/i.test(path[3]): {
-                        this.epid = +path[3].slice(2);
-                        break;
-                    }
-                }
-                if (this.ssid || this.epid) {
-                    pgcAppSeason(this.ssid ? { season_id: this.ssid } : { ep_id: this.epid })
-                        .then(async season => {
-                            this.ssid || (this.ssid = season.season_id);
-                            season.modules.forEach(d => {
-                                switch (d.style) {
-                                    case "positive":
-                                    case "section": {
-                                        this.epid || (this.epid = d.data.episodes[0]?.ep_id);
-                                        if (this.epid) {
-                                            const ep = d.data.episodes.find(d => d.ep_id === this.epid);
-                                            if (ep) {
-                                                this.aid = ep.aid;
-                                                this.cid = ep.cid;
-                                                this.$info.bangumi(season, ep);
-                                            }
-                                        }
-                                        break;
-                                    }
-                                }
-                            });
-                            this.$desc.bangumi(season, this.epid);
-                            if (!this.cid && this.ssid) {
-                                const d = await pgcSection(this.ssid);
-                                const eps = d.main_section.episodes.concat(...d.section.map(d => d.episodes));
-                                const ep = this.epid ? eps.find(d => d.id === this.epid) : eps[0];
-                                if (ep) {
-                                    this.epid = ep.id;
-                                    this.aid = ep.aid;
-                                    this.cid = ep.cid;
-                                    this.$info.bangumi(season, ep);
-                                    this.$desc.banggumiEpisode(eps, this.epid);
-                                }
-                            }
-                            if (this.epid && this.cid) {
-                                this.$player.connect(this.aid, this.cid, this.ssid, this.epid);
-                                this.$player.getRelated();
-                                this.aid && (this.$comment.oid = this.aid);
-                            }
-                            this.$player.partBangumi(season);
-                        });
-                } else {
-                    console.error('解析Bangumi出错~');
-                }
+                this.$header.navigate(router, url);
+                this.$info.navigate(router, url);
+                this.$player.navigate(router, url);
+                this.$desc.navigate(router, url);
+                this.$comment.navigate(router, url);
                 break;
             }
             case ROUTER.HOME: {
@@ -331,7 +213,7 @@ export class Router {
                     document.body.replaceChildren(this.$header, this.$home, this.$footer);
                     this.#p_router = router;
                 }
-                this.$header.resource_id = 142;
+                this.$header.navigate(router, url);
                 break;
             }
             case ROUTER.TOVIEW: {
@@ -340,64 +222,11 @@ export class Router {
                     document.body.replaceChildren(this.$header, this.$info, this.$player, this.$desc, this.$comment, this.$footer);
                     this.#p_router = router;
                 }
-                this.$header.resource_id = 142;
-                const path = url.hash.split('/');
-                switch (true) {
-                    case /^av\d+$/i.test(path[1]): {
-                        this.aid = +path[1].slice(2);
-                        break;
-                    }
-                    case /^bv1[a-z0-9]{9}$/i.test(path[1]): {
-                        this.aid = +AV.fromBV(path[1]);
-                        break;
-                    }
-                }
-                toviewWeb().then(toview => {
-                    this.aid || (toview.length && (this.aid = toview[0].aid));
-                    if (this.aid) {
-                        Promise.allSettled([cards({ av: this.aid }), pagelist(this.aid), detail(this.aid)])
-                            .then(([cards, pagelist, detail]) => {
-                                const d = cards.status === "fulfilled" && cards.value;
-                                const page = pagelist.status === "fulfilled" && pagelist.value;
-                                const de = detail.status === "fulfilled" && detail.value;
-                                if (d) {
-                                    const card = d[`av${this.aid}`];
-                                    card.cid && (this.cid = card.cid);
-                                    if (page && path[2]) {
-                                        const p = +path[2].slice(1);
-                                        this.cid = page[p - 1].cid;
-                                    }
-                                    if (card.redirect_url) {
-                                        const path = card.redirect_url.split('/');
-                                        switch (true) {
-                                            case /^ep\d+$/i.test(path[6]): {
-                                                this.epid = +path[6].slice(2);
-                                                break;
-                                            }
-                                            case /^ss\d+$/i.test(path[6]): {
-                                                this.ssid = +path[6].slice(2);
-                                                break;
-                                            }
-                                        }
-                                    }
-                                    if (this.cid) {
-                                        this.$player.connect(this.aid, this.cid, this.ssid, this.epid);
-                                        page ? this.$player.partToView(toview, page) : this.$player.partToView(toview);
-                                        if (de && de.View) {
-                                            this.$info.avDetail(de);
-                                            this.$desc.update(de);
-                                        } else {
-                                            this.$info.avCards(card);
-                                            this.$desc.desc(card);
-                                        }
-                                    }
-                                }
-                            });
-                        this.$comment.oid = this.aid;
-                    } else {
-                        console.error('解析稍后再看出错~');
-                    }
-                })
+                this.$header.navigate(router, url);
+                this.$info.navigate(router, url);
+                this.$player.navigate(router, url);
+                this.$desc.navigate(router, url);
+                this.$comment.navigate(router, url);
                 break;
             }
             case ROUTER.MEDIALIST: {
@@ -406,70 +235,11 @@ export class Router {
                     document.body.replaceChildren(this.$header, this.$info, this.$player, this.$desc, this.$comment, this.$footer);
                     this.#p_router = router;
                 }
-                this.$header.resource_id = 142;
-                const path = url.pathname.split('/');
-                const ml = +path[2].slice(2);
-                if (ml) {
-                    favResourceList(ml).then(({ medias, has_more }) => {
-                        this.aid = Number(url.searchParams.get('aid')) || medias[0].id;
-                        if (this.aid) {
-                            Promise.allSettled([cards({ av: this.aid }), pagelist(this.aid), detail(this.aid)])
-                                .then(([cards, pagelist, detail]) => {
-                                    const d = cards.status === "fulfilled" && cards.value;
-                                    const page = pagelist.status === "fulfilled" && pagelist.value;
-                                    const de = detail.status === "fulfilled" && detail.value;
-                                    if (d) {
-                                        const card = d[`av${this.aid}`];
-                                        card.cid && (this.cid = card.cid);
-                                        if (page) {
-                                            const p = Number(url.searchParams.get('p')) || 1;
-                                            this.cid = page[p - 1].cid;
-                                        }
-                                        if (card.redirect_url) {
-                                            const path = card.redirect_url.split('/');
-                                            switch (true) {
-                                                case /^ep\d+$/i.test(path[6]): {
-                                                    this.epid = +path[6].slice(2);
-                                                    break;
-                                                }
-                                                case /^ss\d+$/i.test(path[6]): {
-                                                    this.ssid = +path[6].slice(2);
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                        if (this.cid) {
-                                            this.$player.connect(this.aid, this.cid, this.ssid, this.epid);
-                                            page ? this.$player.partMedialist(medias, page) : this.$player.partMedialist(medias);
-                                            if (de && de.View) {
-                                                this.$info.avDetail(de);
-                                                this.$desc.update(de);
-                                            } else {
-                                                this.$info.avCards(card);
-                                                this.$desc.desc(card);
-                                            }
-                                        }
-                                    }
-
-                                    // 请求更多媒体
-                                    let pn = 2;
-                                    const getMore = () => {
-                                        favResourceList(ml, pn).then(({ medias, has_more }) => {
-                                            pn++;
-                                            this.$player.partMedialist(medias);
-                                            has_more && getMore();
-                                        })
-                                    }
-                                    has_more && getMore();
-                                });
-                            this.$comment.oid = this.aid;
-                        } else {
-                            console.error('解析稍后再看出错~');
-                        }
-                    })
-                } else {
-                    console.error('解析播放列表出错~');
-                }
+                this.$header.navigate(router, url);
+                this.$info.navigate(router, url);
+                this.$player.navigate(router, url);
+                this.$desc.navigate(router, url);
+                this.$comment.navigate(router, url);
                 break;
             }
         }
@@ -568,7 +338,7 @@ export class Router {
                             }
                         }
                         if (this.epid && this.cid) {
-                            this.$player.connect(this.aid, this.cid, this.ssid, this.epid, true, GroupKind.Pugv);
+                            this.$player.connect(this.aid, this.cid, this.ssid, this.epid, GroupKind.Pugv);
                         }
                     });
             } else {
@@ -605,7 +375,7 @@ export class Router {
                         }
                     }
                     if (this.epid && this.cid) {
-                        this.$player.connect(this.aid, this.cid, this.ssid, this.epid, true);
+                        this.$player.connect(this.aid, this.cid, this.ssid, this.epid);
                         this.$player.getRelated();
                     }
                 });
@@ -627,7 +397,7 @@ export class Router {
                     }
                 }
                 if (this.cid) {
-                    this.$player.connect(this.aid, this.cid, this.ssid, this.epid, true);
+                    this.$player.connect(this.aid, this.cid, this.ssid, this.epid);
                     this.$player.getRelated();
                 }
             })
@@ -784,8 +554,6 @@ export class Router {
         this.cid = 0;
         this.ssid = 0;
         this.epid = 0;
-        this.$player.classList.remove('nano');
-        this.$header.classList.remove('mini');
     }
 }
 
