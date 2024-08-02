@@ -1,20 +1,20 @@
-# This is a basic workflow to help you get started with Actions
+# 发布站点
 
 name: github-pages
 
-# Controls when the workflow will run
+# 什么时候运行？
 on:
-  # Triggers the workflow on push or pull request events but only for the "master" branch
+  # 当主分支（master）有新提交且 src/docs/ 目录下文件有改动时运行
   push:
     branches:
       - 'master'
     paths:
       - 'src/docs/**'
 
-  # Allows you to run this workflow manually from the Actions tab
+  # 也可以在 GitHub Actions 手动运行
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+# 执行什么操作
 jobs:
   deploy:
     permissions:
@@ -26,29 +26,35 @@ jobs:
       url: ${{steps.deployment.outputs.page_url}}
     runs-on: ubuntu-latest
     steps:
+      # 检出存储库以供工作流访问
       - name: Checkout
         uses: actions/checkout@v4
 
+      # 配置站点数据
       - name: Setup Pages
-        uses: actions/configure-pages@v3
+        uses: actions/configure-pages@v5
 
+      # 安装 node.js
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '20'
 
+      # 更新 npm 依赖
       - name: Update npm
         run: npm update
       
+      # 生成网页资源
       - name: Build and release
         run: npm run github-pages
 
+      # 上传网页资源（位于 /src/docs/ 目录）
       - name: Upload Artifact
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v3
         with:
-          # upload entire directory
           path: './src/docs/'
 
+      # 部署网页
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v4

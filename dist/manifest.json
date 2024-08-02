@@ -53,6 +53,17 @@
             ],
             "run_at": "document_end",
             "world": "MAIN"
+        },
+        {
+            "all_frames": true,
+            "js": [
+                "/main/bilibili/live/index.js"
+            ],
+            "matches": [
+                "*://live.bilibili.com/*"
+            ],
+            "run_at": "document_start",
+            "world": "MAIN"
         }
     ],
     "declarative_net_request": {
