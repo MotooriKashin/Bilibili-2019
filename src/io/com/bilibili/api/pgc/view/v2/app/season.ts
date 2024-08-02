@@ -5,16 +5,15 @@ import { EP_STATUS } from "../../../../../../../stat";
 /** APP端pgc信息，或可用于查询区域限制番剧 */
 export async function pgcAppSeason({ season_id, ep_id, access_key }: IPgcAppSeasonIn) {
     const key = ep_id ? `ep_id=${ep_id}` : `season_id=${season_id}`;
-    if (CATCH[key]) return CATCH[key];
     const url = new URL(Api + '/pgc/view/v2/app/season');
     ep_id ? url.searchParams.set('ep_id', <any>ep_id) : (season_id && url.searchParams.set('season_id', <any>season_id));
     access_key && url.searchParams.set('access_key', <any>access_key);
-    const response = await fetch(sign(url, '1d8b6e7d45233436'), access_key ? undefined : { credentials: 'include' });
-    return <IPgcAppSeason>(CATCH[key] = (await response.json()).data);
+    CATCH[key] || (CATCH[key] = fetch(sign(url, '1d8b6e7d45233436'), access_key ? undefined : { credentials: 'include' }));
+    return <IPgcAppSeason>(await ((await CATCH[key]).clone()).json()).data;
 }
 
 /** 同一请求缓存 */
-const CATCH: Record<string, IPgcAppSeason> = {};
+const CATCH: Record<string, Promise<Response>> = {};
 
 interface IPgcAppSeasonIn {
     /** 必须二选一 */

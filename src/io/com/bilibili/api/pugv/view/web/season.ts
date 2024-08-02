@@ -3,13 +3,12 @@ import { Api } from "../../..";
 /** 课程基本信息 */
 export async function pugvSeason(params: ISeasonIn) {
     const param = params.season_id ? `season_id=${params.season_id}` : `ep_id=${params.ep_id}`;
-    if (CATCH[param]) return CATCH[param];
-    const response = await fetch(Api + `/pugv/view/web/season?${param}`, { credentials: 'include' });
-    return CATCH[param] = <ISeason>(await response.json()).data;
+    CATCH[param] || (CATCH[param] = fetch(Api + `/pugv/view/web/season?${param}`, { credentials: 'include' }));
+    return <ISeason>(await (await CATCH[param]).clone().json()).data;
 }
 
 /** 同一请求缓存 */
-const CATCH: Record<string, ISeason> = {};
+const CATCH: Record<string, Promise<Response>> = {};
 
 interface ISeasonIn {
     ep_id?: number;

@@ -7,15 +7,14 @@ import { Api } from "../..";
  * @param aid 
  */
 export async function pagelist(aid: number) {
-    if (CATCH[aid]) return CATCH[aid];
     const url = new URL(Api + '/x/player/pagelist');
     url.searchParams.set('aid', <any>aid);
-    const response = await fetch(url, { credentials: 'include' });
-    return CATCH[aid] = <IPagelist[]>(await response.json()).data;
+    CATCH[aid] || (CATCH[aid] = fetch(url, { credentials: 'include' }));
+    return <IPagelist[]>(await (await CATCH[aid]).clone().json()).data;
 }
 
 /** 同一请求缓存 */
-const CATCH: Record<number, IPagelist[]> = {};
+const CATCH: Record<number, Promise<Response>> = {};
 
 interface IPagelist {
     cid: number;

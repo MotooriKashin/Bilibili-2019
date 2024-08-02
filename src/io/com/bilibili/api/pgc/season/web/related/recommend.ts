@@ -2,15 +2,14 @@ import { Api } from "../../../..";
 
 /** 获取番剧推荐 */
 export async function recommend(season_id: number) {
-    if (CATCH[season_id]) return CATCH[season_id];
     const url = new URL(Api + '/pgc/season/web/related/recommend');
     url.searchParams.set('season_id', <any>season_id);
-    const response = await fetch(url, { credentials: 'include' });
-    return CATCH[season_id] = <IRecommend[]>(await response.json()).data.season;
+    CATCH[season_id] || (CATCH[season_id] = fetch(url, { credentials: 'include' }));
+    return <IRecommend[]>(await (await CATCH[season_id]).clone().json()).data.season;
 }
 
 /** 同一请求缓存 */
-const CATCH: Record<number, IRecommend[]> = {};
+const CATCH: Record<number, Promise<Response>> = {};
 
 interface IRecommend {
     actor: string;

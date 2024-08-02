@@ -6,15 +6,14 @@ import { Api } from "../../..";
  * @param aid 本视频aid
  */
 export async function related(aid: number) {
-    if (CATCH[aid]) return CATCH[aid];
     const url = new URL(Api + '/x/web-interface/archive/related');
     url.searchParams.set('aid', <any>aid);
-    const response = await fetch(url, { credentials: 'include' });
-    return CATCH[aid] = <IRelated[]>(await response.json()).data;
+    CATCH[aid] || (CATCH[aid] = fetch(url, { credentials: 'include' }));
+    return <IRelated[]>(await (await CATCH[aid]).clone().json()).data;
 }
 
 /** 同一请求缓存 */
-const CATCH: Record<number, IRelated[]> = {};
+const CATCH: Record<number, Promise<Response>> = {};
 
 export interface IRelated {
     aid: number;

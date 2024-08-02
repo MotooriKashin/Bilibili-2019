@@ -11,7 +11,6 @@ export async function favResourceList(
     pn = 1,
 ) {
     const key = `${media_id},${pn}`;
-    if (CATCH[key]) return CATCH[key];
     const url = new URL(Api + '/x/v3/fav/resource/list');
     url.searchParams.set('media_id', <any>media_id);
     url.searchParams.set('pn', <any>pn);
@@ -21,11 +20,11 @@ export async function favResourceList(
     url.searchParams.set('type', '0');
     url.searchParams.set('tid', '0');
     url.searchParams.set('platform', 'web');
-    const response = await fetch(url, { credentials: 'include' });
-    return <IFavResourceList>(CATCH[key] = (await response.json()).data);
+    CATCH[key] || (CATCH[key] = fetch(url, { credentials: 'include' }));
+    return <IFavResourceList>(await (await CATCH[key]).clone().json()).data;
 }
 
-const CATCH: Record<string, IFavResourceList> = {};
+const CATCH: Record<string, Promise<Response>> = {};
 
 interface IFavResourceList {
     has_more: boolean;

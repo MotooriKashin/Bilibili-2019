@@ -3,20 +3,19 @@ import { Api } from "../..";
 export async function card(
     mid: string | number,
 ) {
-    if (CATCH[mid]) return CATCH[mid];
     const url = new URL(Api + '/x/web-interface/card');
     url.searchParams.set('mid', <string>mid);
     url.searchParams.set('photo', '1');
-    const response = await fetch(url, { credentials: 'include' });
-    const json = await response.json();
-    return <ICard>(CATCH[mid] = json.data);
+    CATCH[mid] || (CATCH[mid] = fetch(url, { credentials: 'include' }));
+    const json = await (await CATCH[mid]).clone().json();
+    return <ICard>json.data;
 }
 
 card.noCatch = function (mid: string | number,) {
     delete CATCH[mid];
 }
 
-const CATCH: Record<string, ICard> = {};
+const CATCH: Record<string, Promise<Response>> = {};
 
 interface ICard {
     archive_count: number;
