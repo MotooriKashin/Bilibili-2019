@@ -15,8 +15,25 @@ body {
         anchor-name: --bofqi-example;
 
         &:not(.mode-fullscreen-web) {
-            inline-size: 1920px !important;
-            block-size: calc(1920px / 16* 9 + 68px) !important;
+            inline-size: 980px;
+            min-inline-size: 980px;
+            block-size: calc(980px / 16 * 9 + 68px);
+
+            @media screen and (min-width:1400px) {
+
+                & {
+                    inline-size: 1160px;
+                    block-size: calc(1160px / 16 * 9 + 68px);
+                }
+            }
+
+            @media screen and (min-width:2500px) {
+
+                & {
+                    inline-size: 1920px;
+                    block-size: calc(1920px / 16 * 9 + 68px);
+                }
+            }
         }
     }
 }
