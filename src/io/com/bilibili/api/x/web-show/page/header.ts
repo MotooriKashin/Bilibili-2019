@@ -6,15 +6,14 @@ import { Api } from "../../..";
  * @param resource_id 资源id
  */
 export async function header(resource_id = 142) {
-    if (CATCH[resource_id]) return CATCH[resource_id];
     const url = new URL(Api + '/x/web-show/page/header');
     url.searchParams.set('resource_id', <any>resource_id);
-    const response = await fetch(url, { credentials: 'include' });
-    return CATCH[resource_id] = <IHeader>(await response.json()).data;
+    CATCH[resource_id] || (CATCH[resource_id] = fetch(url, { credentials: 'include' }));
+    return <IHeader>(await (await CATCH[resource_id]).clone().json()).data;
 }
 
 /** 同一请求缓存 */
-const CATCH: Record<number, IHeader> = {};
+const CATCH: Record<number, Promise<Response>> = {};
 
 interface IHeader {
     is_split_layer: number;

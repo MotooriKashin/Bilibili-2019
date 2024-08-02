@@ -2,15 +2,14 @@ import { Api } from "../../..";
 
 export async function accInfo(mid: string | number,
 ) {
-    if (CATCH[mid]) return CATCH[mid];
     const url = new URL(Api + '/x/space/acc/info');
     url.searchParams.set('mid', <string>mid);
-    const response = await fetch(url, { credentials: 'include' });
-    const json = await response.json();
-    return <IAccInfo>(CATCH[mid] = json.data);
+    CATCH[mid] || (CATCH[mid] = fetch(url, { credentials: 'include' }));
+    const json = await (await CATCH[mid]).clone().json();
+    return <IAccInfo>json.data;
 }
 
-const CATCH: Record<string, IAccInfo> = {};
+const CATCH: Record<string, Promise<Response>> = {};
 
 interface IAccInfo {
     birthday: string;

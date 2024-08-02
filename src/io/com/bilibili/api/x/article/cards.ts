@@ -13,16 +13,15 @@ export async function cards(param: ICardsIn | string[]) {
     }
     if (!arr.length) throw new Error('输入参数不能为空！');
     const ids = arr.join(',');
-    if (CATCH[ids]) return CATCH[ids];
     const url = new URL(Api + '/x/article/cards');
     url.searchParams.set('ids', ids);
-    const response = await fetch(url);
-    const json = await response.json();
-    return CATCH[ids] = <Record<string, ICardsOut>>json.data;
+    CATCH[ids] || (CATCH[ids] = fetch(url));
+    const json = await (await CATCH[ids]).clone().json();
+    return <Record<string, ICardsOut>>json.data;
 }
 
 /** 同一请求缓存 */
-const CATCH: Record<string, Record<string, ICardsOut>> = {};
+const CATCH: Record<string, Promise<Response>> = {};
 
 interface ICardsIn {
     av?: number | number[],

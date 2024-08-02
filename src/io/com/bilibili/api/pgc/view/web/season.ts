@@ -3,13 +3,12 @@ import { EP_STATUS } from "../../../../../../stat";
 
 export async function season(params: ISeasonIn) {
     const param = params.ep_id ? `ep_id=${params.ep_id}` : `season_id=${params.season_id}`;
-    if (CATCH[param]) return CATCH[param];
-    const response = await fetch(Api + `/pgc/view/web/season?${param}`, { credentials: 'include' });
-    return CATCH[param] = <ISeason>(await response.json()).result;
+    CATCH[param] || (CATCH[param] = fetch(Api + `/pgc/view/web/season?${param}`, { credentials: 'include' }));
+    return <ISeason>(await (await CATCH[param]).clone().json()).result;
 }
 
 /** 同一请求缓存 */
-const CATCH: Record<string, ISeason> = {};
+const CATCH: Record<string, Promise<Response>> = {};
 
 interface ISeasonIn {
     ep_id?: number;

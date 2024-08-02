@@ -1,13 +1,16 @@
+import { ROUTER } from "..";
 import { pgcAppSeason } from "../../../io/com/bilibili/api/pgc/view/v2/app/season";
-import { IEpisode } from "../../../io/com/bilibili/api/pgc/view/web/season/user/section";
+import { IEpisode, pgcSection } from "../../../io/com/bilibili/api/pgc/view/web/season/user/section";
 import { status } from "../../../io/com/bilibili/api/pgc/view/web/season/user/status";
 import { followAdd } from "../../../io/com/bilibili/api/pgc/web/follow/add";
 import { followDel } from "../../../io/com/bilibili/api/pgc/web/follow/del";
-import { ICardsOut } from "../../../io/com/bilibili/api/x/article/cards";
+import { cards, ICardsOut } from "../../../io/com/bilibili/api/x/article/cards";
 import { folder } from "../../../io/com/bilibili/api/x/v2/fav/folder";
 import { favAdd } from "../../../io/com/bilibili/api/x/v2/fav/video/add";
 import { favDel } from "../../../io/com/bilibili/api/x/v2/fav/video/del";
 import { favoured } from "../../../io/com/bilibili/api/x/v2/fav/video/favoured";
+import { toviewWeb } from "../../../io/com/bilibili/api/x/v2/history/toview/web";
+import { favResourceList } from "../../../io/com/bilibili/api/x/v3/fav/resource/list";
 import { coins } from "../../../io/com/bilibili/api/x/web-interface/archive/coins";
 import { like as hasLike } from "../../../io/com/bilibili/api/x/web-interface/archive/has/like";
 import { like } from "../../../io/com/bilibili/api/x/web-interface/archive/like";
@@ -23,6 +26,7 @@ import svg_icon_played from "../../../player/assets/svg/icon-played.svg";
 import svg_like_number from "../../../player/assets/svg/like-number.svg";
 import svg_message from "../../../player/assets/svg/message.svg";
 import { customElement } from "../../../utils/Decorator/customElement";
+import { AV } from "../../../utils/av";
 import { cookie } from "../../../utils/cookie";
 import { Element } from "../../../utils/element";
 import { Format } from "../../../utils/fomat";
@@ -126,6 +130,12 @@ export class Info extends HTMLDivElement {
 
     #aid = 0;
 
+    #cid = 0;
+
+    #ssid = 0;
+
+    #epid = 0;
+
     #fid_add = new Set<number>();
 
     #fid_del = new Set<number>();
@@ -226,7 +236,156 @@ export class Info extends HTMLDivElement {
         });
     }
 
-    avCards(card: ICardsOut) {
+    async navigate(router: ROUTER, url: URL | Location) {
+        this.#aid = 0;
+        this.#cid = 0;
+        this.#ssid = 0;
+        this.#epid = 0;
+        url instanceof Location && (url = new URL(url.href));
+        switch (router) {
+            case ROUTER.AV: {
+                const path = url.pathname.split('/');
+                switch (true) {
+                    case /^av\d+$/i.test(path[2]): {
+                        this.#aid = +path[2].slice(2);
+                        break;
+                    }
+                    case /^bv1[a-z0-9]{9}$/i.test(path[2]): {
+                        this.#aid = +AV.fromBV(path[2]);
+                        break;
+                    }
+                }
+                if (this.#aid) {
+                    Promise.allSettled([cards({ av: this.#aid }), detail(this.#aid)])
+                        .then(([cards, detail]) => {
+                            const d = cards.status === "fulfilled" && cards.value;
+                            const de = detail.status === "fulfilled" && detail.value;
+                            if (d) {
+                                const card = d[`av${this.#aid}`];
+                                if (de && de.View) {
+                                    this.avDetail(de);
+                                } else {
+                                    this.avCards(card);
+                                }
+                            }
+                        });
+                } else {
+                    console.error('解析av号出错~');
+                }
+                break;
+            }
+            case ROUTER.BANGUMI: {
+                const path = url.pathname.split('/');
+                switch (true) {
+                    case /^ss\d+$/i.test(path[3]): {
+                        this.#ssid = +path[3].slice(2);
+                        break;
+                    }
+                    case /^ep\d+$/i.test(path[3]): {
+                        this.#epid = +path[3].slice(2);
+                        break;
+                    }
+                }
+                if (this.#ssid || this.#epid) {
+                    pgcAppSeason(this.#ssid ? { season_id: this.#ssid } : { ep_id: this.#epid })
+                        .then(async season => {
+                            this.#ssid || (this.#ssid = season.season_id);
+                            season.modules.forEach(d => {
+                                switch (d.style) {
+                                    case "positive":
+                                    case "section": {
+                                        this.#epid || (this.#epid = d.data.episodes[0]?.ep_id);
+                                        if (this.#epid) {
+                                            const ep = d.data.episodes.find(d => d.ep_id === this.#epid);
+                                            if (ep) {
+                                                this.#cid = ep.cid;
+                                                this.bangumi(season, ep);
+                                            }
+                                        }
+                                        break;
+                                    }
+                                }
+                            });
+                            if (!this.#cid && this.#ssid) {
+                                const d = await pgcSection(this.#ssid);
+                                const eps = d.main_section.episodes.concat(...d.section.map(d => d.episodes));
+                                const ep = this.#epid ? eps.find(d => d.id === this.#epid) : eps[0];
+                                if (ep) {
+                                    this.bangumi(season, ep);
+                                }
+                            }
+                        });
+                } else {
+                    console.error('解析Bangumi出错~');
+                }
+                break;
+            }
+            case ROUTER.TOVIEW: {
+                const path = url.hash.split('/');
+                switch (true) {
+                    case /^av\d+$/i.test(path[1]): {
+                        this.#aid = +path[1].slice(2);
+                        break;
+                    }
+                    case /^bv1[a-z0-9]{9}$/i.test(path[1]): {
+                        this.#aid = +AV.fromBV(path[1]);
+                        break;
+                    }
+                }
+                toviewWeb().then(toview => {
+                    this.#aid || (toview.length && (this.#aid = toview[0].aid));
+                    if (this.#aid) {
+                        Promise.allSettled([cards({ av: this.#aid }), detail(this.#aid)])
+                            .then(([cards, detail]) => {
+                                const d = cards.status === "fulfilled" && cards.value;
+                                const de = detail.status === "fulfilled" && detail.value;
+                                if (d) {
+                                    const card = d[`av${this.#aid}`];
+                                    if (de && de.View) {
+                                        this.avDetail(de);
+                                    } else {
+                                        this.avCards(card);
+                                    }
+                                }
+                            });
+                    } else {
+                        console.error('解析稍后再看出错~');
+                    }
+                })
+                break;
+            }
+            case ROUTER.MEDIALIST: {
+                const path = url.pathname.split('/');
+                const ml = +path[2].slice(2);
+                if (ml) {
+                    favResourceList(ml).then(({ medias }) => {
+                        this.#aid = Number(url.searchParams.get('aid')) || medias[0].id;
+                        if (this.#aid) {
+                            Promise.allSettled([cards({ av: this.#aid }), detail(this.#aid)])
+                                .then(([cards, detail]) => {
+                                    const d = cards.status === "fulfilled" && cards.value;
+                                    const de = detail.status === "fulfilled" && detail.value;
+                                    if (d) {
+                                        const card = d[`av${this.#aid}`];
+                                        if (de && de.View) {
+                                            this.avDetail(de);
+                                        } else {
+                                            this.avCards(card);
+                                        }
+                                    }
+                                });
+                        } else {
+                            console.error('解析播放列表出错~');
+                        }
+                    })
+                } else {
+                    console.error('解析播放列表出错~');
+                }
+            }
+        }
+    }
+
+    private avCards(card: ICardsOut) {
         this.identify();
         this.#aid = card.aid;
         navigator.mediaSession.metadata = new MediaMetadata({
@@ -273,7 +432,7 @@ ${card.stat.his_rank ? `<span title="本日日排行数据过期后，再纳入�
         data.View.staff && (this.$upStaff.innerHTML = https(data.View.staff.map(d => `<a target="_blank" href="//space.bilibili.com/${d.mid}"${d.vip.nickname_color ? ` style="color: ${d.vip.nickname_color};"` : ''} data-title="${d.title}"><img loading="lazy" src="${d.face}@.webp">${d.name}</a>`).join('')));
     }
 
-    async bangumi(data: Awaited<ReturnType<typeof pgcAppSeason>>, ep: IEpisode) {
+    private async bangumi(data: Awaited<ReturnType<typeof pgcAppSeason>>, ep: IEpisode) {
         this.identify();
         this.#aid = ep.aid;
         navigator.mediaSession.metadata = new MediaMetadata({
@@ -302,7 +461,7 @@ ${card.stat.his_rank ? `<span title="本日日排行数据过期后，再纳入�
         this.updateNumber(data.season_id);
     }
 
-    updateNumber(ssid?: number) {
+    private updateNumber(ssid?: number) {
         hasLike(this.#aid).then(d => { this.like = Boolean(d) });
         coins(this.#aid).then(({ multiply }) => { this.coin = Boolean(multiply) });
         if (ssid) {

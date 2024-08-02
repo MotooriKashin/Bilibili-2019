@@ -1,14 +1,13 @@
 import { Api } from "../../../../..";
 
 export async function pgcSection(season_id: number) {
-    if (CATCH[season_id]) return CATCH[season_id];
     const url = new URL(Api + '/pgc/web/season/section');
     url.searchParams.set('season_id', <any>season_id);
-    const response = await fetch(url, { credentials: 'include' });
-    return <IPgcSection>(CATCH[season_id] = (await response.json()).result);
+    CATCH[season_id] || (CATCH[season_id] = fetch(url, { credentials: 'include' }));
+    return <IPgcSection>(await (await CATCH[season_id]).clone().json()).result;
 }
 
-const CATCH: Record<number, IPgcSection> = {};
+const CATCH: Record<number, Promise<Response>> = {};
 
 interface IPgcSection {
     main_section: {

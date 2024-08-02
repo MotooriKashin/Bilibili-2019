@@ -3,15 +3,14 @@ import { Account } from "../../idenx";
 export async function getCardByMid(
     mid: string | number,
 ) {
-    if (CATCH[mid]) return CATCH[mid];
     const url = new URL(Account + '/api/member/getCardByMid');
     url.searchParams.set('mid', <string>mid);
-    const response = await fetch(url);
-    const json = await response.json();
-    return <IGetCardByMid>(CATCH[mid] = json.card);
+    CATCH[mid] || (CATCH[mid] = fetch(url));
+    const json = await (await CATCH[mid]).clone().json();
+    return <IGetCardByMid>json.card;
 }
 
-const CATCH: Record<string, IGetCardByMid> = {};
+const CATCH: Record<string, Promise<Response>> = {};
 
 interface IGetCardByMid {
     DisplayRank: string;

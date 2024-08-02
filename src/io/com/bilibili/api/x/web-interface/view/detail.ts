@@ -2,15 +2,14 @@ import { Api } from "../../..";
 import { IRelated } from "../archive/related";
 
 export async function detail(aid: number) {
-    if (CATCH[aid]) return CATCH[aid];
     const url = new URL(Api + '/x/web-interface/view/detail');
     url.searchParams.set('aid', <any>aid);
-    const response = await fetch(url, { credentials: 'include' });
-    return CATCH[aid] = <IDetail>(await response.json()).data;
+    CATCH[aid] || (CATCH[aid] = fetch(url, { credentials: 'include' }));
+    return <IDetail>(await (await CATCH[aid]).clone().json()).data;
 }
 
 /** 同一请求缓存 */
-const CATCH: Record<number, IDetail> = {};
+const CATCH: Record<number, Promise<Response>> = {};
 
 interface IDetail {
     Card: ICard;
