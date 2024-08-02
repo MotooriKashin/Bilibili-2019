@@ -37,7 +37,8 @@ await build({
         'src/main/index.ts',
         'src/main/WebRTC.ts',
         'src/main/bilibili/space/index.ts',
-        'src/main/bilibili/id-card/index.ts'
+        'src/main/bilibili/id-card/index.ts',
+        'src/main/bilibili/live/index.ts',
     ],
     bundle: true,
     minify: true,
