@@ -1,7 +1,7 @@
 // 用户脚本
 
 import { Router, ROUTER } from "./bilibili";
-import "./support/index";
+import "../utils/support";
 
 const router = new Router();
 
