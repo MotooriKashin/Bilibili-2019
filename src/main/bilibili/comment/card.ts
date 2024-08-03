@@ -117,7 +117,7 @@ export class IdCard extends HTMLElement {
         if (target && !this.contains(<HTMLElement>target)) {
             const node = (<HTMLElement>target)?.closest<HTMLElement>('[data-mid]');
             if (node) {
-                const mid = node.dataset.mid;
+                const { mid } = node.dataset;
                 if (mid) {
                     const id = crypto.randomUUID();
                     node.style.setProperty('anchor-name', `--${id}`);

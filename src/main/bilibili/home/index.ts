@@ -16,6 +16,7 @@ import { Format } from "../../../utils/fomat";
 import { https } from "../../../utils/https";
 import { Ranking } from "./ranking";
 import { Timeline } from "./timeline";
+import { VideoInfo } from "./video-info";
 
 /** 顶栏 */
 @customElement('div')
@@ -138,6 +139,8 @@ export class Home extends HTMLDivElement {
         this.$bili_documentary.classList.add('bili-documentary');
         this.$timeline_bangumi.classList.add('timeline-bangumi');
         this.$timeline_guochuang.classList.add('timeline-guochuang');
+
+        new VideoInfo();
 
         locs(4694, 34).then(d => {
             // 主推荐滚动图
