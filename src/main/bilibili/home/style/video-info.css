@@ -33,8 +33,6 @@
 
 .v-info {
     color: #99a2aa;
-    padding-block-end: 8px;
-    border-block-end: 1px solid #e5e9ef;
     display: flex;
     column-gap: 10px;
 
@@ -44,7 +42,7 @@
 }
 
 .v-preview {
-    padding-block-start: 8px;
+    padding-block: 8px;
     padding-block-end: 12px;
     border-block-end: 1px solid #e5e9ef;
     display: flex;

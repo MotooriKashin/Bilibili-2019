@@ -1,7 +1,9 @@
+import { pgcAppSeason } from "../../../io/com/bilibili/api/pgc/view/v2/app/season";
 import { cards } from "../../../io/com/bilibili/api/x/article/cards";
 import { customElement } from "../../../utils/Decorator/customElement";
 import { Element } from "../../../utils/element";
 import { Format } from "../../../utils/fomat";
+import { https } from "../../../utils/https";
 import { TOTP } from "../../../utils/TOTP";
 import css_video_info from "./style/video-info.css";
 
@@ -60,14 +62,25 @@ export class VideoInfo extends HTMLElement {
                 const id = crypto.randomUUID();
                 node.style.setProperty('anchor-name', `--${id}`);
                 this.style.setProperty('position-anchor', `--${id}`);
-                this.onMouseover(vAid);
+                this.onMouseoverAid(vAid);
             }
         } else {
-            this.hidePopover();
+            const node = (<HTMLElement>target)?.closest<HTMLElement>('[data-v-ssid]');
+            if (node) {
+                const { vSsid } = node.dataset;
+                if (vSsid) {
+                    const id = crypto.randomUUID();
+                    node.style.setProperty('anchor-name', `--${id}`);
+                    this.style.setProperty('position-anchor', `--${id}`);
+                    this.onMouseoverSsid(vSsid);
+                }
+            } else {
+                this.hidePopover();
+            }
         }
     }
 
-    private onMouseover = (
+    private onMouseoverAid = (
         aid: string | number,
     ) => {
         cards({ av: <number>aid }).then(d => {
@@ -75,8 +88,22 @@ export class VideoInfo extends HTMLElement {
             if (card) {
                 this.$title.innerText = card.title;
                 this.$info.innerHTML = `<span>${card.owner.name}</span><span>${Format.eTime(card.pubdate)}</span>`;
-                this.$preview.innerHTML = `<img loading="lazy" src="${card.pic}@.webp"><p>${card.desc}</p>`;
+                this.$preview.innerHTML = https(`<img loading="lazy" src="${card.pic}@.webp"><p>${card.desc}</p>`);
                 this.$data.innerHTML = `<span class="play"><i></i>${Format.carry(card.stat.view)}</span><span class="danmu"><i></i>${Format.carry(card.stat.danmaku)}</span><span class="star"><i></i>${Format.carry(card.stat.favorite)}</span><span class="coin"><i></i>${Format.carry(card.stat.coin)}</span>`;
+                this.showPopover();
+            }
+        })
+    }
+
+    private onMouseoverSsid = (
+        ssid: string | number,
+    ) => {
+        pgcAppSeason({ season_id: ssid }).then(d => {
+            if (d) {
+                this.$title.innerHTML = d.title;
+                this.$info.innerHTML = `<span>${d.type_desc}</span>`;
+                this.$preview.innerHTML = https(`<img loading="lazy" src="${d.cover}@.webp"><p>${d.evaluate}</p>`);
+                this.$data.innerHTML = `<span class="play"><i></i>${Format.carry(d.stat.views)}</span><span class="danmu"><i></i>${Format.carry(d.stat.danmakus)}</span><span class="star"><i></i>${Format.carry(d.stat.favorites)}</span><span class="coin"><i></i>${Format.carry(d.stat.coins)}</span>`;
                 this.showPopover();
             }
         })

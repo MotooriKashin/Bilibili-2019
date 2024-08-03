@@ -97,7 +97,7 @@ export class Timeline extends HTMLDivElement {
         });
 
         list(type).then(d => {
-            (<HTMLElement>this.$rCon.childNodes[1]).innerHTML = AV.fromStr(https(d.map((d, i) => `<div class="item"><div class="number"><span>${i + 1}</span></div><a class="ri-title" target="_blank" href="${d.url}">${d.title}<span class="ri-total">${d.new_ep.index_show}</span></a></div>`).join('')))
+            (<HTMLElement>this.$rCon.childNodes[1]).innerHTML = AV.fromStr(https(d.map((d, i) => `<div class="item" data-v-ssid="${d.season_id}"><div class="number"><span>${i + 1}</span></div><a class="ri-title" target="_blank" href="${d.url}">${d.title}<span class="ri-total">${d.new_ep.index_show}</span></a></div>`).join('')))
         })
     }
 
