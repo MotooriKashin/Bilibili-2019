@@ -53,9 +53,9 @@ export class CommentItem extends HTMLDivElement {
         this.jump_url();
         this.pictures();
 
-        this.$user.innerHTML = https(`<a target="_blank" class="user-face" href="//space.bilibili.com/${reply.mid_str}"><img class="face" loading="lazy" src="${reply.member.avatar}@.webp">${reply.member.pendant.image ? `<img class="pendant" loading="lazy" src="${reply.member.pendant.image}@.webp">` : ''}${reply.member.official_verify.desc ? `<i title="${reply.member.official_verify.type === 1 ? '企业/团体认证' : '个人认证'}" class="auth ${reply.member.official_verify.type === 1 ? 'o-auth' : 'p-auth'}"></i>` : ''}</a>`);
+        this.$user.innerHTML = https(`<a target="_blank" class="user-face" href="//space.bilibili.com/${reply.mid_str}" data-mid="${reply.mid_str}"><img class="face" loading="lazy" src="${reply.member.avatar}@.webp">${reply.member.pendant.image ? `<img class="pendant" loading="lazy" src="${reply.member.pendant.image}@.webp">` : ''}${reply.member.official_verify.desc ? `<i title="${reply.member.official_verify.type === 1 ? '企业/团体认证' : '个人认证'}" class="auth ${reply.member.official_verify.type === 1 ? 'o-auth' : 'p-auth'}"></i>` : ''}</a>`);
         this.$con.innerHTML = `<div class="user">
-    <a target="_blank" class="name" href="//space.bilibili.com/${reply.mid_str}"${reply.member.vip.nickname_color ? ` style="color:${reply.member.vip.nickname_color}"` : ''}>${reply.member.uname}</a>
+    <a target="_blank" class="name" href="//space.bilibili.com/${reply.mid_str}"${reply.member.vip.nickname_color ? ` style="color:${reply.member.vip.nickname_color}"` : ''} data-mid="${reply.mid_str}">${reply.member.uname}</a>
     <img loading="lazy" src="//s1.hdslb.com/bfs/seed/jinkela/commentpc/static/img/ic_user level_${reply.member.is_senior_member ? LEVEL.at(-1) : LEVEL[reply.member.level_info.current_level]}.svg">
     ${upid === reply.mid ? '<span class="is-up">UP</span>' : ''}
     ${reply.member.fans_detail ? `<span class="fans"><span class="fans-name" style="border-color: ${Format.hexColor(reply.member.fans_detail.medal_color_border)};color: ${Format.hexColor(reply.member.fans_detail.medal_color_name)}; background-image: linear-gradient(90deg,${Format.hexColor(reply.member.fans_detail.medal_color)},${Format.hexColor(reply.member.fans_detail.medal_color_end)});">${reply.member.fans_detail.medal_name}</span><span class="fans-level" style="border-color: ${Format.hexColor(reply.member.fans_detail.medal_color_border)};color: ${Format.hexColor(reply.member.fans_detail.medal_color_level)};background-color: ${Format.hexColor(reply.member.fans_detail.medal_level_bg_color)};">${reply.member.fans_detail.level}</span></span>` : ''}
@@ -106,7 +106,7 @@ export class CommentItem extends HTMLDivElement {
     private at_name_to_mid_str() {
         if (this.reply.content.at_name_to_mid_str) {
             Object.entries(this.reply.content.at_name_to_mid_str).forEach(d => {
-                this.reply.content.message = this.reply.content.message.replaceAll(`@${d[0]}`, `<a target="_blank" href="//space.bilibili.com/${d[1]}">@${d[0]}</a>`)
+                this.reply.content.message = this.reply.content.message.replaceAll(`@${d[0]}`, `<a target="_blank" href="//space.bilibili.com/${d[1]}"  data-mid="${d[1]}">@${d[0]}</a>`)
             })
         }
     }

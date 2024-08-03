@@ -46,10 +46,10 @@ export class SubReply extends HTMLDivElement {
         this.jump_url();
         this.pictures();
 
-        this.innerHTML = `<a target="_blank" class="reply-face" href="//space.bilibili.com/${reply.mid_str}"><img loading="lazy" src="${https(reply.member.avatar)}"></a>
+        this.innerHTML = `<a target="_blank" class="reply-face" href="//space.bilibili.com/${reply.mid_str}"  data-mid="${reply.mid_str}"><img loading="lazy" src="${https(reply.member.avatar)}"></a>
 <div class="reply-con">
     <div class="reply-user">
-        <a target="_blank" class="name" href="//space.bilibili.com/${reply.mid_str}"${reply.member.vip.nickname_color ? ` style="color:${reply.member.vip.nickname_color}"` : ''}>${reply.member.uname}</a>
+        <a target="_blank" class="name" href="//space.bilibili.com/${reply.mid_str}"${reply.member.vip.nickname_color ? ` style="color:${reply.member.vip.nickname_color}"` : ''} data-mid="${reply.mid_str}">${reply.member.uname}</a>
         <img loading="lazy" src="//s1.hdslb.com/bfs/seed/jinkela/commentpc/static/img/ic_user level_${reply.member.is_senior_member ? LEVEL.at(-1) : LEVEL[reply.member.level_info.current_level]}.svg">
         ${upid === reply.mid ? '<span class="reply-is-up">UP</span>' : ''}
         ${reply.member.fans_detail ? `<span class="reply-fans"><span class="reply-fans-name" style="border-color: ${Format.hexColor(reply.member.fans_detail.medal_color_border)};color: ${Format.hexColor(reply.member.fans_detail.medal_color_name)}; background-image: linear-gradient(90deg,${Format.hexColor(reply.member.fans_detail.medal_color)},${Format.hexColor(reply.member.fans_detail.medal_color_end)});">${reply.member.fans_detail.medal_name}</span><span class="reply-fans-level" style="border-color: ${Format.hexColor(reply.member.fans_detail.medal_color_border)};color: ${Format.hexColor(reply.member.fans_detail.medal_color_level)};background-color: ${Format.hexColor(reply.member.fans_detail.medal_level_bg_color)};">${reply.member.fans_detail.level}</span></span>` : ''}
@@ -140,7 +140,7 @@ export class SubReply extends HTMLDivElement {
     private at_name_to_mid_str() {
         if (this.reply.content.at_name_to_mid_str) {
             Object.entries(this.reply.content.at_name_to_mid_str).forEach(d => {
-                this.reply.content.message = this.reply.content.message.replaceAll(`@${d[0]}`, `<a target="_blank" href="//space.bilibili.com/${d[1]}">@${d[0]}</a>`)
+                this.reply.content.message = this.reply.content.message.replaceAll(`@${d[0]}`, `<a target="_blank" href="//space.bilibili.com/${d[1]}"  data-mid="${d[1]}">@${d[0]}</a>`)
             })
         }
     }

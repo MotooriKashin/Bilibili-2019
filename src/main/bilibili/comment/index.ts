@@ -15,12 +15,15 @@ import { cookie } from "../../../utils/cookie";
 import { customElement } from "../../../utils/Decorator/customElement";
 import { Element } from "../../../utils/element";
 import { https } from "../../../utils/https";
+import { IdCard } from "./card";
 import { CommentItem } from "./commnet";
 import { SubReply } from "./sub-reply";
 
 /** 评论区 */
 @customElement('div')
 export class Comment extends HTMLDivElement {
+
+    static $card = new IdCard();
 
     /**
      * 需要监听变动的属性。
@@ -40,10 +43,14 @@ export class Comment extends HTMLDivElement {
     // #inited = false;
 
     /** 每当元素添加到文档中时调用。 */
-    // connectedCallback() {}
+    connectedCallback() {
+        document.body.appendChild(Comment.$card);
+    }
 
     /** 每当元素从文档中移除时调用。 */
-    // disconnectedCallback() {}
+    disconnectedCallback() {
+        Comment.$card.remove();
+    }
 
     /** 每当元素被移动到新文档中时调用。 */
     // adoptedCallback() {}

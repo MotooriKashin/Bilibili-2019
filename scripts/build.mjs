@@ -11,7 +11,6 @@ const style = await build({
         'src/main/bilibili/info/style/index.css',
         'src/main/bilibili/desc/style/index.css',
         'src/main/bilibili/home/style/index.css',
-        'src/main/bilibili/id-card/style/index.css'
     ],
     bundle: true,
     minify: true,
@@ -37,7 +36,6 @@ await build({
         'src/main/index.ts',
         'src/main/WebRTC.ts',
         'src/main/bilibili/space/index.ts',
-        'src/main/bilibili/id-card/index.ts',
         'src/main/bilibili/live/index.ts',
     ],
     bundle: true,
@@ -51,6 +49,7 @@ await build({
     charset: 'utf8',
     loader: {
         '.svg': 'text',
+        '.css': 'text',
     },
     define: {
         /** 基于哈希消息认证码的一次性口令的密钥 */
@@ -65,7 +64,6 @@ await build({
         __BILI_INFO_STYLE__: `'${style.outputFiles[6].text.replaceAll('\n', '\\n')}'`,
         __BILI_DESC_STYLE__: `'${style.outputFiles[7].text.replaceAll('\n', '\\n')}'`,
         __BILI_HOME_STYLE__: `'${style.outputFiles[8].text.replaceAll('\n', '\\n')}'`,
-        __BILI_ID_CARD_STYLE__: `'${style.outputFiles[9].text.replaceAll('\n', '\\n')}'`,
     },
     supported: {
         // 装饰器暂未得到任何浏览器支持
