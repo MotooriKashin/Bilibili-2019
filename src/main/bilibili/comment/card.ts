@@ -7,6 +7,7 @@ import { customElement } from "../../../utils/Decorator/customElement";
 import { Format } from "../../../utils/fomat";
 import { https } from "../../../utils/https";
 import { TOTP } from "../../../utils/TOTP";
+import { Uhash } from "../../../utils/uhash";
 import { LEVEL } from "./icon-level";
 import style from './style/card.css';
 
@@ -32,14 +33,10 @@ export class IdCard extends HTMLElement {
     // #inited = false;
 
     /** 每当元素添加到文档中时调用。 */
-    connectedCallback() {
-        document.addEventListener('pointerover', this.onPointerover);
-    }
+    // connectedCallback() { }
 
     /** 每当元素从文档中移除时调用。 */
-    disconnectedCallback() {
-        document.removeEventListener('pointerover', this.onPointerover);
-    }
+    // disconnectedCallback() { }
 
     /** 每当元素被移动到新文档中时调用。 */
     // adoptedCallback() {}
@@ -82,11 +79,12 @@ export class IdCard extends HTMLElement {
                     }
                 })
             }
-        })
+        });
+        document.addEventListener('pointerover', this.onPointerover);
     }
 
     private onMouseover = (
-        mid: string,
+        mid: string | number,
     ) => {
         card(mid).then(({ space, card, like_num, following }) => {
             svg_men;
@@ -108,25 +106,40 @@ export class IdCard extends HTMLElement {
     ${card.official_verify.desc ? `<div class="idc-auth-description">${card.official_verify.desc}</div>` : ''}
     ${card.sign ? `<div>${card.sign}</div>` : ''}
 </div>`);
-            this.$follow.dataset.mid = mid;
-            this.$wisp.dataset.mid = mid;
+            this.$follow.dataset.mid = <any>mid;
+            this.$wisp.dataset.mid = <any>mid;
             this.$follow.textContent = following ? '已关注' : '关注';
             this.showPopover();
         })
     }
 
     private onPointerover = ({ target }: PointerEvent) => {
-        const node = (<HTMLElement>target)?.closest<HTMLElement>('[data-mid]');
-        if (node) {
-            const mid = node.dataset.mid;
-            if (mid) {
-                const id = crypto.randomUUID();
-                node.style.setProperty('anchor-name', `--${id}`);
-                this.style.setProperty('position-anchor', `--${id}`);
-                this.onMouseover(mid);
+        if (target && !this.contains(<HTMLElement>target)) {
+            const node = (<HTMLElement>target)?.closest<HTMLElement>('[data-mid]');
+            if (node) {
+                const mid = node.dataset.mid;
+                if (mid) {
+                    const id = crypto.randomUUID();
+                    node.style.setProperty('anchor-name', `--${id}`);
+                    this.style.setProperty('position-anchor', `--${id}`);
+                    if (/^\d+$/.test(mid)) {
+                        this.onMouseover(mid);
+                    } else if (mid.length === 8) {
+                        const uid = Uhash.decode(mid);
+                        if (uid > 0) {
+                            node.dataset.mid = <any>uid;
+                            this.onMouseover(uid);
+                        }
+                    }
+                }
+            } else {
+                this.hidePopover();
             }
-        } else {
-            this.hidePopover();
         }
+    }
+
+    showPopover() {
+        document.body.contains(this) || document.body.appendChild(this);
+        super.showPopover();
     }
 }

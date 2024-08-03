@@ -23,8 +23,6 @@ import { SubReply } from "./sub-reply";
 @customElement('div')
 export class Comment extends HTMLDivElement {
 
-    static $card = new IdCard();
-
     /**
      * 需要监听变动的属性。
      * 与实例方法`attributeChangedCallback`配合使用。
@@ -43,14 +41,10 @@ export class Comment extends HTMLDivElement {
     // #inited = false;
 
     /** 每当元素添加到文档中时调用。 */
-    connectedCallback() {
-        document.body.appendChild(Comment.$card);
-    }
+    // connectedCallback() {}
 
     /** 每当元素从文档中移除时调用。 */
-    disconnectedCallback() {
-        Comment.$card.remove();
-    }
+    // disconnectedCallback() {}
 
     /** 每当元素被移动到新文档中时调用。 */
     // adoptedCallback() {}
@@ -156,6 +150,8 @@ export class Comment extends HTMLDivElement {
         this.insertAdjacentHTML('beforeend', `<style>${__BILI_COMMENT_STYLE__}</style>`);
         this.$ipt.required = true;
         this.$emote.popoverTargetElement = this.$emotePopover;
+
+        new IdCard();
 
         this.$tabs.addEventListener('change', () => {
             const d = new FormData(this.$tabs);
