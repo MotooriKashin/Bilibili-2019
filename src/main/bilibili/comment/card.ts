@@ -6,11 +6,40 @@ import { cookie } from "../../../utils/cookie";
 import { customElement } from "../../../utils/Decorator/customElement";
 import { Format } from "../../../utils/fomat";
 import { https } from "../../../utils/https";
-import { LEVEL } from "../comment/icon-level";
+import { TOTP } from "../../../utils/TOTP";
+import { Uhash } from "../../../utils/uhash";
+import { LEVEL } from "./icon-level";
+import style from './style/card.css';
 
 /** 评论区 */
-@customElement(undefined, `id-card-${crypto.randomUUID()}`)
+@customElement(undefined, `id-card-${TOTP.now()}`)
 export class IdCard extends HTMLElement {
+
+    /**
+     * 需要监听变动的属性。
+     * 与实例方法`attributeChangedCallback`配合使用。
+     * 此字符串序列定义了`attributeChangedCallback`回调时的第一个参数的可能值。
+     */
+    // static observedAttributes = [];
+
+    /**
+     * 在属性更改、添加、移除或替换时调用。
+     * 需要与静态属性`observedAttributes`配合使用。
+     * 此回调的第一个参数在`observedAttributes`数组中定义。
+     */
+    // attributeChangedCallback(name: IobservedAttributes, oldValue: string, newValue: string) {}
+
+    /** 初始化标记 */
+    // #inited = false;
+
+    /** 每当元素添加到文档中时调用。 */
+    // connectedCallback() { }
+
+    /** 每当元素从文档中移除时调用。 */
+    // disconnectedCallback() { }
+
+    /** 每当元素被移动到新文档中时调用。 */
+    // adoptedCallback() {}
 
     #host = this.attachShadow({ mode: 'closed' });
 
@@ -26,7 +55,7 @@ export class IdCard extends HTMLElement {
 
     constructor() {
         super();
-        this.$img.insertAdjacentHTML('beforebegin', `<style>${__BILI_ID_CARD_STYLE__}</style>`);
+        this.$img.insertAdjacentHTML('beforebegin', `<style>${style}</style>`);
         this.popover = 'auto';
         this.$img.classList.add('idc-theme-img');
         this.$info.classList.add('idc-info');
@@ -34,23 +63,6 @@ export class IdCard extends HTMLElement {
         this.$follow.textContent = '关注';
         this.$wisp.textContent = '发消息';
 
-        document.addEventListener('pointerover', ({ target }) => {
-            if (target instanceof HTMLAnchorElement && !this.contains(target) && target.href) {
-                const href = new URL(target.href, location.origin);
-                if (href.hostname === 'space.bilibili.com') {
-                    const path = href.pathname.split('/');
-                    if (!path[2] && /^\d+/.test(path[1])) {
-                        const id = crypto.randomUUID();
-                        target.style.setProperty('anchor-name', `--${id}`);
-                        this.style.setProperty('position-anchor', `--${id}`);
-                        this.onMouseover(path[1]);
-                        target.addEventListener('pointerleave', () => {
-                            this.hidePopover();
-                        }, { once: true });
-                    }
-                }
-            }
-        });
         this.$wisp.addEventListener('click', () => {
             const { mid } = this.$wisp.dataset;
             mid && self.open(`//message.bilibili.com/#/whisper/mid${mid}`);
@@ -67,11 +79,12 @@ export class IdCard extends HTMLElement {
                     }
                 })
             }
-        })
+        });
+        document.addEventListener('pointerover', this.onPointerover);
     }
 
     private onMouseover = (
-        mid: string,
+        mid: string | number,
     ) => {
         card(mid).then(({ space, card, like_num, following }) => {
             svg_men;
@@ -93,18 +106,40 @@ export class IdCard extends HTMLElement {
     ${card.official_verify.desc ? `<div class="idc-auth-description">${card.official_verify.desc}</div>` : ''}
     ${card.sign ? `<div>${card.sign}</div>` : ''}
 </div>`);
-            this.$follow.dataset.mid = mid;
-            this.$wisp.dataset.mid = mid;
+            this.$follow.dataset.mid = <any>mid;
+            this.$wisp.dataset.mid = <any>mid;
             this.$follow.textContent = following ? '已关注' : '关注';
             this.showPopover();
         })
     }
-}
 
-document.body.appendChild(new IdCard());
+    private onPointerover = ({ target }: PointerEvent) => {
+        if (target && !this.contains(<HTMLElement>target)) {
+            const node = (<HTMLElement>target)?.closest<HTMLElement>('[data-mid]');
+            if (node) {
+                const mid = node.dataset.mid;
+                if (mid) {
+                    const id = crypto.randomUUID();
+                    node.style.setProperty('anchor-name', `--${id}`);
+                    this.style.setProperty('position-anchor', `--${id}`);
+                    if (/^\d+$/.test(mid)) {
+                        this.onMouseover(mid);
+                    } else if (mid.length === 8) {
+                        const uid = Uhash.decode(mid);
+                        if (uid > 0) {
+                            node.dataset.mid = <any>uid;
+                            this.onMouseover(uid);
+                        }
+                    }
+                }
+            } else {
+                this.hidePopover();
+            }
+        }
+    }
 
-//////////////////////////// 全局增强 ////////////////////////////
-declare global {
-    /** 基于哈希消息认证码的一次性口令的密钥 */
-    const __BILI_ID_CARD_STYLE__: string;
+    showPopover() {
+        document.body.contains(this) || document.body.appendChild(this);
+        super.showPopover();
+    }
 }

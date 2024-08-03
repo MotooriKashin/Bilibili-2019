@@ -6,6 +6,7 @@ import fs from 'fs/promises';
 /** 非代码文件所在路径 */
 const paths = [
     'src/player/assets/svg',
+    'src/main/bilibili/comment/style',
 ];
 
 for (const path of paths) {

@@ -51,10 +51,11 @@ export class DanmakuElem extends HTMLDivElement {
     /** 弹幕属性 */
     private $attr = Element.add('div', { class: 'attr' }, this);
 
-    constructor(private $dm: IDanmaku) {
+    constructor($dm: IDanmaku) {
         super();
 
         this.classList.add('danmaku-elem', `mode${$dm.mode}`);
+        $dm.midHash && (this.dataset.mid = $dm.midHash);
         $dm.color && this.classList.add('color');
         this.$progress.textContent = Format.fmSeconds($dm.progress / 1000);
         this.$content.appendChild(document.createElement('p')).textContent = $dm.content || '';

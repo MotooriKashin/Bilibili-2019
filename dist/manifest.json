@@ -46,17 +46,6 @@
         {
             "all_frames": true,
             "js": [
-                "/main/bilibili/id-card/index.js"
-            ],
-            "matches": [
-                "*://*.bilibili.com/*"
-            ],
-            "run_at": "document_end",
-            "world": "MAIN"
-        },
-        {
-            "all_frames": true,
-            "js": [
                 "/main/bilibili/live/index.js"
             ],
             "matches": [

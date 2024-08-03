@@ -15,6 +15,7 @@ import { cookie } from "../../../utils/cookie";
 import { customElement } from "../../../utils/Decorator/customElement";
 import { Element } from "../../../utils/element";
 import { https } from "../../../utils/https";
+import { IdCard } from "./card";
 import { CommentItem } from "./commnet";
 import { SubReply } from "./sub-reply";
 
@@ -149,6 +150,8 @@ export class Comment extends HTMLDivElement {
         this.insertAdjacentHTML('beforeend', `<style>${__BILI_COMMENT_STYLE__}</style>`);
         this.$ipt.required = true;
         this.$emote.popoverTargetElement = this.$emotePopover;
+
+        new IdCard();
 
         this.$tabs.addEventListener('change', () => {
             const d = new FormData(this.$tabs);
