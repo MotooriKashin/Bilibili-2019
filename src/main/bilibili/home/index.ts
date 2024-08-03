@@ -40,10 +40,14 @@ export class Home extends HTMLDivElement {
     // #inited = false;
 
     /** 每当元素添加到文档中时调用。 */
-    // connectedCallback() {}
+    connectedCallback() {
+        document.body.appendChild(this.$form);
+    }
 
     /** 每当元素从文档中移除时调用。 */
-    // disconnectedCallback() {}
+    disconnectedCallback() {
+        this.$form.remove();
+    }
 
     /** 每当元素被移动到新文档中时调用。 */
     // adoptedCallback() {}
@@ -114,6 +118,8 @@ export class Home extends HTMLDivElement {
 
     private $bili_documentary = this.appendChild(new Ranking('纪录片', '/documentary', REGION.DOCUMENTARY));
 
+    private $form = Element.add('form', { class: 'nav-form' })
+
     constructor() {
         super();
         this.insertAdjacentHTML('beforeend', `<style>${__BILI_HOME_STYLE__}</style>`);
@@ -139,6 +145,24 @@ export class Home extends HTMLDivElement {
         this.$bili_documentary.classList.add('bili-documentary');
         this.$timeline_bangumi.classList.add('timeline-bangumi');
         this.$timeline_guochuang.classList.add('timeline-guochuang');
+        this.$form.insertAdjacentHTML('afterbegin', `<label><input type="radio" name=${id} value="0" checked>直播</label>
+<label><input type="radio" name=${id} value="1">动画</label>
+<label><input type="radio" name=${id} value="2">番剧</label>
+<label><input type="radio" name=${id} value="3">国创</label>
+<label><input type="radio" name=${id} value="4">音乐</label>
+<label><input type="radio" name=${id} value="5">舞蹈</label>
+<label><input type="radio" name=${id} value="6">游戏</label>
+<label><input type="radio" name=${id} value="7">知识</label>
+<label><input type="radio" name=${id} value="8">科技</label>
+<label><input type="radio" name=${id} value="9">生活</label>
+<label><input type="radio" name=${id} value="10">鬼畜</label>
+<label><input type="radio" name=${id} value="11">时尚</label>
+<label><input type="radio" name=${id} value="12">资讯</label>
+<label><input type="radio" name=${id} value="13">娱乐</label>
+<label><input type="radio" name=${id} value="14">电影</label>
+<label><input type="radio" name=${id} value="15">电视剧</label>
+<label><input type="radio" name=${id} value="16">影视</label>
+<label><input type="radio" name=${id} value="17">纪录片</label>`)
 
         new VideoInfo();
 
@@ -231,6 +255,85 @@ export class Home extends HTMLDivElement {
                 });
             }
         });
+        this.$form.addEventListener('change', () => {
+            const d = new FormData(this.$form);
+            const i = +[...d.values()][0];
+            switch (i) {
+                case 0: {
+                    this.$bili_live.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    break;
+                }
+                case 1: {
+                    this.$bili_douga.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    break;
+                }
+                case 2: {
+                    this.$timeline_bangumi.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    break;
+                }
+                case 3: {
+                    this.$timeline_guochuang.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    break;
+                }
+                case 4: {
+                    this.$bili_music.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    break;
+                }
+                case 5: {
+                    this.$bili_dance.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    break;
+                }
+                case 6: {
+                    this.$bili_game.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    break;
+                }
+                case 7: {
+                    this.$bili_knowledge.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    break;
+                }
+                case 8: {
+                    this.$bili_technology.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    break;
+                }
+                case 9: {
+                    this.$bili_life.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    break;
+                }
+                case 10: {
+                    this.$bili_kichiku.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    break;
+                }
+                case 11: {
+                    this.$bili_fashion.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    break;
+                }
+                case 12: {
+                    this.$bili_news.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    break;
+                }
+                case 13: {
+                    this.$bili_ent.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    break;
+                }
+                case 14: {
+                    this.$bili_movie.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    break;
+                }
+                case 15: {
+                    this.$bili_tv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    break;
+                }
+                case 16: {
+                    this.$bili_cinephile.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    break;
+                }
+                case 17: {
+                    this.$bili_documentary.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    break;
+                }
+            }
+        });
+
         this.carouselPointerLeave();
     }
 
