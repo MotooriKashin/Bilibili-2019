@@ -102,7 +102,7 @@ export class Ranking extends HTMLDivElement {
 
     private rankRegion() {
         rankingRegion(this.rid).then(d => {
-            d && ((<HTMLElement>this.$rCon.childNodes[1]).innerHTML = AV.fromStr(https(d.map((d, i) => `<div class="item"><div class="number"><span>${i + 1}</span></div>${i ? '' : `<img loading="lazy" src="${d.pic}@.webp">`}<a class="ri" target="_blank" href="/video/av${d.aid}">${d.title}</a>${i ? '' : `<div class="wl" title="稍后再看" data-aid="${d.aid}"></div>`}</div>`).join(''))));
+            d && ((<HTMLElement>this.$rCon.childNodes[1]).innerHTML = AV.fromStr(https(d.map((d, i) => `<div class="item" data-v-aid="${d.aid}"><div class="number"><span>${i + 1}</span></div>${i ? '' : `<img loading="lazy" src="${d.pic}@.webp">`}<a class="ri" target="_blank" href="/video/av${d.aid}">${d.title}</a>${i ? '' : `<div class="wl" title="稍后再看" data-aid="${d.aid}"></div>`}</div>`).join(''))));
         })
     }
 }

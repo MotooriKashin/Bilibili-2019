@@ -32,7 +32,7 @@
             inline-size: 20px;
             block-size: 20px;
             inset-inline-end: 0;
-            inset-block-start: 0;
+            inset-block-end: 0;
             background-image: url(//s1.hdslb.com/bfs/static/jinkela/videoplay/asserts/user-auth.png);
             background-repeat: no-repeat;
             z-index: 3;
