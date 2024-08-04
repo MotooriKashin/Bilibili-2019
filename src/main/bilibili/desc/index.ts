@@ -170,7 +170,7 @@ export class Desc extends HTMLDivElement {
                                 }
                             });
                             this.bangumi(season, this.#epid).finally(async () => {
-                                if (this.#ssid) {
+                                if (this.#ssid && !this.#epid) {
                                     const d = await pgcSection(this.#ssid);
                                     const eps = d.main_section.episodes.concat(...d.section.map(d => d.episodes));
                                     const ep = this.#epid ? eps.find(d => d.id === this.#epid) : eps[0];

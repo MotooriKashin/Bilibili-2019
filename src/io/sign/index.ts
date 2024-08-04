@@ -8,14 +8,20 @@ import { APP_KEY } from "./key_secret";
  * @param appkey 签名所属平台的appkey，参看{@link APP_KEY}
  * @returns 已签名的url
  */
-export function sign(
-    url: string | URL,
+export function sign<T extends URL | URLSearchParams>(
+    url: T,
     appkey: keyof typeof APP_KEY
-) {
-    const n_url = new URL(url);
-    n_url.searchParams.set('appkey', appkey);
-    n_url.searchParams.delete('sign');
-    n_url.searchParams.sort();
-    n_url.searchParams.set('sign', crypto.md5.toHex(n_url.searchParams.toString() + APP_KEY[appkey]));
-    return n_url;
+): T {
+    if (url instanceof URLSearchParams) {
+        url.set('appkey', appkey);
+        url.delete('sign');
+        url.sort();
+        url.set('sign', crypto.md5.toHex(url.toString() + APP_KEY[appkey]));
+        return url;
+    }
+    url.searchParams.set('appkey', appkey);
+    url.searchParams.delete('sign');
+    url.searchParams.sort();
+    url.searchParams.set('sign', crypto.md5.toHex(url.searchParams.toString() + APP_KEY[appkey]));
+    return url;
 }
