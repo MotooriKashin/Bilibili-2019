@@ -66,7 +66,7 @@
 
 .v-data {
     display: flex;
-    column-gap: 2em;
+    justify-content: space-between;
 
     >span {
         white-space: nowrap;
