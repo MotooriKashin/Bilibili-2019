@@ -5,6 +5,7 @@
         "../utils",
         "../player",
         "../io",
+        "../toastr"
     ],
     "references": [
         {
@@ -15,6 +16,9 @@
         },
         {
             "path": "../io"
+        },
+        {
+            "path": "../toastr"
         }
     ],
     "compilerOptions": {

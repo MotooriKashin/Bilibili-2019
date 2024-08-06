@@ -11,6 +11,7 @@ const style = await build({
         'src/main/bilibili/info/style/index.css',
         'src/main/bilibili/desc/style/index.css',
         'src/main/bilibili/home/style/index.css',
+        'src/toastr/style/index.css',
     ],
     bundle: true,
     minify: true,
@@ -64,6 +65,7 @@ await build({
         __BILI_INFO_STYLE__: `'${style.outputFiles[6].text.replaceAll('\n', '\\n')}'`,
         __BILI_DESC_STYLE__: `'${style.outputFiles[7].text.replaceAll('\n', '\\n')}'`,
         __BILI_HOME_STYLE__: `'${style.outputFiles[8].text.replaceAll('\n', '\\n')}'`,
+        __BILI_TOASTR_STYLE__: `'${style.outputFiles[9].text.replaceAll('\n', '\\n')}'`,
     },
     supported: {
         // 装饰器暂未得到任何浏览器支持
