@@ -1,11 +1,12 @@
 import { Api } from "../../..";
-import { IReplies } from "../reply";
+import { IReplies } from ".";
 
 /**
  * 请求瀑布流评论
  * 
  * @param oid 评论所属页面id，对于视频页面，取aid
  * @param mode 评论排序，2：时间，3：热度
+ * @param next 按热度时：热度顺序页码，按时间时：时间倒序楼层号
  * @param seek_rpid 锚定的评论id
  * @param type 评论类型，视频页是1
  * @param plat 评论平台，网页端是1
@@ -13,6 +14,7 @@ import { IReplies } from "../reply";
 export async function replyMain(
     oid: number | string,
     mode: 2 | 3 = 3,
+    next = 0,
     seek_rpid?: number | string,
     type = 1,
     plat = 1,
@@ -20,6 +22,7 @@ export async function replyMain(
     const url = new URL(Api + '/x/v2/reply/main');
     url.searchParams.set('oid', <any>oid);
     url.searchParams.set('mode', <any>mode);
+    url.searchParams.set('next', <any>next);
     seek_rpid && url.searchParams.set('seek_rpid', <any>seek_rpid);
     url.searchParams.set('type', <any>type);
     url.searchParams.set('plat', <any>plat);

@@ -956,7 +956,6 @@ export class BilibiliPlayer extends Player {
         this.style.backgroundImage = '';
         this.style.backgroundSize = '';
         this.$auxiliary.$filter.$recommend.textContent = '推荐视频';
-        this.classList.remove('nano');
     }
 }
 

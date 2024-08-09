@@ -1,5 +1,5 @@
 import { Api } from "../../..";
-import { IReplies } from "../reply";
+import { IReplies } from ".";
 
 export async function replyReply(
     root: number | string,

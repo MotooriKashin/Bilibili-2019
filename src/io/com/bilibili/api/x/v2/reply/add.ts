@@ -1,5 +1,5 @@
 import { Api } from "../../..";
-import { IReplies } from "../reply";
+import { IReplies } from ".";
 
 /**
  * 发送评论

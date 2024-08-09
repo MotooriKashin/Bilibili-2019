@@ -554,6 +554,7 @@ export class Router {
         this.cid = 0;
         this.ssid = 0;
         this.epid = 0;
+        this.$player.classList.remove('nano');
     }
 }
 
