@@ -1,0 +1,145 @@
+.operated {
+    padding: 0;
+    border: 0;
+    background-color: var(--fff);
+    border-radius: 4px;
+    font-size: 12px;
+
+    &[popover]:popover-open:not(dialog) {
+        display: flex;
+        flex-direction: column;
+        row-gap: 20px;
+    }
+
+    &::backdrop {
+        background-color: var(--000000a6);
+    }
+
+    >i {
+        display: inline-block;
+        position: absolute;
+        inset-block-start: 16px;
+        inset-inline-end: 16px;
+        inline-size: 20px;
+        block-size: 20px;
+        background-image: url(//static.hdslb.com/images/base/icons.png);
+        background-position: -470px -534px;
+        cursor: pointer;
+
+        &:hover {
+            background-position: -534px -534px;
+        }
+    }
+
+    >header {
+        margin-block-start: 20px;
+        font-size: 30px;
+        color: var(--00a1d6);
+        text-align: center;
+
+        &::before,
+        &::after {
+            content: "给UP主投上";
+            font-size: 16px;
+            color: var(--222);
+        }
+
+        &::after {
+            content: "枚硬币";
+        }
+    }
+
+    >form {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        padding-inline: 35px;
+        column-gap: 30px;
+
+        >label {
+            inline-size: 160px;
+            block-size: 230px;
+            border: 2px dashed var(--ccd0d6);
+            border-radius: 5px;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain;
+            cursor: pointer;
+
+            &::before {
+                content: attr(value) "硬币";
+                color: var(--99a2aa);
+                font-size: 14px;
+                line-height: 40px;
+                padding-inline-start: 15px;
+            }
+
+            &:first-child {
+                background-image: url(//s1.hdslb.com/bfs/static/jinkela/videoplay/asserts/22-gray.png);
+            }
+
+            &:last-child {
+                background-image: url(//s1.hdslb.com/bfs/static/jinkela/videoplay/asserts/33-gray.png);
+            }
+
+            &:has(input:checked) {
+                border-style: solid;
+                border-color: var(--02a0d8);
+
+                &::before {
+                    color: var(--00a1d6);
+                }
+
+                &:first-child {
+                    background-image: url(//s1.hdslb.com/bfs/static/jinkela/videoplay/asserts/22.gif);
+                }
+
+                &:last-child {
+                    background-image: url(//s1.hdslb.com/bfs/static/jinkela/videoplay/asserts/33.gif);
+                }
+            }
+
+            >input {
+                appearance: none;
+                display: none;
+            }
+        }
+    }
+
+    >.buttom {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        row-gap: 10px;
+
+        >button {
+            padding-block: 4px;
+            padding-inline: 18px;
+            border-radius: 4px;
+            font-size: 14px;
+            background-color: var(--00a1d6);
+            border: 1px solid var(--00a1d6);
+            color: var(--fff);
+            cursor: pointer;
+
+            &:hover {
+                color: var(--fff);
+                background: var(--00b5e5);
+                border-color: var(--00b5e5);
+            }
+        }
+
+        >.tips {
+            margin-block-end: 25px;
+            color: var(--99a2aa);
+
+            &::before {
+                content: "经验值+" attr(data-value) "0";
+            }
+
+            &::after {
+                content: "（今日" attr(data-exp) "/50）";
+            }
+        }
+    }
+}

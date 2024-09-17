@@ -15,6 +15,7 @@ import { IEpisode, pgcSection } from "../../io/com/bilibili/api/pgc/view/web/sea
 import { toviewWeb } from "../../io/com/bilibili/api/x/v2/history/toview/web";
 import { relation } from "../../io/com/bilibili/api/x/web-interface/archive/relation";
 import { nav } from "../../io/com/bilibili/api/x/web-interface/nav";
+import { Operated } from "./operated";
 
 /** 评论区 */
 @customElement(undefined, `info-${Date.now()}`)
@@ -57,12 +58,26 @@ export class Info extends HTMLElement {
 
     #number = Element.add('div', { appendTo: this.#video, class: 'number' });
 
+    #coin = this.#host.appendChild(new Operated());
+
     constructor() {
         super();
 
         this.#host.adoptedStyleSheets = [stylesheet];
 
         mainEv.bind(MAIN_EVENT.NAVIGATE, ({ detail }) => { this.$navigate(...detail) });
+        mainEv.bind(MAIN_EVENT.COIN_ADD, () => {
+            this.#number.querySelector('.coin')!.classList.add('d');
+        });
+
+        this.#host.addEventListener('click', ({ target }) => {
+            if (target instanceof HTMLElement) {
+                const p = target.closest('.coin');
+                if (p && !p.classList.contains('d')) {
+                    this.#coin.showPopover();
+                }
+            }
+        });
     }
 
     /** 页面路由 */
@@ -124,6 +139,7 @@ ${View.stat.his_rank ? `<span title="本日日排行数据过期后，再纳入�
     <span class="name"${d.vip.nickname_color ? ` style="color: ${d.vip.nickname_color}"` : ''}>${d.name}</span>
     <span class="title">${d.title}</span>
 </a>`).join('')}</div>`);
+                            this.#coin.dataset.aid = <any>aid;
 
                             nav()
                                 .then(({ code, message, data }) => {
@@ -204,6 +220,8 @@ ${View.stat.his_rank ? `<span title="本日日排行数据过期后，再纳入�
 <span class="line"></span>
 <span title="投硬币枚数${data.stat.coins}" class="u coin">硬币 ${Format.carry(data.stat.coins)}</span>
 <span title="追番数${data.stat.favorites}" class="u order">追番 ${Format.carry(data.stat.favorites)}</span>`;
+                            this.#coin.dataset.aid = <any>ep.aid;
+
                             nav()
                                 .then(({ code, message, data }) => {
                                     if (code !== 0) throw new ReferenceError(message, { cause: { code, message, data } });

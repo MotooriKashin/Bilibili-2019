@@ -69,6 +69,9 @@ export enum MAIN_EVENT {
 
     /** 新导航 */
     NAVIGATE,
+
+    /** 投币 */
+    COIN_ADD,
 }
 
 /** 播放器事件基类 */
@@ -78,4 +81,5 @@ export interface IPlayerEvent {
     2: void;
     3: void;
     4: [ROUTER, URL];
+    5: void;
 }

@@ -1,3 +1,5 @@
+@import url(./operated.css);
+
 @scope {
     :scope {
         color-scheme: light dark;
@@ -11,6 +13,10 @@
         --00b5e5: #00b5e5;
         --f25d8e: #f25d8e;
         --fb7299: #fb7299;
+        --222: #222;
+        --ccd0d6: #ccd0d6;
+        --02a0d8: #02a0d8;
+        --000000a6: #000000a6;
     }
 
     a {
