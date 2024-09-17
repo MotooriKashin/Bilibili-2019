@@ -1,4 +1,5 @@
 @import url(./operated.css);
+@import url(./collection.css);
 
 @scope {
     :scope {
@@ -17,6 +18,8 @@
         --ccd0d6: #ccd0d6;
         --02a0d8: #02a0d8;
         --000000a6: #000000a6;
+        --e5e9ef: #e5e9ef;
+        --b8c0cc: #b8c0cc;
     }
 
     a {

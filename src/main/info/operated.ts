@@ -82,7 +82,7 @@ export class Operated extends HTMLDivElement {
                     .then(({ code, message }) => {
                         if (code !== 0) throw new ReferenceError(message, { cause: { code, message } });
                         this.hidePopover();
-                        mainEv.trigger(MAIN_EVENT.COIN_ADD, void 0);
+                        mainEv.trigger(MAIN_EVENT.RELATION_FLASH, void 0);
                     })
                     .catch(e => {
                         toastr.error('投币出错', e);

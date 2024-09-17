@@ -1,0 +1,109 @@
+.collection {
+    padding: 0;
+    border: 0;
+    border-radius: 4px;
+    background-color: var(--fff);
+    font-size: 12px;
+
+    &[popover]:popover-open:not(dialog) {
+        display: flex;
+        flex-direction: column;
+    }
+
+    &::backdrop {
+        background-color: var(--000000a6);
+    }
+
+    >header {
+        line-height: 50px;
+        padding-inline: 20px;
+        font-size: 16px;
+        color: var(--222);
+        border-block-end: 1px solid var(--e5e9ef);
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        >i {
+            display: inline-block;
+            position: absolute;
+            inset-block-start: 16px;
+            inset-inline-end: 16px;
+            inline-size: 20px;
+            block-size: 20px;
+            background-image: url(//static.hdslb.com/images/base/icons.png);
+            background-position: -470px -534px;
+            cursor: pointer;
+
+            &:hover {
+                background-position: -534px -534px;
+            }
+        }
+    }
+
+    >form {
+        block-size: 300px;
+        inline-size: 420px;
+        padding-inline: 36px;
+        padding-block: 24px;
+        box-sizing: border-box;
+        overflow-y: auto;
+        scrollbar-width: thin;
+        display: flex;
+        flex-direction: column;
+        row-gap: 24px;
+
+        >label {
+            font-size: 14px;
+            color: var(--222);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            position: relative;
+
+            >input {
+                inline-size: 20px;
+                block-size: 20px;
+                margin-inline: 0;
+                margin-block-start: 0;
+                margin-inline-end: 18px;
+                cursor: pointer;
+            }
+
+            &::after {
+                content: attr(data-value);
+                position: absolute;
+                inset-inline-end: 0;
+                color: var(--6d757a);
+                font-size: 12px;
+            }
+
+            &:hover {
+                color: var(--00a1d6);
+            }
+        }
+    }
+
+    >button {
+        inline-size: 160px;
+        block-size: 40px;
+        margin-inline: auto;
+        margin-block: 18px;
+        border: 0;
+        border-radius: 4px;
+        color: var(--fff);
+        background-color: var(--00a1d6);
+        cursor: pointer;
+
+        &:hover {
+            background-color: var(--00b5e5);
+        }
+
+        &:disabled {
+            cursor: not-allowed;
+            background-color: var(--e5e9ef);
+            color: var(--b8c0cc);
+        }
+    }
+}

@@ -70,8 +70,8 @@ export enum MAIN_EVENT {
     /** 新导航 */
     NAVIGATE,
 
-    /** 投币 */
-    COIN_ADD,
+    /** 刷新视频互动数据 */
+    RELATION_FLASH,
 }
 
 /** 播放器事件基类 */

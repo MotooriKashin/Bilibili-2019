@@ -16,6 +16,7 @@ import { toviewWeb } from "../../io/com/bilibili/api/x/v2/history/toview/web";
 import { relation } from "../../io/com/bilibili/api/x/web-interface/archive/relation";
 import { nav } from "../../io/com/bilibili/api/x/web-interface/nav";
 import { Operated } from "./operated";
+import { Collection } from "./collection";
 
 /** 评论区 */
 @customElement(undefined, `info-${Date.now()}`)
@@ -60,21 +61,51 @@ export class Info extends HTMLElement {
 
     #coin = this.#host.appendChild(new Operated());
 
+    #collection = this.#host.appendChild(new Collection());
+
+    #aid = 0;
+
+    get $aid() {
+        return this.#aid
+    }
+
+    set $aid(v) {
+        this.#aid = v;
+        v && nav()
+            .then(({ code, message, data }) => {
+                if (code !== 0) throw new ReferenceError(message, { cause: { code, message, data } });
+                if (data.isLogin) {
+                    relation(v)
+                        .then(({ code, message, data }) => {
+                            if (code !== 0) throw new ReferenceError(message, { cause: { code, message, data } });
+                            const { favorite, coin } = data;
+                            this.#number.querySelector('.fav')?.classList.toggle('d', Boolean(favorite));
+                            this.#number.querySelector('.coin')?.classList.toggle('d', Boolean(coin));
+                        })
+                        .catch(console.error);
+                }
+            })
+            .catch(console.error);
+    }
+
     constructor() {
         super();
 
         this.#host.adoptedStyleSheets = [stylesheet];
 
         mainEv.bind(MAIN_EVENT.NAVIGATE, ({ detail }) => { this.$navigate(...detail) });
-        mainEv.bind(MAIN_EVENT.COIN_ADD, () => {
-            this.#number.querySelector('.coin')!.classList.add('d');
+        mainEv.bind(MAIN_EVENT.RELATION_FLASH, () => {
+            relation.flesh();
+            this.$aid = this.#aid;
         });
 
         this.#host.addEventListener('click', ({ target }) => {
             if (target instanceof HTMLElement) {
-                const p = target.closest('.coin');
-                if (p && !p.classList.contains('d')) {
+                const coin = target.closest('.coin');
+                if (coin && !coin.classList.contains('d')) {
                     this.#coin.showPopover();
+                } else if (target.closest('.fav')) {
+                    this.#collection.showPopover();
                 }
             }
         });
@@ -139,26 +170,7 @@ ${View.stat.his_rank ? `<span title="本日日排行数据过期后，再纳入�
     <span class="name"${d.vip.nickname_color ? ` style="color: ${d.vip.nickname_color}"` : ''}>${d.name}</span>
     <span class="title">${d.title}</span>
 </a>`).join('')}</div>`);
-                            this.#coin.dataset.aid = <any>aid;
-
-                            nav()
-                                .then(({ code, message, data }) => {
-                                    if (code !== 0) throw new ReferenceError(message, { cause: { code, message, data } });
-                                    if (data.isLogin) {
-                                        relation(aid)
-                                            .then(({ code, message, data }) => {
-                                                if (code !== 0) throw new ReferenceError(message, { cause: { code, message, data } });
-                                                const { favorite, coin } = data;
-                                                favorite && this.#number.querySelector('.fav')!.classList.add('d');
-                                                coin && this.#number.querySelector('.coin')!.classList.add('d');
-                                            })
-                                            .catch(e => {
-                                                toastr.error('获取互动状态出错', e);
-                                                console.error(e);
-                                            });
-                                    }
-                                })
-                                .catch(console.error);
+                            this.#coin.dataset.aid = this.#collection.dataset.aid = this.$aid = <any>aid;
                         })
                         .catch(e => {
                             console.error(e);
@@ -220,25 +232,7 @@ ${View.stat.his_rank ? `<span title="本日日排行数据过期后，再纳入�
 <span class="line"></span>
 <span title="投硬币枚数${data.stat.coins}" class="u coin">硬币 ${Format.carry(data.stat.coins)}</span>
 <span title="追番数${data.stat.favorites}" class="u order">追番 ${Format.carry(data.stat.favorites)}</span>`;
-                            this.#coin.dataset.aid = <any>ep.aid;
-
-                            nav()
-                                .then(({ code, message, data }) => {
-                                    if (code !== 0) throw new ReferenceError(message, { cause: { code, message, data } });
-                                    if (data.isLogin) {
-                                        relation(ep!.aid)
-                                            .then(({ code, message, data }) => {
-                                                if (code !== 0) throw new ReferenceError(message, { cause: { code, message, data } });
-                                                const { coin } = data;
-                                                coin && this.#number.querySelector('.coin')!.classList.add('d');
-                                            })
-                                            .catch(e => {
-                                                toastr.error('获取互动状态出错', e);
-                                                console.error(e);
-                                            });
-                                    }
-                                })
-                                .catch(console.error);
+                            this.#coin.dataset.aid = this.#collection.dataset.aid = this.$aid = <any>ep.aid;
                         })
                         .catch(e => {
                             console.error(e);
@@ -268,9 +262,7 @@ ${View.stat.his_rank ? `<span title="本日日排行数据过期后，再纳入�
                             aid || (aid = data.list[0].aid);
                             this.$navigate(ROUTER.AV, new URL(`https://www.bilibili.com/video/av${aid}`));
                         })
-                        .catch(e => {
-                            console.error(e);
-                        });
+                        .catch(console.error);
                 }
                 break;
             }

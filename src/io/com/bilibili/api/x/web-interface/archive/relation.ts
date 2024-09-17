@@ -9,6 +9,12 @@ export async function relation(aid: number) {
     return <IRelation>await (await CATCH[aid]).clone().json();
 }
 
+relation.flesh = function () {
+    Object.keys(CATCH).forEach(d => {
+        delete CATCH[<any>d];
+    })
+}
+
 /** 同一请求缓存 */
 const CATCH: Record<number, Promise<Response>> = {};
 
