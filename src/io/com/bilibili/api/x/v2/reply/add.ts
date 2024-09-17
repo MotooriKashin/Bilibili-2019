@@ -1,5 +1,6 @@
 import { Api } from "../../..";
 import { IReplies } from ".";
+import { RestType } from "../../../../../../code";
 
 /**
  * 发送评论
@@ -31,20 +32,22 @@ export async function replyAdd(req: IReplyAddReq) {
         headers,
         body,
     });
-    return <{ code: number, data: IReplyAdd }>(await response.json());
+    return <IReplyAdd>(await response.json());
 }
 
-interface IReplyAdd {
-    dialog_str: string;
-    need_captcha: boolean;
-    parent_str: string;
-    reply: IReplies;
-    root_str: string;
-    rpid_str: string;
-    success_action: number;
-    success_animation: string;
-    success_toast: string;
-    url: string;
+interface IReplyAdd extends RestType {
+    data: {
+        dialog_str: string;
+        need_captcha: boolean;
+        parent_str: string;
+        reply: IReplies;
+        root_str: string;
+        rpid_str: string;
+        success_action: number;
+        success_animation: string;
+        success_toast: string;
+        url: string;
+    }
 }
 
 interface IReplyPic {

@@ -1,0 +1,101 @@
+@scope {
+    :scope {
+        inline-size: 100%;
+        block-size: 100%;
+        padding: 0;
+        margin: 0;
+        border: 0;
+        font-size: 14px;
+        text-align: start;
+        background-color: transparent;
+        pointer-events: none;
+
+        --delay: 4s;
+    }
+}
+
+.container {
+    position: absolute;
+    inset-block-start: 1em;
+    inset-inline-end: 1em;
+    display: flex;
+    flex-direction: column;
+    row-gap: .5em;
+
+    >div {
+        inline-size: 300px;
+        /* block-size: calc-size(auto); */
+        padding-block: 1.25em;
+        padding-inline-start: 4em;
+        padding-inline-end: 1.25em;
+        border-radius: .25em;
+        background-color: #2f96b4;
+        background-image: url(./assets/info.png);
+        background-position: 1.25em center;
+        background-repeat: no-repeat;
+        box-shadow: 0 0 12px #999;
+        color: #fff;
+        opacity: .8;
+        box-sizing: border-box;
+        pointer-events: auto;
+        overflow: clip;
+        word-wrap: break-word;
+        transform-origin: center 0;
+        cursor: pointer;
+        transition: all 0.7s allow-discrete;
+        animation: toastr 0s linear var(--delay);
+
+
+        @starting-style {
+            opacity: 0;
+            scale: 1 0;
+        }
+
+        &.success {
+            background-color: #51a351;
+            background-image: url(./assets/success.png);
+        }
+
+        &.warn {
+            background-color: #f89406;
+            background-image: url(./assets/warn.png);
+        }
+
+        &.error {
+            background-color: #bd362f;
+            background-image: url(./assets/error.png);
+        }
+
+        &:hover {
+            box-shadow: 0 0 12px #000;
+            opacity: 1;
+            animation-play-state: paused;
+        }
+
+        &.hold {
+            animation-play-state: paused;
+        }
+
+        &.hide {
+            opacity: 0;
+            scale: 1 0;
+        }
+    }
+
+    &.top-left {
+        inset-inline: 1em auto;
+    }
+
+    &.bottom-left {
+        flex-direction: column-reverse;
+        inset-inline: 1em auto;
+        inset-block: auto 1em;
+    }
+
+    &.bottom-right {
+        flex-direction: column-reverse;
+        inset-block: auto 1em;
+    }
+}
+
+@keyframes toastr {}

@@ -1,10 +1,9 @@
+import { Player } from "../..";
 import { customElement } from "../../../utils/Decorator/customElement";
 import { Panel } from "./panel";
-import { Record } from "./record";
 import { State } from "./state";
-import { Toast } from "./toast";
 
-/** 播放器容器区域 */
+/** 播放器视频区域 */
 @customElement('div')
 export class Wrap extends HTMLDivElement {
 
@@ -22,11 +21,8 @@ export class Wrap extends HTMLDivElement {
      */
     // attributeChangedCallback(name: IobservedAttributes, oldValue: string, newValue: string) {}
 
-    /** 初始化标记 */
-    // #inited = false;
-
     /** 每当元素添加到文档中时调用。 */
-    // connectedCallback() {}
+    // connectedCallback() { }
 
     /** 每当元素从文档中移除时调用。 */
     // disconnectedCallback() {}
@@ -34,21 +30,20 @@ export class Wrap extends HTMLDivElement {
     /** 每当元素被移动到新文档中时调用。 */
     // adoptedCallback() {}
 
-    /** 播放登记信息 */
-    $record = this.appendChild(new Record());
+    #player: Player;
 
-    /** 播放状态 */
-    $state = this.appendChild(new State());
+    #state: State;
 
-    /** 播放幕布 */
-    $panel = this.appendChild(new Panel());
+    #panel: Panel;
 
-    /** 浮窗通知 */
-    $toast = this.appendChild(new Toast());
-
-    constructor() {
+    constructor(player: Player) {
         super();
 
+        this.#player = player;
         this.classList.add('bofqi-area-wrap');
+        this.#state = new State(player);
+        this.#panel = new Panel(player);
+
+        this.append(player.$video, player.$danmaku, this.#state, this.#panel);
     }
 }

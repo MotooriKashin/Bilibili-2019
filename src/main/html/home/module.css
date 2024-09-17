@@ -1,0 +1,18 @@
+.module {
+    display: flex;
+    column-gap: 20px;
+
+    >.left {
+        flex: 1;
+        min-inline-size: 0;
+    }
+
+    >.right {
+        flex-shrink: 0;
+        inline-size: 260px;
+        display: flex;
+        flex-direction: column;
+        contain: strict;
+        overflow-y: clip;
+    }
+}

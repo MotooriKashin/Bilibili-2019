@@ -199,6 +199,7 @@ export namespace crypto {
             return str
         }
     }
+
     export namespace md5 {
 
         /**

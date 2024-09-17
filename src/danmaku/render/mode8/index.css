@@ -1,0 +1,32 @@
+.as3-danmaku-item:not(button) {
+    pointer-events: none;
+    user-select: none;
+}
+
+.as3-button {
+    position: absolute;
+    pointer-events: auto;
+    cursor: pointer;
+    transition: .2s;
+    transition-property: background-color, border, color;
+    outline: none;
+    user-select: none;
+    overflow: visible;
+    font-size: 16px;
+    color: #99a2aa;
+    border: 1px solid #ccd0d7;
+    border-radius: 4px;
+    background-color: #ffffff;
+    padding-inline: 20px;
+    padding-block: 10px;
+
+    &:hover {
+        color: #222;
+        border-color: #6d757a;
+    }
+
+    &:disabled {
+        color: #ccd0d7;
+        border-color: #e2e2e2;
+    }
+}

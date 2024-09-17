@@ -1,0 +1,22 @@
+.bofqi-panel {
+    position: absolute;
+    inline-size: 100%;
+    block-size: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--fff);
+    cursor: pointer;
+    z-index: 1;
+
+    .bofqi-panel-image {
+        inline-size: 90px;
+        block-size: 90px;
+        background-image: url(../../../../assets/panel.gif);
+        background-repeat: no-repeat;
+    }
+
+    &:not(.active) {
+        display: none;
+    }
+}

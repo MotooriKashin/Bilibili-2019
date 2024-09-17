@@ -1,9 +1,8 @@
 import { customElement } from "../utils/Decorator/customElement";
-import { Element } from "../utils/element";
-import { TOTP } from "../utils/TOTP";
 import { Toast } from "./toast";
+import stylesheet from "./index.css" with {type: 'css'};
 
-@customElement(undefined, `toastr-${TOTP.now()}`)
+@customElement(undefined, `toastr-${Date.now()}`)
 class Toastr extends HTMLElement {
 
     /**
@@ -34,9 +33,7 @@ class Toastr extends HTMLElement {
 
     #host = this.attachShadow({ mode: 'closed' });
 
-    #style = this.#host.appendChild(Element.add('style', undefined, undefined, __BILI_TOASTR_STYLE__));
-
-    #container = this.#host.appendChild(Element.add('div', { class: 'container' }));
+    #container = this.#host.appendChild(document.createElement('div'))
 
     /** 设定默认通知存在时间：单位/秒（会被通知实例自己设定的时间覆盖） */
     set $delay(v: number) {
@@ -60,11 +57,18 @@ class Toastr extends HTMLElement {
         }
     }
 
+    constructor() {
+        super();
+
+        this.#host.adoptedStyleSheets = [stylesheet];
+        this.#container.classList.add('container');
+    }
+
     info(...args: string[]) {
         document.body.contains(this) || document.body.appendChild(this);
         const div = new Toast(...args);
         this.#container.appendChild(div);
-
+        return div;
     }
 
     success(...args: string[]) {
@@ -72,6 +76,7 @@ class Toastr extends HTMLElement {
         const div = new Toast(...args);
         div.$type = 'success';
         this.#container.appendChild(div);
+        return div;
     }
 
     warn(...args: string[]) {
@@ -79,6 +84,7 @@ class Toastr extends HTMLElement {
         const div = new Toast(...args);
         div.$type = 'warn';
         this.#container.appendChild(div);
+        return div;
     }
 
     error(...args: string[]) {
@@ -86,13 +92,9 @@ class Toastr extends HTMLElement {
         const div = new Toast(...args);
         div.$type = 'error';
         this.#container.appendChild(div);
+        return div;
     }
 }
 
+/** 通知组件 */
 export const toastr = new Toastr();
-
-//////////////////////////// 全局增强 ////////////////////////////
-declare global {
-    /** 基于哈希消息认证码的一次性口令的密钥 */
-    const __BILI_TOASTR_STYLE__: string;
-}

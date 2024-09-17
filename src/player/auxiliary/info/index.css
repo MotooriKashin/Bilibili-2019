@@ -1,0 +1,230 @@
+.bofqi-info {
+    flex-shrink: 0;
+    block-size: 60px;
+    padding-inline: 20px;
+    display: flex;
+    align-items: center;
+    anchor-name: --bofqi-info;
+
+    .bofqi-info-number {
+        align-content: center;
+
+        >span {
+            &::before {
+                content: attr(data-num);
+            }
+
+            &:first-child::before {
+                font-size: 18px;
+                font-weight: 700;
+                color: var(--222);
+            }
+        }
+    }
+
+    >.bofqi-info-more {
+        position: absolute;
+        font-size: 24px;
+        inline-size: 30px;
+        aspect-ratio: 1;
+        inset-inline-end: calc(anchor(--bofqi-info end) + 6px);
+        anchor-name: --bofqi-more;
+        transition: all .3s;
+
+        >svg {
+            block-size: 1em;
+            aspect-ratio: 1;
+            fill: var(--99a2aa);
+            transition: all .3s;
+        }
+
+        &:hover {
+            background-color: var(--f4f5f7);
+            color: var(--6d757a);
+
+            >svg {
+                fill: var(--6d757a);
+            }
+        }
+    }
+
+    >.bofqi-more-wrap {
+        position-anchor: --bofqi-more;
+        inset-area: block-end span-inline-start;
+        margin-block-start: 5px;
+        padding-block: 10px;
+        border: 1px solid var(--99a2aa);
+        border-radius: 4px;
+        box-shadow: 0 2px 1px var(--e2e2e2);
+
+        >.bofqi-wrap-triangle {
+            position: absolute;
+            inset-block-start: -4px;
+            inset-inline-end: 10px;
+            inline-size: 6px;
+            block-size: 6px;
+            border: 1px solid var(--99a2aa);
+            rotate: 45deg;
+            border-block-end-color: var(--fafafa);
+            border-inline-end-color: var(--fafafa);
+        }
+
+        >button {
+            block-size: 30px;
+            padding-block: 0;
+            padding-inline-end: 14px;
+            padding-inline-start: 22px;
+            cursor: pointer;
+            text-align: start;
+            color: var(--222);
+            transition: background-color .3s;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+
+            &:disabled {
+                cursor: not-allowed;
+                color: var(--ccd0d7);
+            }
+
+            &:hover {
+                background-color: var(--e5e9ef);
+            }
+        }
+
+        &[popover]:popover-open:not(dialog) {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            overflow: initial;
+        }
+    }
+
+    >.bofqi-info-setting {
+        position: absolute;
+        font-size: 24px;
+        inline-size: 30px;
+        aspect-ratio: 1;
+        position-anchor: --bofqi-more;
+        inset-area: inline-start;
+        transition: all .3s;
+
+        >svg {
+            block-size: 1em;
+            aspect-ratio: 1;
+            fill: var(--99a2aa);
+            transition: all .3s;
+        }
+
+        &:hover {
+            background-color: var(--f4f5f7);
+            color: var(--6d757a);
+
+            >svg {
+                fill: var(--6d757a);
+            }
+        }
+    }
+
+    >.bofqi-setting-wrap {
+        position-anchor: --bofqi-auxiliary;
+        inset-area: center center;
+        inline-size: anchor-size(--bofqi-auxiliary inline);
+        block-size: anchor-size(--bofqi-auxiliary block);
+        scrollbar-width: thin;
+
+        &[popover]:popover-open:not(dialog) {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        >header {
+            flex-shrink: 0;
+            block-size: 60px;
+            color: var(--222);
+            font-size: 14px;
+            border-block-end: 1px solid var(--e2e2e2);
+            display: flex;
+            align-items: center;
+            padding-inline-start: 22px;
+        }
+
+        >.bofqi-setting {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            padding-inline-start: 22px;
+            padding-inline-end: 15px;
+
+            >hr {
+                inline-size: 100%;
+                border-color: var(--e2e2e2);
+            }
+
+            .bofqi-setting-title {
+                color: var(--222);
+                block-size: 50px;
+                font-weight: 700;
+                display: flex;
+                align-items: center;
+            }
+
+            .bofqi-setting-content {
+                display: flex;
+                align-items: center;
+                block-size: 26px;
+
+                &:not(.compact, :last-child) {
+                    margin-block-end: 14px;
+                }
+
+                > :last-child {
+                    flex-grow: 1;
+                }
+
+                &::before {
+                    content: attr(data-label);
+                    flex-shrink: 0;
+                    inline-size: 72px;
+                    color: var(--99a2aa);
+                    margin-inline-end: 9px;
+                }
+
+                >.bofqi-setting-font-border {
+                    display: flex;
+                    align-items: center;
+
+                    >label {
+                        display: flex;
+                        align-items: center;
+                        block-size: 24px;
+                        margin-inline: 4px;
+                        padding-inline: 6px;
+                        border-radius: 4px;
+                        color: var(--222);
+                        border: 1px solid transparent;
+                        transition: all .3s;
+                        cursor: pointer;
+
+                        &:has(input:checked) {
+                            color: var(--00a1d6);
+                            border-color: var(--00a1d6);
+                        }
+
+                        >input {
+                            appearance: none;
+                        }
+                    }
+                }
+
+                >.bpui-select {
+                    block-size: 100%;
+                }
+            }
+        }
+    }
+}

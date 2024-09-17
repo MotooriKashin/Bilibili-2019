@@ -1,0 +1,243 @@
+@import url(./chief.css);
+@import url(./module.css);
+@import url(./zone.css);
+@import url(./popularize.css);
+@import url(./live.css);
+@import url(./rank.css);
+@import url(./timeline.css);
+@import url(./region.css);
+
+@scope {
+    :scope {
+        color-scheme: light dark;
+
+        --99a2aa: #99a2aa;
+        --0000001a: #0000001a;
+        --00000033: #00000033;
+        --00000099: #00000099;
+        --000000e6: #000000e6;
+        --fff: #fff;
+        --000000b3: #000000b3;
+        --00000080: #00000080;
+        --ccd0d7: #ccd0d7;
+        --6d757a: #6d757a;
+        --e5e9ef: #e5e9ef;
+        --00a1d6: #00a1d6;
+        --fff: #fff;
+        --222: #222;
+        --555: #555;
+        --000: #000;
+        --9ba3ab: #9ba3ab;
+        --b8c0cc: #b8c0cc;
+        --f25d8e: #f25d8e;
+        --ff8eb3: #ff8eb3;
+        --00000029: #00000029;
+        --f6f9fa: #f6f9fa;
+
+        font-size: 12px;
+    }
+
+    a {
+        text-decoration: none;
+        outline: none;
+    }
+}
+
+.container {
+    --inline-size: 980px;
+
+    inline-size: var(--inline-size);
+    margin-inline: auto;
+    box-sizing: border-box;
+    font-size: 12px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 30px;
+
+    @media screen and (min-width:1400px) {
+
+        & {
+            --inline-size: 1160px;
+        }
+    }
+
+    @media screen and (min-width:2500px) {
+
+        & {
+            --inline-size: 1920px;
+        }
+    }
+
+    >.video-info {
+        position: absolute;
+        position-anchor: --rank;
+        inset-area: block-start;
+        inline-size: 320px;
+        border: 1px solid var(--ccd0d7);
+        border-radius: 4px;
+        box-shadow: 0 2px 4px var(--00000029);
+        background-color: var(--fff);
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        row-gap: 10px;
+
+        >.v-title {
+            line-height: 20px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        >.v-info {
+            color: var(--99a2aa);
+            display: flex;
+            column-gap: 10px;
+
+            >span {
+                white-space: nowrap;
+                overflow: clip;
+                text-overflow: ellipsis;
+
+                &.line {
+                    display: inline-block;
+                    border-inline-end: 1px solid var(--99a2aa);
+                }
+            }
+        }
+
+        >.v-preview {
+            border-block: 1px solid var(--e5e9ef);
+            padding-block: 10px;
+            display: flex;
+            column-gap: 8px;
+
+            >:first-child {
+                block-size: 60px;
+                inline-size: 96px;
+                border-radius: 4px;
+                background-size: cover;
+            }
+
+            >:last-child {
+                contain: strict;
+                line-height: 21px;
+                color: var(--99a2aa);
+                overflow: clip;
+                word-wrap: break-word;
+                word-break: break-all;
+            }
+        }
+
+        >.v-season {
+            border-block-end: 1px solid var(--e5e9ef);
+            padding-block: 10px;
+            display: flex;
+            column-gap: 12px;
+
+            >:first-child {
+                flex-shrink: 0;
+                block-size: 128px;
+                inline-size: 96px;
+                border-radius: 4px;
+                background-size: cover;
+            }
+
+            >:last-child {
+                flex: 1;
+                contain: strict;
+                display: flex;
+                flex-direction: column;
+                row-gap: 6px;
+
+                >span {
+                    font-size: 12px;
+                    line-height: 12px;
+                    color: var(--99a2aa);
+
+                    &:first-child {
+                        line-height: 34px;
+                        color: var(--222);
+                        font-size: 14px;
+                        white-space: nowrap;
+                        text-overflow: ellipsis;
+                        overflow: hidden;
+                    }
+                }
+            }
+        }
+
+        >.v-data {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+
+            >span {
+                color: var(--99a2aa);
+                display: flex;
+                align-items: center;
+                column-gap: 4px;
+
+                &::before {
+                    content: "";
+                    display: inline-block;
+                    inline-size: 12px;
+                    block-size: 12px;
+                    background-image: url(//static.hdslb.com/images/base/icons.png);
+                }
+
+                &.play::before {
+                    background-position: -282px -90px;
+                }
+
+                &.danmu::before {
+                    background-position: -282px -218px;
+                }
+
+                &.star::before {
+                    background-position: -282px -346px;
+                }
+
+                &.coin::before {
+                    background-position: -282px -410px;
+                }
+            }
+        }
+    }
+
+    >form {
+        position: fixed;
+        inset-block-start: 50%;
+        inset-inline-start: calc(100vi - (100vi - var(--inline-size)) / 2 + 1em);
+        translate: 0 -50%;
+        background-color: var(--f6f9fa);
+        border: 1px solid var(--e5e9ef);
+        border-start-start-radius: 4px;
+        border-start-end-radius: 4px;
+        display: flex;
+        flex-direction: column;
+
+        >label {
+            min-inline-size: 48px;
+            line-height: 24px;
+            text-align: center;
+            transition: background-color .3s, color .3s;
+            cursor: pointer;
+            user-select: none;
+
+            &:hover,
+            &:has(input:checked) {
+                background-color: var(--00a1d6);
+                color: var(--fff);
+            }
+
+            &:has(input:checked) {
+                pointer-events: none;
+            }
+
+            >input {
+                appearance: none;
+                display: none;
+            }
+        }
+    }
+}

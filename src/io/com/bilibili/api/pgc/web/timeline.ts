@@ -1,10 +1,11 @@
 import { Api } from "../..";
+import { RestType } from "../../../../../code";
 
 export async function timeline(types: TYPE) {
     const url = new URL(Api + '/pgc/web/timeline');
     url.searchParams.set('types', <any>types);
     const response = await fetch(url, { credentials: 'include' });
-    return <ITimeline[]>(await response.json()).result;
+    return <ITimeline>await response.json();
 }
 
 export enum TYPE {
@@ -15,12 +16,14 @@ export enum TYPE {
     TV = 5,
 }
 
-interface ITimeline {
-    date: string;
-    date_ts: number;
-    day_of_week: number;
-    episodes: IEpisodes[];
-    is_today: number;
+interface ITimeline extends RestType {
+    result: {
+        date: string;
+        date_ts: number;
+        day_of_week: number;
+        episodes: IEpisodes[];
+        is_today: number;
+    }[]
 }
 
 export interface IEpisodes {

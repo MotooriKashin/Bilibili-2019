@@ -1,11 +1,12 @@
+import { Player } from "../..";
+import svg_24pause from "../../../assets/svg/24pause.svg";
+import svg_24play from "../../../assets/svg/24play.svg";
 import { customElement } from "../../../utils/Decorator/customElement";
-import svg_pause from "../../assets/svg/pause.svg";
-import svg_play from "../../assets/svg/play.svg";
-import { video } from "../wrap/video";
+import { ev, PLAYER_EVENT } from "../../event";
 
-/** 播放器播放暂停控制 */
-@customElement('button')
-export class Toggle extends HTMLButtonElement {
+/** 播放/暂停 */
+@customElement('label')
+export class Toggle extends HTMLLabelElement {
 
     /**
      * 需要监听变动的属性。
@@ -21,9 +22,6 @@ export class Toggle extends HTMLButtonElement {
      */
     // attributeChangedCallback(name: IobservedAttributes, oldValue: string, newValue: string) {}
 
-    /** 初始化标记 */
-    // #inited = false;
-
     /** 每当元素添加到文档中时调用。 */
     // connectedCallback() { }
 
@@ -33,32 +31,33 @@ export class Toggle extends HTMLButtonElement {
     /** 每当元素被移动到新文档中时调用。 */
     // adoptedCallback() {}
 
-    constructor() {
+    #player: Player;
+
+    constructor(player: Player) {
         super();
 
-        this.classList.add('bofqi-control-button');
-        this.insertAdjacentHTML('beforeend', svg_play);
+        this.#player = player;
+        this.classList.add('bofqi-area-control-btn', 'bofqi-area-toggle', 'paused');
+        this.innerHTML = svg_24play + svg_24pause;
 
-        this.disabled = true;
 
-        this.addEventListener('click', () => {
-            video.paused ? video.play() : video.pause();
+        this.addEventListener('click', player.$video.$toggle);
+        player.$video.addEventListener('click', player.$video.$toggle);
+        player.$video.addEventListener('pause', this.#toggle);
+        player.$video.addEventListener('play', this.#toggle);
+        player.$video.addEventListener('canplay', () => {
+            this.classList.remove('disabled');
         });
-        video.addEventListener('click', () => {
-            video.paused ? video.play() : video.pause();
-        });
-        video.addEventListener('pause', () => {
-            this.innerHTML = svg_play;
-        });
-        video.addEventListener('play', () => {
-            this.innerHTML = svg_pause;
-        });
-        video.addEventListener('loadstart', () => {
-            this.disabled = true;
-            this.innerHTML = svg_play;
-        });
-        video.addEventListener('loadeddata', () => {
-            this.disabled = false;
-        });
+        ev.bind(PLAYER_EVENT.VIDEO_DESTORY, this.#indetify);
+
+        this.#indetify();
+    }
+
+    #toggle = () => {
+        this.classList.toggle('paused', Boolean(this.#player.$video?.paused));
+    }
+
+    #indetify = () => {
+        this.classList.add('disabled');
     }
 }

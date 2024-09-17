@@ -1,12 +1,15 @@
+import { Player } from "../../..";
 import { customElement } from "../../../../utils/Decorator/customElement";
 import { Element } from "../../../../utils/element";
 import { Context } from "../../../widget/context";
 import { Slider } from "../../../widget/slider";
 import { Statistic } from "./statistic";
+import { Track } from "./track";
 
-/** 播放器节点 */
+
+/** 视频元素 */
 @customElement('video')
-class Video extends HTMLVideoElement {
+export class Video extends HTMLVideoElement {
 
     /**
      * 需要监听变动的属性。
@@ -40,9 +43,6 @@ class Video extends HTMLVideoElement {
         }
     }
 
-    /** 初始化标记 */
-    // #inited = false;
-
     /** 每当元素添加到文档中时调用。 */
     // connectedCallback() {}
 
@@ -52,52 +52,69 @@ class Video extends HTMLVideoElement {
     /** 每当元素被移动到新文档中时调用。 */
     // adoptedCallback() {}
 
+    #player: Player;
+
     /** 右键菜单 */
     private $context = new Context(this);
 
     /** 播放速度 */
-    private $playbackRate = Element.add('li', { class: 'context-playback-rate' }, this.$context);
+    private $playbackRate = Element.add('li', { class: 'context-playback-rate', appendTo: this.$context });
 
     /** 播放速率 */
     private $inputRate = this.$playbackRate.appendChild(new Slider());
 
     /** 画面比例 */
-    private $ratio = Element.add('li', { class: 'context-playback-ratio' }, this.$context);
+    private $ratio = Element.add('li', { class: 'context-playback-ratio', appendTo: this.$context });
 
-    private $ratioToggle = Element.add('div', undefined, this.$ratio);
+    private $ratioToggle = Element.add('div', { appendTo: this.$ratio });
 
     /** 画面比例：默认 */
-    private $ratio1 = Element.add('button', { class: 'bpui-button' }, this.$ratioToggle);
+    private $ratio1 = Element.add('button', { class: 'bpui-button', appendTo: this.$ratioToggle });
 
     /** 画面比例：4:3 */
-    private $ratio43 = Element.add('button', { class: 'bpui-button' }, this.$ratioToggle);
+    private $ratio43 = Element.add('button', { class: 'bpui-button', appendTo: this.$ratioToggle });
 
     /** 画面比例：16:9 */
-    private $ratio169 = Element.add('button', { class: 'bpui-button' }, this.$ratioToggle);
+    private $ratio169 = Element.add('button', { class: 'bpui-button', appendTo: this.$ratioToggle });
 
     /** 关灯 */
-    private $deglim = Element.add('li', { class: 'context-playback-deglim' }, this.$context);
+    private $deglim = Element.add('li', { class: 'context-playback-deglim', appendTo: this.$context });
 
     /** 镜像 */
-    private $mirror = Element.add('li', { class: 'context-playback-mirror' }, this.$context);
+    private $mirror = Element.add('li', { class: 'context-playback-mirror', appendTo: this.$context });
 
     /** 更新历史 8c739d8a */
-    private $history = Element.add('li', { class: 'context-playback-history' }, this.$context);
+    private $history = Element.add('li', { class: 'context-playback-history', appendTo: this.$context });
 
     /** 视频统计信息 */
-    private $statistic = Element.add('li', { class: 'context-playback-statistic' }, this.$context);
+    private $statistic = Element.add('li', { class: 'context-playback-statistic', appendTo: this.$context });
 
     /** 视频统计信息面板 */
     private $statistics = new Statistic();
 
-    constructor() {
+    /** 字幕轨道 */
+    $track = new Track(this);
+
+    /** 播放/暂停 */
+    $toggle = () => {
+        this.paused ? this.play() : this.pause();
+    }
+
+    /** 跳帧播放：/秒 */
+    $seek = (v: number) => {
+        this.currentTime = v;
+        this.play();
+    }
+
+    constructor(player: Player) {
         super();
 
+        this.#player = player;
+
         this.$context.classList.add('bofqi-video-context-menu', 'black');
-        this.$inputRate.min = '0.25';
-        this.$inputRate.step = '0.25';
-        this.$inputRate.max = '5';
-        this.$inputRate.defaultValue = '1';
+        this.$inputRate.$step = '0.25';
+        this.$inputRate.$max = 5;
+        this.$inputRate.$defaultValue = 1;
         this.$inputRate.$hint = true;
         this.$inputRate.classList.add('label');
         this.$ratio1.textContent = '默认';
@@ -128,54 +145,36 @@ class Video extends HTMLVideoElement {
             this.$ratio169.classList.remove('active');
         });
         this.$ratio43.addEventListener('click', () => {
-            this.style.setProperty('--aspect-ratio', '4 / 3');
+            // TODO: 画面分辨率切换
+            // this.style.setProperty('--aspect-ratio', '4 / 3');
             this.$ratio1.classList.remove('active');
             this.$ratio43.classList.add('active');
             this.$ratio169.classList.remove('active');
         });
         this.$ratio169.addEventListener('click', () => {
-            this.style.setProperty('--aspect-ratio', '16 / 9');
+            // this.style.setProperty('--aspect-ratio', '16 / 9');
             this.$ratio1.classList.remove('active');
             this.$ratio43.classList.remove('active');
             this.$ratio169.classList.add('active');
         });
         this.$deglim.addEventListener('click', () => {
-            this.$deglim.dataset.value = document.body.classList.toggle('deglim') ? '开灯' : '关灯';
+            // this.$deglim.dataset.value = document.body.classList.toggle('deglim') ? '开灯' : '关灯';
+            // TODO: 关灯
         });
         this.$mirror.addEventListener('click', () => {
             this.$mirror.classList.toggle('active', this.classList.toggle('mirror'));
         });
-        this.$history.addEventListener('click', () => {
-            self.open('/blackboard/webplayer_history.html#html5');
-        });
+        // this.$history.addEventListener('click', () => {
+        //     self.open('https://www.bilibili.com/blackboard/webplayer_history.html#html5');
+        // });
         this.$statistic.addEventListener('click', () => {
             this.parentElement?.contains(this.$statistics) || this.parentElement?.appendChild(this.$statistics)
             this.$statistic.classList.toggle('active', this.$statistics.toggle());
         });
         this.$context.addEventListener('open', () => {
-            this.$deglim.dataset.value = document.body.classList.contains('deglim') ? '开灯' : '关灯';
+            // this.$deglim.dataset.value = document.body.classList.contains('deglim') ? '开灯' : '关灯';
             this.$mirror.classList.toggle('active', this.classList.contains('mirror'));
             this.$statistic.classList.toggle('active', this.$statistics.classList.contains('active'));
         });
     }
-
-    /**
-     * 跳帧播放
-     * 
-     * @param cur 目标时间：/s
-     */
-    seek(t: number) {
-        this.currentTime = t;
-    }
-
-    toggle() {
-        this.paused ? this.play() : this.pause();
-    }
 }
-
-/** 
- * 视频节点  
- * 作为播放器的核心组件，不是以属性而是以模块的形式提供，
- * 以便能够从任何地方访问。
- */
-export const video = new Video();

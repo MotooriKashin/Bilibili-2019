@@ -1,4 +1,5 @@
 import { Api } from "../../..";
+import { RestType } from "../../../../../../code";
 import { FNVAL } from "../../../../../../fnval";
 import { QUALITY } from "../../../../../../quality";
 import { EP_STATUS } from "../../../../../../stat";
@@ -20,47 +21,49 @@ export async function pugvPlayurl(
     url.searchParams.set('fnval', <any>fnval);
     url.searchParams.set('fnver', <any>fnver);
     const response = await fetch(url, { credentials: 'include' });
-    return <IPlayurl>(await response.json()).data;
+    return <IPlayurl>(await response.json());
 }
 
-interface IPlayurl {
-    accept_description: string[];
-    accept_format: string;
-    accept_quality: QUALITY[];
-    dash?: IDash;
-    durl?: IDurl[];
-    durls?: {
-        durl: IDurl[];
-        quality: QUALITY;
-    }[];
-    fnval: number;
-    fnver: FNVAL;
-    format: string;
-    from: string;
-    has_paid: boolean;
-    is_drm: boolean;
-    is_preview: number;
-    message: string;
-    quality: QUALITY;
-    result: string;
-    seek_param: string;
-    seek_type: string;
-    status: EP_STATUS;
-    support_formats: {
-        codecs: string[];
-        description: string;
-        display_desc: string;
+interface IPlayurl extends RestType {
+    data: {
+        accept_description: string[];
+        accept_format: string;
+        accept_quality: QUALITY[];
+        dash?: IDash;
+        durl?: IDurl[];
+        durls?: {
+            durl: IDurl[];
+            quality: QUALITY;
+        }[];
+        fnval: number;
+        fnver: FNVAL;
         format: string;
-        has_preview: boolean;
-        need_login: boolean;
-        need_vip: boolean;
-        new_description: string;
+        from: string;
+        has_paid: boolean;
+        is_drm: boolean;
+        is_preview: number;
+        message: string;
         quality: QUALITY;
-        sub_description: string;
-        superscript: string;
-    }[];
-    timelength: number;
-    type: string;
-    video_codecid: number;
-    video_project: boolean;
+        result: string;
+        seek_param: string;
+        seek_type: string;
+        status: EP_STATUS;
+        support_formats: {
+            codecs: string[];
+            description: string;
+            display_desc: string;
+            format: string;
+            has_preview: boolean;
+            need_login: boolean;
+            need_vip: boolean;
+            new_description: string;
+            quality: QUALITY;
+            sub_description: string;
+            superscript: string;
+        }[];
+        timelength: number;
+        type: string;
+        video_codecid: number;
+        video_project: boolean;
+    }
 }

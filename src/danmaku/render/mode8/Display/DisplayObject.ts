@@ -1,5 +1,4 @@
 import { IDanmaku } from "../../..";
-import { Element } from "../../../../utils/element";
 import { Format } from "../../../../utils/fomat";
 import { BitmapFilter } from "../filters/BitmapFilter";
 import { BlurFilter } from "../filters/BlurFilter";
@@ -10,6 +9,7 @@ import { Point } from "../geom/Point";
 import { Rectangle } from "../geom/Rectangle";
 import { Transform } from "../geom/Transform";
 import { Vector3D } from "../geom/Vector3D";
+import { addElement } from "../Utils/element";
 import { AccessibilityProperties } from "./AccessibilityProperties";
 import { BitmapData } from "./Bitmap";
 import { BlendMode } from "./BlendMode";
@@ -623,7 +623,7 @@ export abstract class DisplayObject<T extends HTMLElement> {
         this._updateBox(true);
     }
 
-    constructor(private $param = <IDisplay>{}, private $append = true, public $host = <T><unknown>Element.add('div', { class: 'as3-danmaku-item' })) { }
+    constructor(private $param = <IDisplay>{}, private $append = true, public $host = <T><unknown>addElement('div', { class: 'as3-danmaku-item' })) { }
 
     protected init() {
         'alpha' in this.$param && (this.alpha = this.$param.alpha);

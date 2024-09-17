@@ -1,80 +1,58 @@
-/** DOM 操作的封装 */
+/** DOM 操作封装 */
 export namespace Element {
 
     /**
-     * 创建HTML节点
+     * 快速创建 Element
      * 
-     * @param tag 节点名称
-     * @param attribute 节点属性对象
-     * @param parrent 添加到的父节点
-     * @param innerHTML 节点的innerHTML
-     * @param top 是否在父节点中置顶
-     * @param replaced 替换节点而不是添加，被替换的节点，将忽略父节点相关参数
+     * @param tagName 标签铭
+     * @param param1 属性配置
      */
     export function add<T extends keyof HTMLElementTagNameMap>(
-        tag: T,
-        attribute?: Record<string, string | number | boolean>,
-        parrent?: HTMLElement,
-        innerHTML?: string,
-        top?: boolean,
-        replaced?: Element,
-    ): HTMLElementTagNameMap[T] {
-        const element = document.createElement(tag);
-        attribute && (Object.entries(attribute).forEach(d => {
-            Object.hasOwn(attribute, d[0]) && element.setAttribute(d[0], <string>d[1])
-        }));
-        innerHTML && element.insertAdjacentHTML('beforeend', innerHTML);
-        replaced
-            ? replaced.replaceWith(element)
-            : parrent && (top
-                ? parrent.insertAdjacentElement('afterbegin', element)
-                : parrent.insertAdjacentElement('beforeend', element)
-            )
-        return element;
-    }
-
-    /**
-     * 生成svg系节点
-     * 
-     * @param tag 节点名称
-     * @param attribute 节点属性对象
-     * @param parrent 添加到的父节点
-     */
-    export function addSvg<T extends keyof SVGElementTagNameMap>(
-        tag: T,
-        attribute?: Record<string, string | number | boolean>,
-        parrent?: ParentNode,
+        tagName: T,
+        option?: IAddOption,
     ) {
-        const svg = document.createElementNS("http://www.w3.org/2000/svg", tag);
-        attribute && (Object.entries(attribute).forEach(d => {
-            Object.hasOwn(attribute, d[0]) && svg.setAttribute(d[0], <string>d[1])
-        }));
-        parrent && parrent.append(svg);
-        return svg;
+        const ele = document.createElement(tagName);
+        if (option) {
+            const { insertTo, appendTo, prependTo, style, attribute, class: classList, data, innerText, innerHTML, children } = option;
+            attribute && Object.entries(attribute).forEach(d => { ele.setAttribute(...d) });
+            style && Object.entries(style).forEach(([key, value]) => { (<any>ele).style[key] = value });
+            classList && ele.classList.add(...Array.isArray(classList) ? classList : [classList]);
+            data && Object.entries(data).forEach(([key, value]) => { ele.dataset[key] = value });
+            innerText ? (ele.innerText = innerText) : innerHTML ? (ele.innerHTML = innerHTML) : (children && ele.replaceChildren(...Array.isArray(children) ? children : [children]));
+            if (insertTo) {
+                insertTo.target.insertAdjacentElement(insertTo.where || 'afterend', ele);
+            } else {
+                appendTo ? appendTo.append(ele) : (prependTo?.prepend(ele));
+            }
+        }
+        return ele;
     }
 
-    /**
-     * 加载外源脚本，
-     * 支持加载完成后执行回调函数或者返回Promise
-     * 
-     * @param src 外源脚本url
-     * @param onload 加载完成后的回调函数
-     */
-    export function loadScript(src: string, onload?: () => void) {
-        return new Promise((r, j) => {
-            const script = document.createElement("script");
-            script.type = "text/javascript";
-            script.src = src;
-            script.addEventListener("load", () => {
-                script.remove();
-                onload && onload();
-                r(true);
-            });
-            script.addEventListener('error', () => {
-                script.remove();
-                j();
-            });
-            (document.body || document.head || document.documentElement || document).appendChild(script);
-        });
+    interface IAddOption {
+        /** 插入到（比`appendTo`和`prependTo`优先级更高） */
+        insertTo?: {
+            /** 对应节点 */
+            target: Element;
+            /** 位置，默认为目标同级后 */
+            where?: InsertPosition;
+        }
+        /** 要添加到对应节点的末尾 */
+        appendTo?: ParentNode;
+        /** 要添加到对应节点的末尾 */
+        prependTo?: ParentNode;
+        /** 样式 */
+        style?: Partial<CSSStyleDeclaration>;
+        /** 属性 */
+        attribute?: Record<string, string>;
+        /** 类（禁止含空格） */
+        class?: string | string[];
+        /** data-* */
+        data?: DOMStringMap;
+        /** 子节点字符串 */
+        innerHTML?: string;
+        /** 子节点文本 */
+        innerText?: string;
+        /** 子节点（优先级在`innerHTML`和`innerText`之后） */
+        children?: Node | Node[];
     }
 }

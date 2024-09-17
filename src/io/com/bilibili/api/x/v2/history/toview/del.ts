@@ -1,4 +1,5 @@
 import { Api } from "../../../..";
+import { RestType } from "../../../../../../../code";
 
 /**
  * 移除稍后再看
@@ -24,5 +25,5 @@ export async function del(
         headers,
         body,
     });
-    return <number>(await response.json()).code;
+    return <RestType>await response.json();
 }

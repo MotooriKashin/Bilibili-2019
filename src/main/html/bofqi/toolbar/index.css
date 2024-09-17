@@ -1,0 +1,353 @@
+.toolbar {
+    block-size: 80px;
+    margin-block-start: 20px;
+    background-color: var(--fff);
+    color: var(--444);
+    border: 1px solid var(--e5e9ef);
+    border-radius: 4px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    column-gap: 15px;
+
+    &.hide {
+        display: none;
+    }
+
+    >.share-box {
+        display: flex;
+        position: relative;
+
+        >.s-text {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-areas:
+                "t i"
+                "n i";
+            align-items: center;
+            padding: 20px;
+            justify-items: center;
+            anchor-name: --share-box;
+            cursor: pointer;
+
+            >.t {
+                grid-area: t;
+                font-size: 18px;
+            }
+
+            >.num {
+                grid-area: n;
+                color: var(--6d757a);
+                font-size: 12px;
+            }
+
+            >.icon {
+                grid-area: i;
+                inline-size: 10px;
+                block-size: 10px;
+                background-image: url(//static.hdslb.com/images/base/icons.png);
+                background-position: -933px -927px;
+                background-repeat: no-repeat;
+            }
+        }
+
+        >.share-btn {
+            display: flex;
+            align-items: center;
+            column-gap: 7px;
+
+            >i {
+                background-image: url(//static.hdslb.com/images/base/icons.png);
+                background-repeat: no-repeat;
+                inline-size: 40px;
+                block-size: 40px;
+                cursor: pointer;
+
+                &.dynmic {
+                    background-position: -1357px -972px;
+
+                    &:hover {
+                        background-position-x: -1421px;
+                    }
+                }
+
+                &.weibo {
+                    background-position: -1357px -586px;
+                }
+
+                &.zone {
+                    background-position: -1357px -726px;
+
+                }
+
+                &.qq {
+                    background-position: -1357px -796px;
+                }
+
+                &.baidu {
+                    background-position: -1357px -656px;
+
+                }
+
+                &:hover {
+                    background-position-x: -1427px;
+                }
+            }
+        }
+
+        >.share-popup {
+            position: absolute;
+            position-anchor: --share-box;
+            inset-area: block-end span-inline-end;
+            border: 0 solid var(--e5e9ef);
+            border-end-start-radius: 4px;
+            border-end-end-radius: 4px;
+            box-shadow: 0 3px 4px var(--00000029);
+            background-color: var(--fff);
+            z-index: 1;
+            display: flex;
+            transform-origin: center 0;
+            transition: all .5s allow-discrete;
+
+            @starting-style {
+                scale: 1 0;
+            }
+
+            >.share-address {
+                padding: 20px;
+                display: flex;
+                flex-direction: column;
+                row-gap: 20px;
+
+                >.t {
+                    font-size: 18px;
+                    color: var(--333);
+                    margin-block-start: 20px;
+                }
+
+                >.item {
+                    display: flex;
+
+                    >.name {
+                        display: inline-block;
+                        inline-size: 62px;
+                        font-size: 13px;
+                    }
+
+                    >input {
+                        border: 1px solid var(--ccd0d7);
+                        inline-size: 200px;
+                        margin-inline-start: 10px;
+                        border-radius: 0;
+                        padding-inline: 4px;
+                        text-decoration: none;
+                        outline: none;
+                    }
+
+                    >button {
+                        inline-size: 40px;
+                        padding: 0;
+                        border: 0;
+                        background-color: var(--00a1d6);
+                        color: var(--fff);
+                        font-size: 12px;
+                        cursor: pointer;
+                    }
+                }
+            }
+
+            >.or-code {
+                inline-size: 195px;
+                margin: 26px;
+                padding-block: 10px;
+                padding-inline: 20px;
+                border-inline-start: 1px solid var(--e5e9ef);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                row-gap: 18px;
+
+                >.t {
+                    font-size: 16px;
+                }
+
+                >.or-code-pic {
+                    inline-size: 100px;
+                    block-size: 100px;
+                }
+            }
+        }
+
+        &:not(:hover)>.share-popup {
+            display: none;
+            scale: 1 0;
+        }
+    }
+
+
+    >.tb-line {
+        block-size: 20px;
+        border-inline-end: 1px solid var(--ccc);
+    }
+
+    >.fav-box {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+
+        &::before {
+            content: "";
+            display: inline-block;
+            inline-size: 80px;
+            block-size: 80px;
+            background: url(//s1.hdslb.com/bfs/static/jinkela/videoplay/asserts/anim-fav.png);
+        }
+
+
+        &.d::before {
+            background-position: -1120px 0;
+        }
+
+        &:not(.d):hover::before {
+            animation: fav 1400ms steps(14) infinite;
+        }
+
+        >div {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            >:first-child {
+                color: var(--000);
+                font-size: 16px;
+            }
+
+            >:last-child {
+                color: var(--6d757a);
+                font-size: 12px;
+            }
+        }
+    }
+
+    >.box {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+
+        &::before {
+            content: "";
+            display: inline-block;
+            inline-size: 80px;
+            block-size: 80px;
+        }
+
+        >div {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            >:first-child {
+                color: var(--000);
+                font-size: 16px;
+            }
+
+            >:last-child {
+                color: var(--6d757a);
+                font-size: 12px;
+            }
+        }
+
+        &.d>div>:first-child::before {
+            content: "已";
+        }
+
+        &.fav {
+            &::before {
+                background-image: url(//s1.hdslb.com/bfs/static/jinkela/videoplay/asserts/anim-fav.png);
+            }
+
+
+            &.d::before {
+                background-position-x: -1120px;
+            }
+
+            &:not(.d):hover::before {
+                animation: fav 1400ms steps(14) infinite;
+            }
+        }
+
+        &.coin {
+
+            &::before {
+                background-position-y: -11px;
+                background-image: url(//s1.hdslb.com/bfs/static/jinkela/videoplay/asserts/anim-coin.png);
+            }
+
+
+            &.d::before {
+                background-position-x: -641px;
+            }
+
+            &:not(.d):hover::before {
+                animation: coin 800ms steps(8) infinite;
+            }
+        }
+
+        &.wait {
+
+            &::before {
+                background-image: url(//s1.hdslb.com/bfs/static/jinkela/videoplay/asserts/anim-wait.png);
+            }
+
+
+            &.d::before {
+                background-position-x: -960px;
+            }
+
+            &:not(.d):hover::before {
+                animation: wait 800ms steps(8) infinite;
+            }
+        }
+
+        &.app {
+
+            &::before {
+                transition: background-position-x 720ms steps(9);
+                background-image: url(//s1.hdslb.com/bfs/static/jinkela/videoplay/asserts/anim-app.png);
+            }
+
+            &:hover::before {
+                background-position-x: -720px;
+                animation: app 560ms steps(7) 720ms infinite;
+            }
+        }
+    }
+}
+
+@keyframes fav {
+    to {
+        background-position-x: -1120px;
+    }
+}
+
+@keyframes coin {
+    to {
+        background-position-x: -640px;
+    }
+}
+
+@keyframes wait {
+    to {
+        background-position-x: -640px;
+    }
+}
+
+@keyframes app {
+    from {
+        background-position-x: -720px;
+    }
+
+    to {
+        background-position-x: -1280px;
+    }
+}

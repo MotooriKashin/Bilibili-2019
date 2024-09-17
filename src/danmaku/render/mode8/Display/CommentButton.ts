@@ -1,4 +1,4 @@
-import { Element } from "../../../../utils/element";
+import { addElement } from "../Utils/element";
 import { IDisplay } from "./Display";
 import { UIComponent } from "./UIComponent";
 
@@ -6,7 +6,7 @@ export class CommentButton extends UIComponent {
 
     constructor(param: ICommentButton) {
         super(param);
-        this.$host = <any>Element.add('button', { class: 'as3-danmaku-item' });
+        this.$host = <any>addElement('button', { class: 'as3-danmaku-item' });
         this.$host.classList.add('as3-button');
         this.$host.innerText = param.text.replace(/\/n/g, '\n');
         param.onclick && this.$host.addEventListener('click', param.onclick);

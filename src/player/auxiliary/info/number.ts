@@ -1,7 +1,8 @@
+import { Player } from "../..";
 import { customElement } from "../../../utils/Decorator/customElement";
-import { PLAYER_EVENT, ev } from "../../event-target";
+import { ev, PLAYER_EVENT } from "../../event";
 
-/** 弹幕数及播放人数信息 */
+/** 播放器数据 */
 @customElement('div')
 export class Number extends HTMLDivElement {
 
@@ -19,11 +20,8 @@ export class Number extends HTMLDivElement {
      */
     // attributeChangedCallback(name: IobservedAttributes, oldValue: string, newValue: string) {}
 
-    /** 初始化标记 */
-    // #inited = false;
-
     /** 每当元素添加到文档中时调用。 */
-    // connectedCallback() {}
+    // connectedCallback() { }
 
     /** 每当元素从文档中移除时调用。 */
     // disconnectedCallback() {}
@@ -31,38 +29,48 @@ export class Number extends HTMLDivElement {
     /** 每当元素被移动到新文档中时调用。 */
     // adoptedCallback() {}
 
-    #count = 0;
+    #player: Player;
 
-    /** 观看人数 */
-    set $count(v: number) {
-        this.dataset.count = `${(this.#count = v) || '-'}`;
+    #watch = this.appendChild(document.createElement('span'));
+
+    #danmaku = this.appendChild(document.createElement('span'));
+
+    #dm = 0;
+
+    /** 设定观看人数 */
+    set $watch(v: number | string) {
+        this.#watch.dataset.num = <any>v || '-';
     }
 
-    #danmaku = 0;
-
-    /** 弹幕数 */
+    /** 设定弹幕数 */
     set $danmaku(v: number) {
-        this.dataset.danmaku = `${(this.#danmaku += v) || '-'}条弹幕`;
+        this.#danmaku.dataset.num = <any>(this.#dm += v) || '-';
     }
 
-    constructor() {
+    constructor(player: Player) {
         super();
 
-        this.classList.add('bofqi-auxiliary-info-number');
-
-        this.textContent = '人正在观看，';
-        this.dataset.count = '-';
-        this.dataset.danmaku = '-条弹幕';
+        this.#player = player;
+        this.classList.add('bofqi-info-number');
+        this.#watch.textContent = '人正在观看，';
+        this.#danmaku.textContent = '条弹幕';
 
         ev.bind(PLAYER_EVENT.DANMAKU_ADD, ({ detail }) => {
             this.$danmaku = detail.length;
         });
-        ev.bind(PLAYER_EVENT.DANMAKU_IDENTIFY, this.identify);
-        ev.bind(PLAYER_EVENT.IDENTIFY, this.identify);
-    }
+        ev.bind(PLAYER_EVENT.DANMAKU_IDENTIFY, () => {
+            this.#dm = 0;
+            this.$danmaku = 0;
+        });
+        ev.bind(PLAYER_EVENT.OTHER_IDENTITY, () => {
+            this.$watch = 0;
+        });
+        ev.bind(PLAYER_EVENT.ONLINE_NUMBER, ({ detail }) => {
+            const { count } = detail;
+            this.$watch = count;
+        });
 
-    private identify = () => {
-        this.$count = 0;
-        this.$danmaku = this.#danmaku = 0;
+        this.$danmaku = 0;
+        this.$watch = 0;
     }
 }

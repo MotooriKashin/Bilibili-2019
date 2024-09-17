@@ -8,5 +8,5 @@ export async function newlist(
     url.searchParams.set('rid', <any>rid);
     url.searchParams.set('ps', <any>'15');
     const response = await fetch(url, { credentials: 'include' });
-    return <IRegion[]>(await response.json()).data.archives;
+    return <IRegion>await response.json();
 }

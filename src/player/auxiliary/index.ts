@@ -1,12 +1,13 @@
+import { Player } from "..";
 import { customElement } from "../../utils/Decorator/customElement";
-import { PLAYER_EVENT, ev } from "../event-target";
+import { ev, PLAYER_EVENT } from "../event";
 import { Block } from "./block";
 import { Danmaku } from "./danmaku";
 import { Filter } from "./filter";
 import { Info } from "./info";
 import { Recommend } from "./recommend";
 
-/** 播放器右侧面板 */
+/** 播放器辅助区域 */
 @customElement('div')
 export class Auxiliary extends HTMLDivElement {
 
@@ -24,9 +25,6 @@ export class Auxiliary extends HTMLDivElement {
      */
     // attributeChangedCallback(name: IobservedAttributes, oldValue: string, newValue: string) {}
 
-    /** 初始化标记 */
-    // #inited = false;
-
     /** 每当元素添加到文档中时调用。 */
     // connectedCallback() { }
 
@@ -36,43 +34,45 @@ export class Auxiliary extends HTMLDivElement {
     /** 每当元素被移动到新文档中时调用。 */
     // adoptedCallback() {}
 
-    /** 播放信息栏 */
-    $info = this.appendChild(new Info());
+    #player: Player;
 
-    /** 播放列表控制栏 */
-    $filter = this.appendChild(new Filter());
+    $info: Info;
 
-    /** 当前播放列表 */
-    $currentList?: HTMLDivElement;
+    $filter: Filter;
 
-    /** 推荐列表 */
     $recommend = new Recommend();
 
-    /** 弹幕列表 */
-    $danmaku = new Danmaku();
+    #danmaku: Danmaku;
 
-    /** 屏蔽列表 */
-    $block = new Block();
+    #block = new Block();
 
-    constructor() {
+    /** 当前播放列表 */
+    #currentList?: HTMLDivElement;
+
+    constructor(player: Player) {
         super();
 
+        this.#player = player;
         this.classList.add('bofqi-auxiliary');
+        this.$info = this.appendChild(new Info(player));
+        this.$filter = this.appendChild(new Filter(player));
+        this.#danmaku = new Danmaku(player);
+
         ev.bind(PLAYER_EVENT.AUXILIARY_FILTER, ({ detail }) => {
             switch (detail) {
                 case 1: {
-                    this.$currentList ? this.$currentList.replaceWith(this.$danmaku) : this.appendChild(this.$danmaku);
-                    this.$currentList = this.$danmaku;
+                    this.#currentList ? this.#currentList.replaceWith(this.#danmaku) : this.appendChild(this.#danmaku);
+                    this.#currentList = this.#danmaku;
                     break;
                 }
                 case 2: {
-                    this.$currentList ? this.$currentList.replaceWith(this.$block) : this.appendChild(this.$block);
-                    this.$currentList = this.$block;
+                    this.#currentList ? this.#currentList.replaceWith(this.#block) : this.appendChild(this.#block);
+                    this.#currentList = this.#block;
                     break;
                 }
                 default: {
-                    this.$currentList ? this.$currentList.replaceWith(this.$recommend) : this.appendChild(this.$recommend);
-                    this.$currentList = this.$recommend;
+                    this.#currentList ? this.#currentList.replaceWith(this.$recommend) : this.appendChild(this.$recommend);
+                    this.#currentList = this.$recommend;
                     break;
                 }
             }

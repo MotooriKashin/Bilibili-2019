@@ -1,26 +1,28 @@
 import { Api } from "../../..";
+import { RestType } from "../../../../../../code";
 import { IRelated } from "../archive/related";
 
 export async function detail(aid: number) {
     const url = new URL(Api + '/x/web-interface/view/detail');
     url.searchParams.set('aid', <any>aid);
     CATCH[aid] || (CATCH[aid] = fetch(url, { credentials: 'include' }));
-    return <IDetail>(await (await CATCH[aid]).clone().json()).data;
+    return <IDetail>await (await CATCH[aid]).clone().json();
 }
 
 /** 同一请求缓存 */
 const CATCH: Record<number, Promise<Response>> = {};
 
-interface IDetail {
-    Card: ICard;
-    Related: IRelated[];
-    Tags: ITags[];
-    View: IView;
-    elec?: unknown;
-    participle: string[];
-    query_tags?: unknown;
-    recommend?: unknown;
-
+interface IDetail extends RestType {
+    data: {
+        Card: ICard;
+        Related: IRelated[];
+        Tags: ITags[];
+        View: IView;
+        elec?: unknown;
+        participle: string[];
+        query_tags?: unknown;
+        recommend?: unknown;
+    }
 }
 
 interface ICard {
@@ -115,6 +117,7 @@ interface IView {
             weekly_recommend_num: number;
         }[]
     };
+    mission_id?: number;
     owner: {
         face: string;
         mid: number;

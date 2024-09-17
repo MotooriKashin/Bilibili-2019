@@ -1,9 +1,0 @@
-.bofqi-control-fullscreen {
-    anchor-name: --fullscreen;
-}
-
-@media (display-mode: picture-in-picture) {
-    .bofqi-control-fullscreen {
-        display: none;
-    }
-}

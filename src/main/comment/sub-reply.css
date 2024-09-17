@@ -1,0 +1,213 @@
+.sub-reply {
+    padding-block: 10px;
+    display: flex;
+    column-gap: .5em;
+
+    >:first-child {
+        flex-shrink: 0;
+
+        >.avatar-sub {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+
+            --size: 24px;
+
+            >.avatar-face {
+                block-size: var(--size);
+                inline-size: var(--size);
+                margin: calc(var(--size) / 3);
+                border-radius: 50%;
+            }
+
+            >.avatar-pendant {
+                position: absolute;
+                block-size: calc(var(--size) / 2* 3);
+                inline-size: calc(var(--size) / 2* 3);
+            }
+
+            >.avatar-icon {
+                position: absolute;
+                block-size: calc(var(--size) * 3 / 8);
+                inline-size: calc(var(--size) * 3 / 8);
+                inset-inline-end: calc(var(--size) / 3);
+                inset-block-end: calc(var(--size) / 3);
+            }
+        }
+    }
+
+    >.sub-con {
+        flex: 1;
+        min-inline-size: 0;
+        display: flex;
+        flex-direction: column;
+        row-gap: .5em;
+
+        >.text {
+            >* {
+                vertical-align: middle;
+            }
+
+            >:not(:last-child) {
+                margin-inline-end: 8px;
+            }
+
+            .name {
+                color: var(--6d757a);
+                text-wrap: nowrap;
+            }
+
+            >img {
+                block-size: 1em;
+            }
+
+            >.is-up {
+                font-size: 9px;
+                border-radius: 1px;
+                background-color: var(--fb7299);
+                color: var(--fff);
+                border-color: var(--fb7299);
+                padding-inline: 2px;
+                font-weight: normal;
+            }
+
+            >.fans {
+                font-weight: normal;
+                font-size: 10px;
+                display: inline-flex;
+                align-items: center;
+
+                .fans-name {
+                    padding-inline: 2px;
+                    border-width: 0.5px;
+                    border-start-start-radius: 1px;
+                    border-end-start-radius: 1px;
+                }
+
+                .fans-level {
+                    border-width: 0.5px;
+                    border-style: solid;
+                    border-end-end-radius: 1px;
+                    border-start-end-radius: 1px;
+                }
+            }
+
+            >.nameplate {
+                font-size: 24px;
+            }
+
+            >.content {
+                white-space: pre-wrap;
+                font-size: 14px;
+
+                >img {
+                    block-size: 1em;
+                }
+
+                >.eif {
+                    block-size: 2em;
+                }
+
+                >a {
+                    color: var(--00a1d6);
+                }
+            }
+        }
+
+        >.info {
+            display: flex;
+            align-items: center;
+            color: var(--99a2aa);
+            column-gap: 20px;
+
+            >span {
+                display: flex;
+                align-items: center;
+                column-gap: .5em;
+
+                >i {
+                    block-size: 14px;
+                    inline-size: 14px;
+                    display: inline-block;
+                    background-image: url(//s1.hdslb.com/bfs/seed/jinkela/commentpc/static/img/icons-comment.2f36fc5.png);
+                    background-repeat: no-repeat;
+                }
+
+                &.like-num {
+                    cursor: pointer;
+
+                    >i {
+                        pointer-events: none;
+                        background-position: -153px -25px;
+                    }
+
+                    &[data-num]::after {
+                        content: attr(data-num);
+                    }
+
+                    &:hover>i,
+                    &.liked>i {
+                        background-position: -218px -25px;
+                    }
+                }
+
+                &.hate-num {
+                    cursor: pointer;
+
+                    >i {
+                        pointer-events: none;
+                        background-position: -153px -153px;
+                    }
+
+                    &[data-num]::after {
+                        content: attr(data-num);
+                    }
+
+                    &:hover>i,
+                    &.hated>i {
+                        background-position: -217px -153px;
+                    }
+                }
+
+                &.reply,
+                &.dialog {
+                    padding: 5px;
+                    border-radius: 4px;
+                    cursor: pointer;
+
+                    &:hover {
+                        color: var(--00a1d6);
+                        background: var(--e5e9ef);
+                    }
+                }
+            }
+        }
+    }
+}
+
+.dialog-box[popover] {
+    inset-area: block-end;
+    max-inline-size: 25vi;
+    max-block-size: 25vh;
+    margin: 0;
+    border: 0;
+    box-shadow: 0 0 20px 3px var(--0000005c);
+    border-radius: 10px;
+    padding-inline: 18px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+
+    .dialog,
+    .reply {
+        display: none !important;
+    }
+
+    &::after {
+        content: attr(data-loading);
+        color: var(--99a2aa);
+        display: block;
+        text-align: center;
+        margin-block-end: 30px;
+    }
+}

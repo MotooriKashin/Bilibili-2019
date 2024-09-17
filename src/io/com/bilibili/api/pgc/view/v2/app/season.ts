@@ -1,4 +1,5 @@
 import { Api } from "../../../..";
+import { RestType } from "../../../../../../../code";
 import { sign } from "../../../../../../../sign";
 import { EP_STATUS } from "../../../../../../../stat";
 
@@ -9,7 +10,7 @@ export async function pgcAppSeason({ season_id, ep_id, access_key }: IPgcAppSeas
     ep_id ? url.searchParams.set('ep_id', <any>ep_id) : (season_id && url.searchParams.set('season_id', <any>season_id));
     access_key && url.searchParams.set('access_key', <any>access_key);
     CATCH[key] || (CATCH[key] = fetch(sign(url, '1d8b6e7d45233436'), access_key ? undefined : { credentials: 'include' }));
-    return <IPgcAppSeason>(await ((await CATCH[key]).clone()).json()).data;
+    return <IPgcAppSeason>await ((await CATCH[key]).clone()).json();
 }
 
 /** 同一请求缓存 */
@@ -24,216 +25,258 @@ interface IPgcAppSeasonIn {
     access_key?: string;
 }
 
-interface IPgcAppSeason {
-    actor: {
-        info: string;
+interface IPgcAppSeason extends RestType {
+    data: {
+        actor: {
+            info: string;
+            title: string;
+        };
+        alias: string;
+        all_buttons: { watch_formal: string };
+        all_up_infos: [];
+        areas: { id: number; name: string }[];
+        badge: String;
+        badge_info: {
+            bg_color: String;
+            bg_color_night: String;
+            text: String;
+        };
+        bkg_cover?: string;
+        cover: string;
+        detail: string;
+        dialog: {
+            code: number;
+            config: {
+                is_force_halfscreen_enable: boolean;
+                is_nested_scroll_enable: boolean;
+                is_orientation_enable: boolean;
+                is_show_cover: boolean;
+            };
+            image: {
+                url: string;
+            };
+            msg: string;
+            style_type: string;
+            title: {
+                text: string;
+                text_color: string;
+            };
+            type: string;
+        };
+        dynamic_subtitle: string;
+        earphone_conf: {
+            sp_phones: [];
+        };
+        evaluate: string;
+        follow_layer: {
+            info: string;
+            title: string;
+        };
+        media_badge_info: {
+            bg_color: string;
+            bg_color_night: string;
+            text: String;
+        };
+        media_id: number;
+        mode: number;
+        modules: IModule[];
+        new_ep: {
+            desc: string;
+            id: number;
+            is_new: number;
+            more: string;
+            title: string;
+        };
+        new_keep_activity_material: {
+            activityId: number;
+        };
+        origin_name: string;
+        payment: {
+            dialog: {};
+            pay_type: {
+                allow_ticket: number;
+            };
+            price: string;
+            report_type: number;
+            tv_price: string;
+            vip_discount_price: string;
+            vip_promotion: string;
+        };
+        play_strategy: {
+            auto_play_toast: string;
+            recommend_show_strategy: number;
+            strategies: string[];
+        };
+        premieres: [];
+        producer: {
+            list: {
+                avatar: string;
+                follower: number;
+                is_follow: number;
+                mid: number;
+                theme_type: number;
+                uname: string;
+                upper_type: number;
+                verify_type: number;
+                verify_type2: number;
+                vip_label: {
+                    label_theme: string;
+                    path: string;
+                    text: string;
+                };
+            }[];
+            title: string;
+            total: number;
+        };
+        publish: {
+            is_finish: number;
+            is_started: number;
+            pub_time: string;
+            pub_time_show: string;
+            release_date_show: string;
+            time_length_show: string;
+            unknow_pub_date: number;
+            update_info_desc: string;
+            weekday: number;
+        };
+        rating?: {
+            count: number;
+            score: number;
+        };
+        record: string;
+        refine_cover: string;
+        reserve: {
+            episodes: [];
+            tip: string;
+        };
+        rights: {
+            /** 允许承包 */
+            allow_bp: number;
+            allow_bp_rank: number;
+            allow_download: number;
+            allow_review: number;
+            area_limit: number;
+            ban_area_show: number;
+            can_watch: number;
+            copyright: string;
+            copyright_name: string;
+            forbid_pre: number;
+            freya_white: number;
+            is_cover_show: number;
+            is_preview: number;
+            only_vip_download: number;
+            resource: string;
+            watch_platform: number;
+        };
+        season_id: number;
+        season_title: string;
+        series: {
+            display_type: number;
+            series_id: number;
+            series_title: string;
+        };
+        share_copy: string;
+        share_url: string;
+        short_link: string;
+        show_season_type: number;
+        /** 承包 */
+        sponsor?: {
+            list: {
+                face: string;
+                msg: string;
+                uid: number;
+                uname: string;
+            }[];
+            mine: {
+                amount: number;
+                msg: string;
+                rank: number;
+            };
+            total: number;
+            week: number;
+        };
+        square_cover: string;
+        staff: {
+            info: string;
+            title: String;
+        };
+        stat: {
+            coins: number;
+            danmakus: number;
+            favorite: number;
+            favorites: number;
+            followers: string;
+            likes: number;
+            play: string;
+            reply: number;
+            share: number;
+            views: number;
+        };
+        status: number;
+        styles: {
+            id: number;
+            name: string;
+            url: String;
+        }[];
+        subtitle: string;
         title: string;
-    };
-    alias: string;
-    all_buttons: { watch_formal: string };
-    all_up_infos: [];
-    areas: { id: number; name: string }[];
-    badge: String;
-    badge_info: {
-        bg_color: String;
-        bg_color_night: String;
-        text: String;
-    };
-    bkg_cover?: string;
-    cover: string;
-    detail: string;
-    dialog: {
-        code: number;
-        config: {
-            is_force_halfscreen_enable: boolean;
-            is_nested_scroll_enable: boolean;
-            is_orientation_enable: boolean;
-            is_show_cover: boolean;
-        };
-        image: {
-            url: string;
-        };
-        msg: string;
-        style_type: string;
-        title: {
-            text: string;
-            text_color: string;
-        };
-        type: string;
-    };
-    dynamic_subtitle: string;
-    earphone_conf: {
-        sp_phones: [];
-    };
-    evaluate: string;
-    follow_layer: {
-        info: string;
-        title: string;
-    };
-    media_badge_info: {
-        bg_color: string;
-        bg_color_night: string;
-        text: String;
-    };
-    media_id: number;
-    mode: number;
-    modules: IModule[];
-    new_ep: {
-        desc: string;
-        id: number;
-        is_new: number;
-        more: string;
-        title: string;
-    };
-    new_keep_activity_material: {
-        activityId: number;
-    };
-    origin_name: string;
-    payment: {
-        dialog: {};
-        pay_type: {
-            allow_ticket: number;
-        };
-        price: string;
-        report_type: number;
-        tv_price: string;
-        vip_discount_price: string;
-        vip_promotion: string;
-    };
-    play_strategy: {
-        auto_play_toast: string;
-        recommend_show_strategy: number;
-        strategies: string[];
-    };
-    premieres: [];
-    producer: {
-        list: {
+        total: number;
+        type: number;
+        type_desc: string;
+        type_name: string;
+        up_info: {
             avatar: string;
             follower: number;
             is_follow: number;
             mid: number;
+            pendant: {
+                image: string;
+                name: string;
+                pid: number;
+            };
             theme_type: number;
             uname: string;
-            upper_type: number;
             verify_type: number;
-            verify_type2: number;
             vip_label: {
                 label_theme: string;
                 path: string;
                 text: string;
             };
-        }[];
-        title: string;
-        total: number;
-    };
-    publish: {
-        is_finish: number;
-        is_started: number;
-        pub_time: string;
-        pub_time_show: string;
-        release_date_show: string;
-        time_length_show: string;
-        unknow_pub_date: number;
-        update_info_desc: string;
-        weekday: number;
-    };
-    record: string;
-    refine_cover: string;
-    reserve: {
-        episodes: [];
-        tip: string;
-    };
-    season_id: number;
-    season_title: string;
-    series: {
-        display_type: number;
-        series_id: number;
-        series_title: string;
-    };
-    share_copy: string;
-    share_url: string;
-    short_link: string;
-    show_season_type: number;
-    square_cover: string;
-    staff: {
-        info: string;
-        title: String;
-    };
-    stat: {
-        coins: number;
-        danmakus: number;
-        favorite: number;
-        favorites: number;
-        followers: string;
-        likes: number;
-        play: string;
-        reply: number;
-        share: number;
-        views: number;
-    };
-    status: number;
-    styles: {
-        id: number;
-        name: string;
-        url: String;
-    }[];
-    subtitle: string;
-    title: string;
-    total: number;
-    type: number;
-    type_desc: string;
-    type_name: string;
-    up_info: {
-        avatar: string;
-        follower: number;
-        is_follow: number;
-        mid: number;
-        pendant: {
-            image: string;
-            name: string;
-            pid: number;
+            vip_status: number;
+            vip_type: number;
         };
-        theme_type: number;
-        uname: string;
-        verify_type: number;
-        vip_label: {
-            label_theme: string;
-            path: string;
-            text: string;
-        };
-        vip_status: number;
-        vip_type: number;
-    };
-    user_status: {
-        follow: number;
-        follow_bubble: number;
-        follow_status: number;
-        pay: number;
-        pay_for: number;
-        progress: {
-            last_ep_id: number;
-            last_ep_index: string;
-            last_time: number;
-        };
-        review: {
-            article_url: string;
-            is_open: number;
-            score: number;
-        };
-        sponsor: number;
-        vip: number;
-        vip_frozen: number;
-        vip_info: {
-            due_date: number;
-            status: number;
-            type: number;
-        };
-        user_thumbup: {
-            url_image_ani: string;
-            url_image_ani_cut: String;
-            url_image_bright: string;
-            url_image_dim: string;
-        };
+        user_status: {
+            follow: number;
+            follow_bubble: number;
+            follow_status: number;
+            pay: number;
+            pay_for: number;
+            progress?: {
+                last_ep_id: number;
+                last_ep_index: string;
+                last_time: number;
+            };
+            review: {
+                article_url: string;
+                is_open: number;
+                score: number;
+            };
+            /** 是否已承包 */
+            sponsor: number;
+            vip: number;
+            vip_frozen: number;
+            vip_info: {
+                due_date: number;
+                status: number;
+                type: number;
+            };
+            user_thumbup: {
+                url_image_ani: string;
+                url_image_ani_cut: String;
+                url_image_bright: string;
+                url_image_dim: string;
+            };
+        }
     }
 }
 
@@ -378,7 +421,7 @@ interface IModulePugv extends IModuleBase {
     style: 'pugv';
 }
 
-interface IModulePositiveEpisode {
+export interface IModulePositiveEpisode {
     aid: number;
     badge: string;
     badge_info: { bg_color: string; bg_color_night: string; text: string };

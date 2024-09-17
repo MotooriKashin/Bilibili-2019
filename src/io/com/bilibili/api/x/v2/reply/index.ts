@@ -1,4 +1,5 @@
 import { Api } from "../../..";
+import { RestType } from "../../../../../../code";
 
 /**
  * 获取评论
@@ -20,40 +21,42 @@ export async function reply(
     url.searchParams.set('sort', <any>sort);
     url.searchParams.set('type', <any>type);
     const response = await fetch(url, { credentials: 'include' });
-    return <IReply>(await response.json()).data;
+    return <IReply>await response.json();
 }
 
-interface IReply {
-    config: {
-        read_only: boolean;
-        show_up_flag: boolean;
-        showtopic: number;
-    };
-    control: {
-        answer_guide_text: string;
-        bg_text: string;
-        child_input_text: string;
-        giveup_input_text: string;
-        input_disable: boolean;
-        root_input_text: string;
-        show_text: string;
-        show_type: number;
-    };
-    /**
-     * |  |  |
-     * | :-: | :-: |
-     * | 2 | 3 |
-     * | 时间 | 热度 |
-     */
-    mode: 2 | 3;
-    page: { num: number; size: number; count: number; acount: number };
-    replies: IReplies[];
-    top?: IReplies;
-    upper: {
-        mid: number;
+interface IReply extends RestType {
+    data: {
+        config: {
+            read_only: boolean;
+            show_up_flag: boolean;
+            showtopic: number;
+        };
+        control: {
+            answer_guide_text: string;
+            bg_text: string;
+            child_input_text: string;
+            giveup_input_text: string;
+            input_disable: boolean;
+            root_input_text: string;
+            show_text: string;
+            show_type: number;
+        };
+        /**
+         * |  |  |
+         * | :-: | :-: |
+         * | 2 | 3 |
+         * | 时间 | 热度 |
+         */
+        mode: 2 | 3;
+        page: { num: number; size: number; count: number; acount: number };
+        replies: IReplies[];
         top?: IReplies;
-        vote?: IReplies;
-    };
+        upper: {
+            mid: number;
+            top?: IReplies;
+            vote?: IReplies;
+        };
+    }
 }
 export interface IReplies {
     /**

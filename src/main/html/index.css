@@ -1,0 +1,13 @@
+:root {
+    color-scheme: light dark;
+
+    --fff: #fff;
+    --00a1d6: #00a1d6;
+    --222: #222;
+    --ccd0d7: #ccd0d7;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}

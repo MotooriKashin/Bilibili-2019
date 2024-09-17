@@ -1,0 +1,61 @@
+@import url(./render/index.css);
+
+@scope {
+    :scope {
+        color-scheme: light dark;
+        position: absolute;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        inset: 0;
+        container: danmaku / size;
+        pointer-events: none;
+        overflow: clip;
+
+        /* 字号缩放倍率 */
+        --fontSize: 1;
+        /* 弹幕字体大小 */
+        --fontsize: 25;
+        /* 是否等比放大 */
+        --full-screen-sync: 0;
+        /* 边框样式 */
+        --fontBorder: 0;
+        /* 弹幕阴影颜色 */
+        --text-shadow: #000;
+        /* 渐变弹幕 */
+        --colorful: 1;
+        /* 弹幕字体 */
+        --font-family: SimHei, "Microsoft JhengHei";
+        /* 弹幕字重 */
+        --font-weight: bold;
+        /* 弹幕透明度 */
+        --opacity: 1;
+
+        /* 弹幕动画状态 */
+        --animation-play-state: running;
+        /* 弹幕容器分辨率修正·行向 */
+        --inset-inline: 0;
+        /* 弹幕容器分辨率修正·块向 */
+        --inset-block: 0;
+    }
+
+    div {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        user-select: none;
+    }
+
+    button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: inherit;
+        background-color: transparent;
+        padding: 0;
+        border: none;
+        cursor: pointer;
+    }
+
+}

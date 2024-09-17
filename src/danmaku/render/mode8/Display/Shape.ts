@@ -1,6 +1,6 @@
-import { Element } from "../../../../utils/element";
 import { BlurFilter } from "../filters/BlurFilter";
 import { GlowFilter } from "../filters/GlowFilter";
+import { addSvg } from "../Utils/element";
 import { IDisplay } from "./Display";
 import { DisplayObject } from "./DisplayObject";
 import { Graphics } from "./Graphics";
@@ -23,10 +23,10 @@ export class Shape extends DisplayObject<HTMLDivElement> {
         this.$filters = value;
         if (value) {
             this.#graphics.$defaultEffects.remove();
-            this.#graphics.$defaultEffects = Element.addSvg('defs');
+            this.#graphics.$defaultEffects = addSvg('defs');
             for (let i = 0, len = value.length; i < len; i++) {
                 const filter = value[i];
-                const dFilter = Element.addSvg('filter', {
+                const dFilter = addSvg('filter', {
                     id: `fe${i}`,
                     x: '-50%',
                     y: '-50%',
@@ -34,7 +34,7 @@ export class Shape extends DisplayObject<HTMLDivElement> {
                     height: '200cqb',
                 });
                 if (filter instanceof BlurFilter) {
-                    Element.addSvg('feGaussianBlur', {
+                    addSvg('feGaussianBlur', {
                         in: 'SourceGraphic',
                         stdDeviation: `${filter.blurX} ${filter.blurY}`,
                     }, dFilter);
@@ -48,24 +48,24 @@ export class Shape extends DisplayObject<HTMLDivElement> {
                         0, 0, 0, cB / 256, 0,
                         0, 0, 0, 1, 0,
                     ];
-                    Element.addSvg('feColorMatrix', {
+                    addSvg('feColorMatrix', {
                         type: 'matrix',
                         values: cMatrix.join(' '),
                     }, dFilter);
-                    Element.addSvg('feGaussianBlur', {
+                    addSvg('feGaussianBlur', {
                         stdDeviation: `${filter.blurX} ${filter.blurY}`,
                         result: 'coloredBlur',
                     }, dFilter);
-                    const m = Element.addSvg('feMerge', undefined, dFilter);
-                    Element.addSvg('feMergeNode', { in: 'coloredBlur' }, m);
-                    Element.addSvg('feMergeNode', { in: 'SourceGraphic' }, m);
+                    const m = addSvg('feMerge', undefined, dFilter);
+                    addSvg('feMergeNode', { in: 'coloredBlur' }, m);
+                    addSvg('feMergeNode', { in: 'SourceGraphic' }, m);
                 }
             }
             this.$host.append(this.#graphics.$defaultEffects);
             this.#graphics.$defaultGroup.remove();
             let tGroup = this.#graphics.$defaultContainer;
             for (let i = 0, len = value.length; i < len; i++) {
-                const layeredG = Element.addSvg('g', { filter: `url(#fe${i})` });
+                const layeredG = addSvg('g', { filter: `url(#fe${i})` });
                 layeredG.appendChild(tGroup);
                 tGroup = layeredG;
             }
@@ -102,10 +102,9 @@ export class Shape extends DisplayObject<HTMLDivElement> {
     }
 
     constructor(param: IDisplay) {
-        super(param, true, <any>Element.addSvg('svg', { class: 'as3-danmaku-item' }));
-        const { width, height } = this.root.$host.getBoundingClientRect();
+        super(param, true, <any>addSvg('svg', { class: 'as3-danmaku-item' }));
         this.$host.style.cssText = `position: absolute; inline-size: 200cqi; block-size: 200cqb; translate: -50% -50%;`;
-        this.#graphics.$defaultContainer.style.cssText = `translate: ${width}px ${height}px;`;
+        this.#graphics.$defaultContainer.style.cssText = `translate: 100cqi 100cqb;`;
         this.$host.appendChild(this.#graphics.$globalDefs);
         this.$host.appendChild(this.#graphics.$defaultEffects);
         this.$host.appendChild(this.#graphics.$defaultContainer);

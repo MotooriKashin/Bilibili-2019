@@ -1,7 +1,5 @@
 node_modules
-dist/_metadata
-dist/**/*.js
-dist/**/*.css
+dist
 *.crx
 *.pem
 *.map

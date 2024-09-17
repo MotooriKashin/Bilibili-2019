@@ -1,0 +1,216 @@
+@scope {
+    :scope {
+        color-scheme: light dark;
+
+        --99a2aa: #99a2aa;
+        --f6f9fa: #f6f9fa;
+        --e5e9ef: #e5e9ef;
+        --00a1d6: #00a1d6;
+        --fff: #fff;
+        --eee: #eee;
+
+        padding-block-start: 20px;
+        color: var(--99a2aa);
+        text-align: center;
+        font-size: 12px;
+
+        a {
+            text-decoration: none;
+        }
+    }
+}
+
+.footer-wrp {
+    background-color: var(--f6f9fa);
+    padding-block-start: 40px;
+    padding-block-end: 60px;
+
+    >.footer-cnt {
+        inline-size: 980px;
+        margin-inline: auto;
+
+        @media screen and (min-width:1400px) {
+
+            & {
+                inline-size: 1160px;
+            }
+        }
+
+        @media screen and (min-width:2500px) {
+
+            & {
+                inline-size: 1920px;
+            }
+        }
+
+        .boston-postcards {
+            margin-block-end: 30px;
+            display: flex;
+            justify-content: space-between;
+
+            >div {
+                text-align: left;
+                inline-size: 300px;
+                block-size: 112px;
+                padding-inline-end: 25px;
+                padding-inline-start: 24px;
+                border-left: solid 1px var(--e5e9ef);
+                font-size: 14px;
+                display: flex;
+                flex-wrap: wrap;
+                row-gap: 16px;
+
+                @media screen and (min-width: 1400px) {
+                    & {
+                        padding-inline-end: 40px;
+                        padding-inline-start: 39px;
+                        inline-size: 360px;
+                    }
+                }
+
+                @media screen and (min-width:2500px) {
+
+                    & {
+                        padding-inline-end: 55px;
+                        padding-inline-start: 54px;
+                        inline-size: 420px;
+                    }
+                }
+
+                &:first-child {
+                    border-inline-start-width: 0;
+                    padding-inline-start: 0;
+                }
+
+                &:last-child {
+                    inline-size: 280px;
+                    padding-inline-end: 0;
+                    column-gap: 15px;
+                }
+
+                >.tips {
+                    inline-size: 100%;
+                    margin-block-end: 6px;
+                }
+
+                >.cards {
+                    inline-size: 100px;
+
+                    @media screen and (min-width: 1400px) {
+                        & {
+                            inline-size: 120px;
+                        }
+                    }
+
+                    @media screen and (min-width:2500px) {
+
+                        & {
+                            inline-size: 140px;
+                        }
+                    }
+
+                    >a {
+                        color: var(--222);
+
+                        &:hover {
+                            color: var(--00a1d6);
+                        }
+                    }
+                }
+
+                >a {
+                    position: relative;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+
+                    >div {
+                        block-size: 60px;
+                        aspect-ratio: 1;
+                        background: url(//static.hdslb.com/images/base/icons.png) no-repeat;
+
+                        &.app {
+                            background-position: -1024px -194px;
+                        }
+
+                        &.weibo {
+                            background-position: -1024px -322px;
+                        }
+
+                        &.weixin {
+                            background-position: -1024px -66px;
+                        }
+
+                    }
+
+                    >em {
+                        font-style: normal;
+                        color: var(--222);
+                    }
+
+                    >img {
+                        position: absolute;
+                        background: var(--fff);
+                        border: 1px solid var(--eee);
+                        padding: 10px;
+                        inset-block-end: calc(100% + 1em);
+                    }
+
+                    &:not(:hover)>img {
+                        display: none;
+                    }
+                }
+            }
+        }
+
+        .partner {
+            display: flex;
+            text-align: start;
+
+            .pic-box {
+                inline-size: 100px;
+                display: flex;
+                flex-direction: column;
+
+                .jvs-cert {
+                    aspect-ratio: 66 / 25;
+                    background-repeat: no-repeat;
+                    background-size: contain;
+                    animation-name: jvs-cert;
+                    animation-play-state: running;
+                    animation-duration: 6s;
+                    animation-delay: 3s;
+                    animation-iteration-count: infinite;
+                    animation-direction: alternate-reverse;
+                }
+            }
+
+            .content-box {
+                line-height: 2;
+                margin-inline-start: 15px;
+
+                p {
+                    margin-block-end: 5px;
+                }
+            }
+
+            a {
+                color: inherit;
+            }
+
+            p {
+                margin: 0;
+            }
+        }
+    }
+}
+
+@keyframes jvs-cert {
+    from {
+        background-image: url(//backup.hdslb.com/bfs/mainfront/websafe.png);
+    }
+
+    to {
+        background-image: url(//backup.hdslb.com/bfs/mainfront/confirm.png);
+    }
+}

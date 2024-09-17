@@ -1,0 +1,30 @@
+.bofqi-auxiliary-filter {
+    flex-shrink: 0;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-block: 1px solid var(--e2e2e2);
+    block-size: 32px;
+
+    .bofqi-auxiliary-filter-btn {
+        flex-grow: 0;
+        padding-inline: 8px;
+        block-size: 100%;
+        display: flex;
+        align-items: center;
+        color: var(--222);
+        transition: all .3s;
+        border: 2px solid transparent;
+
+        &:hover {
+            color: var(--00a1d6);
+        }
+
+        &.active {
+            pointer-events: none;
+            cursor: default;
+            color: var(--00a1d6);
+            border-block-end-color: var(--00a1d6);
+        }
+    }
+}

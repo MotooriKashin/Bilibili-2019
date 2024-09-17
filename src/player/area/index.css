@@ -1,0 +1,40 @@
+@import url(./message/index.css);
+@import url(./wrap/index.css);
+@import url(./control/index.css);
+@import url(./sendbar/index.css);
+
+.bofqi-area {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+
+    >.bofqi-area-contents {
+        display: contents;
+
+        @container bofqi style(--fullscreen: 1) {
+            & {
+                position: absolute;
+                inset-inline: 0;
+                inset-block-end: 0;
+                display: flex;
+                flex-direction: column-reverse;
+                pointer-events: none;
+                opacity: 0;
+                transition: all .3s;
+
+                &:has(:hover) {
+                    opacity: 1;
+                }
+            }
+        }
+
+        @container bofqi (inline-size < 780px) {
+
+            & {
+                block-size: 0;
+                display: none;
+            }
+        }
+    }
+}

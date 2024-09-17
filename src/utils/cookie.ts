@@ -1,5 +1,6 @@
 /** cookie工具 */
 export namespace cookie {
+
     export function get(cookieName: string) {
         const cookies = document.cookie.split('; ');
         const cookie = cookies.reduce((s, d) => {
@@ -10,6 +11,7 @@ export namespace cookie {
         }, <Record<string, string>>{});
         return cookie[cookieName];
     }
+
     export function set(name: string, value: string | boolean | number, days = 365) {
         const exp = new Date();
         exp.setTime(exp.getTime() + days * 24 * 60 * 60 * 1000);
@@ -17,6 +19,7 @@ export namespace cookie {
             '' + value,
         )};expires=${exp.toUTCString()}; path=/; domain=.bilibili.com`;
     }
+
     export function remove(name: string) {
         set(name, '', -1);
     }

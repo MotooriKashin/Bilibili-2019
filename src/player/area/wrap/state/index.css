@@ -1,0 +1,46 @@
+.bofqi-state {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+
+    .bofqi-state-play {
+        position: absolute;
+        inline-size: 100px;
+        block-size: 100px;
+        inset-inline-end: 10px;
+        inset-block-end: 10px;
+        opacity: .6;
+
+        >svg {
+            inline-size: 100%;
+            block-size: 100%;
+        }
+
+        &:not(.on) {
+            display: none;
+        }
+
+        @container bofqi style(--fullscreen: 1) {
+            & {
+                inset-block-end: 42px;
+            }
+        }
+    }
+
+    .bofqi-state-buff {
+        inline-size: 48px;
+        block-size: 48px;
+        box-sizing: border-box;
+        border-radius: 4px;
+        background-image: url(../../../../assets/loading.gif);
+        background-repeat: no-repeat;
+        background-position: center;
+
+        &:not(.on) {
+            display: none;
+        }
+    }
+}

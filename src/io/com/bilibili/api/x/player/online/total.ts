@@ -1,4 +1,5 @@
 import { Api } from "../../..";
+import { RestType } from "../../../../../../code";
 
 export async function total(
     aid: number,
@@ -11,14 +12,16 @@ export async function total(
     const response = await fetch(url, {
         credentials: 'include'
     });
-    return <IOnlineTotal>(await response.json()).data;
+    return <IOnlineTotal>await response.json();
 }
 
-interface IOnlineTotal {
-    total: string;
-    count: string;
-    show_switch: {
-        total: boolean;
-        count: boolean;
+interface IOnlineTotal extends RestType {
+    data: {
+        total: string;
+        count: string;
+        show_switch: {
+            total: boolean;
+            count: boolean;
+        }
     }
 }

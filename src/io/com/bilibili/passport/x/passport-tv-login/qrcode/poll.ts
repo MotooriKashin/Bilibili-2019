@@ -1,4 +1,5 @@
 import { Passport } from "../../..";
+import { RestType } from "../../../../../../code";
 import { sign } from "../../../../../../sign";
 
 /** 扫码登录结果查询 */
@@ -19,7 +20,7 @@ export async function poll(
     return <IPoll>(await response.json());
 }
 
-interface IPoll {
+interface IPoll extends RestType {
     /**
      * 返回值
      * | 0 | -3 | -400 | -404 | 86038 | 86039 | 86090 |
@@ -27,9 +28,6 @@ interface IPoll {
      * | 成功 | API校验密匙错误 | 请求错误 | 啥都木有 | 二维码已失效 | 二维码尚未确认 | 二维码已扫码未确认 |
      */
     code: number;
-    /** 错误信息 */
-    message: string;
-    ttl: number;
     /** 当且仅当 code===0 时登录成功 */
     data?: IPollData;
 }

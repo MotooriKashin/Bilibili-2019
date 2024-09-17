@@ -1,4 +1,5 @@
 import { Api } from "../../..";
+import { RestType } from "../../../../../../code";
 
 export async function like(
     csrf: string,
@@ -19,12 +20,5 @@ export async function like(
         headers,
         body,
     });
-    return <IDefaultResponse>(await response.json());
-}
-
-export interface IDefaultResponse {
-    /** 当且仅当`===0`表示操作成功 */
-    code: number;
-    message: string;
-    ttl: number;
+    return <RestType>(await response.json());
 }

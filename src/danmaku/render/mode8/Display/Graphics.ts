@@ -1,6 +1,6 @@
-import { Element } from "../../../../utils/element";
 import { Format } from "../../../../utils/fomat";
 import { Matrix } from "../geom/Matrix";
+import { addSvg } from "../Utils/element";
 import { BitmapData } from "./Bitmap";
 import { CapsStyle } from "./CapsStyle";
 import { GradientType } from "./GradientType";
@@ -23,13 +23,13 @@ import { TriangleCulling } from "./TriangleCulling";
  */
 export class Graphics {
 
-    $defaultContainer = Element.addSvg('g');
+    $defaultContainer = addSvg('g');
 
-    $defaultGroup = Element.addSvg('g');
+    $defaultGroup = addSvg('g');
 
-    $globalDefs = Element.addSvg('defs');
+    $globalDefs = addSvg('defs');
 
-    $defaultEffects = Element.addSvg('defs');
+    $defaultEffects = addSvg('defs');
 
 
     /** 当前 SVGPathElement 节点 */
@@ -133,11 +133,11 @@ export class Graphics {
         focalPointRatio = 0,
     ) {
         const gradId = `gradient-${type}-${this.$globalDefs.childNodes.length}`;
-        const grad = type === GradientType.RADIAL ? Element.addSvg('radialGradient') : Element.addSvg('linearGradient');
+        const grad = type === GradientType.RADIAL ? addSvg('radialGradient') : addSvg('linearGradient');
         grad.id = gradId;
         grad.setAttribute('spreadMethod', spreadMethod.trim());
         for (let i = 0, len = ratios.length; i < len; i++) {
-            Element.addSvg(
+            addSvg(
                 'stop',
                 {
                     'offset': (ratios[i] / 255) || 0,
@@ -218,7 +218,7 @@ export class Graphics {
         anchorY = 0,
     ) {
         if (!this.$lastPath) {
-            this.$lastPath = Element.addSvg('path', { d: 'M0 0' });
+            this.$lastPath = addSvg('path', { d: 'M0 0' });
             this.applyFill(this.$lastPath);
             this.applyStroke(this.$lastPath);
             this.$defaultGroup.append(this.$lastPath);
@@ -248,7 +248,7 @@ export class Graphics {
         anchorY = 0,
     ) {
         if (!this.$lastPath) {
-            this.$lastPath = Element.addSvg('path', { d: 'M0 0' });
+            this.$lastPath = addSvg('path', { d: 'M0 0' });
             this.applyFill(this.$lastPath);
             this.applyStroke(this.$lastPath);
             this.$defaultGroup.append(this.$lastPath);
@@ -270,7 +270,7 @@ export class Graphics {
         radius = 0,
     ) {
         if (radius >= 0) {
-            const c = Element.addSvg('circle', {
+            const c = addSvg('circle', {
                 cx: x,
                 cy: y,
                 r: radius,
@@ -296,7 +296,7 @@ export class Graphics {
         width = 0,
         height = 0,
     ) {
-        const e = Element.addSvg('ellipse', {
+        const e = addSvg('ellipse', {
             cx: x + width / 2,
             cy: y + height / 2,
             rx: width / 2,
@@ -382,7 +382,7 @@ export class Graphics {
                 }
             }
         }
-        const path = Element.addSvg('path', { d });
+        const path = addSvg('path', { d });
         this.applyFill(path);
         this.applyStroke(path);
         this.$defaultGroup.appendChild(path);
@@ -411,7 +411,7 @@ export class Graphics {
             y += height;
             height = -height;
         }
-        const r = Element.addSvg('rect', {
+        const r = addSvg('rect', {
             x,
             y,
             width: width || 0,
@@ -449,7 +449,7 @@ export class Graphics {
             y += height;
             height = -height;
         }
-        const r = Element.addSvg('rect', {
+        const r = addSvg('rect', {
             x,
             y,
             width,
@@ -635,7 +635,7 @@ export class Graphics {
      */
     lineTo(x = 0, y = 0) {
         if (!this.$lastPath) {
-            this.$lastPath = Element.addSvg('path', { d: 'M0 0' });
+            this.$lastPath = addSvg('path', { d: 'M0 0' });
             this.applyFill(this.$lastPath);
             this.applyStroke(this.$lastPath);
             this.$defaultGroup.append(this.$lastPath);
@@ -650,7 +650,7 @@ export class Graphics {
      * @param y 一个表示相对于父显示对象注册点的垂直位置的数字（以像素为单位）。
      */
     moveTo(x = 0, y = 0) {
-        this.$lastPath = Element.addSvg('path', { d: `M${x || 0} ${y || 0}` });
+        this.$lastPath = addSvg('path', { d: `M${x || 0} ${y || 0}` });
         this.applyFill(this.$lastPath);
         this.applyStroke(this.$lastPath);
         this.$defaultGroup.append(this.$lastPath);

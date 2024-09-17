@@ -1,7 +1,5 @@
-// import { DANMAKU } from "../danmaku/block";
 import { ProxyHook } from "../utils/hook/Proxy";
-import { PLAYER_EVENT, ev } from "./event-target";
-import { POLICY } from "./policy";
+import { ev, PLAYER_EVENT } from "./event";
 
 /** 默认设置 */
 export const OPTIONS: IOptions = {
@@ -30,10 +28,7 @@ export const OPTIONS: IOptions = {
         weight: 0,
         blockList: false,
         block: 0,
-    },
-    player: {
-        policy: POLICY.AVC,
-        incognito: false,
+        mode7Scale: false,
     }
 }
 
@@ -48,7 +43,7 @@ try {
     }
 } catch { }
 
-let timer: number;
+let timer: ReturnType<typeof setTimeout>;
 /**
  * 播放器设置  
  * 本对象经过多层代理，如果要短时间内多次访问，为提高性能。
@@ -120,12 +115,9 @@ export interface IOptions {
          * 根据{@link DANMAKU}的二进制位判定
          */
         block: number;
-    }
-    /** 播放器 */
-    player: {
-        /** 播放策略 */
-        policy: POLICY,
-        /** 无痕模式 */
-        incognito: boolean,
+        /**
+         * mode7 自适应缩放
+         */
+        mode7Scale: boolean;
     }
 };

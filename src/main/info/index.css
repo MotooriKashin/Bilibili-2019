@@ -1,0 +1,389 @@
+@scope {
+    :scope {
+        color-scheme: light dark;
+
+        --99a2aa: #99a2aa;
+        --00a1d6: #00a1d6;
+        --eee: #eee;
+        --ff8dae: #ff8dae;
+        --6d757a: #6d757a;
+        --fff: #fff;
+        --00b5e5: #00b5e5;
+        --f25d8e: #f25d8e;
+        --fb7299: #fb7299;
+    }
+
+    a {
+        text-decoration: none;
+        outline: none;
+        transition: color .2s;
+    }
+}
+
+.container {
+    inline-size: 980px;
+    margin-inline: auto;
+    box-sizing: border-box;
+    font-size: 12px;
+    display: flex;
+
+    @media screen and (min-width:1400px) {
+
+        & {
+            inline-size: 1160px;
+        }
+    }
+
+    @media screen and (min-width:2500px) {
+
+        & {
+            inline-size: 1920px;
+        }
+    }
+
+    >.video {
+        flex: 1;
+        min-inline-size: 0;
+        padding-block-start: 5px;
+        padding-block-end: 8px;
+
+        >h1 {
+            margin: 0;
+            padding-block: 8px;
+            font-size: 18px;
+            font-weight: 400;
+            overflow: clip;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        >.tm-info {
+            color: var(--99a2aa);
+            margin-block-start: 6px;
+            display: flex;
+            column-gap: 32px;
+
+            a {
+                color: var(--99a2aa);
+
+                &:hover {
+                    color: var(--00a1d6);
+                }
+            }
+        }
+
+        >.number {
+            display: flex;
+            column-gap: 30px;
+
+            >span {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                column-gap: 3px;
+            }
+
+            >.v::before {
+                content: "";
+                display: inline-block;
+                inline-size: 28px;
+                block-size: 28px;
+                background: url(//static.hdslb.com/images/base/icons.png);
+            }
+
+            >.play:before {
+                background-position: -659px -210px;
+            }
+
+            >.dm:before {
+                background-position: -659px -275px;
+            }
+
+            >.rank:before {
+                background-position: -660px -1682px;
+            }
+
+            >.line {
+                border-inline-start: 1px solid var(--eee);
+            }
+
+            >.u {
+                cursor: pointer;
+
+                &::before {
+                    content: "";
+                    display: inline-block;
+                    inline-size: 45px;
+                    block-size: 60px;
+                }
+            }
+
+            >.coin {
+                &::before {
+                    background-image: url(//s1.hdslb.com/bfs/static/jinkela/videoplay/asserts/anim-coin-small.png);
+                }
+
+                &.d::before {
+                    background-position: -2340px -60px;
+                }
+
+                &:not(.d):hover::before {
+                    animation: coin 1140ms steps(19) infinite;
+                }
+            }
+
+            >.fav {
+                &::before {
+                    background-image: url(//s1.hdslb.com/bfs/static/jinkela/videoplay/asserts/anim-collect.png);
+                }
+
+                &.d::before {
+                    background-position: -1740px -60px;
+                }
+
+                &:not(.d):hover::before {
+                    animation: fav 1260ms steps(21) infinite;
+                }
+            }
+
+            >.order {
+                &::before {
+                    background-image: url(//s1.hdslb.com/bfs/static/bangumi/play/asserts/anim-order.png);
+                }
+
+                &.d::before {
+                    background-position: -1860px -60px;
+                }
+
+                &:not(.d):hover::before {
+                    animation: order 1440ms steps(24) infinite;
+                }
+            }
+        }
+    }
+
+    >.up {
+        flex-shrink: 0;
+        inline-size: 340px;
+        padding-block: 15px;
+        display: flex;
+
+        >:first-child {
+            flex-shrink: 0;
+
+            >.avatar {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                position: relative;
+
+                --size: 68px;
+
+                >.avatar-face {
+                    block-size: var(--size);
+                    inline-size: var(--size);
+                    margin: calc(var(--size) / 3);
+                    border-radius: 50%;
+                }
+
+                >.avatar-pendant {
+                    position: absolute;
+                    block-size: calc(var(--size) / 2* 3);
+                    inline-size: calc(var(--size) / 2* 3);
+                }
+
+                >.avatar-icon {
+                    position: absolute;
+                    block-size: calc(var(--size) * 3 / 8);
+                    inline-size: calc(var(--size) * 3 / 8);
+                    inset-inline-end: calc(var(--size) / 3);
+                    inset-block-end: calc(var(--size) / 3);
+                }
+            }
+        }
+
+        >.info {
+            flex: 1;
+            min-inline-size: 0;
+            display: flex;
+            flex-direction: column;
+            row-gap: 10px;
+            anchor-name: --up-info;
+
+            >.user {
+                display: flex;
+                justify-content: space-between;
+
+                >.name {
+                    max-inline-size: 150px;
+                    font-size: 14px;
+                    color: var(--00a1d6);
+                    word-wrap: break-word;
+                    overflow: hidden;
+                    word-break: break-all;
+                    text-overflow: ellipsis;
+                }
+
+                >.message {
+                    color: var(--6d757a);
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+
+                    &::before {
+                        content: "";
+                        padding-inline: 15px;
+                        block-size: 100%;
+                        background-image: url(//static.hdslb.com/images/base/icons.png);
+                        background-repeat: no-repeat;
+                        background-position: -272px -2007px;
+                    }
+
+                    &:hover {
+                        color: var(--00a1d6);
+                    }
+                }
+            }
+
+            >.sign {
+                line-height: 20px;
+                overflow: clip;
+                word-break: break-all;
+            }
+
+            >.number {
+                color: var(--99a2aa);
+                display: flex;
+                justify-content: space-between;
+            }
+
+            >.followe {
+                display: flex;
+                column-gap: 12px;
+
+                >.b-gz {
+                    padding-block: 4px;
+                    padding-inline: 53px;
+                    border-radius: 4px;
+                    border: 1px solid var(--00a1d6);
+                    font-size: 14px;
+                    color: var(--fff);
+                    background-color: var(--00a1d6);
+                    transition: all .3s;
+                    cursor: pointer;
+
+                    &:hover {
+                        background-color: var(--00b5e5);
+                        border-color: var(--00b5e5);
+                    }
+                }
+
+                >.b-cd {
+                    padding: 4px;
+                    border-radius: 4px;
+                    border: 1px solid var(--f25d8e);
+                    font-size: 14px;
+                    inline-size: 52px;
+                    background-color: var(--fff);
+                    color: var(--f25d8e);
+                    transition: all .3s;
+                    cursor: pointer;
+
+                    &:hover {
+                        background-color: var(--f25d8e);
+                        color: var(--fff);
+                    }
+                }
+            }
+        }
+
+        >.staff {
+            position: absolute;
+            position-anchor: --up-info;
+            inset-area: inline-end span-block-end;
+            background-color: var(--fff);
+            display: flex;
+            flex-direction: column;
+            transform-origin: center 0;
+            transition: all .5s allow-discrete;
+
+            @starting-style {
+                scale: 1 0;
+            }
+
+            >.avatar {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                position: relative;
+
+                --size: 68px;
+
+                >.avatar-face {
+                    block-size: var(--size);
+                    inline-size: var(--size);
+                    margin: calc(var(--size) / 3);
+                    border-radius: 50%;
+                }
+
+                >.avatar-pendant {
+                    position: absolute;
+                    block-size: calc(var(--size) / 2* 3);
+                    inline-size: calc(var(--size) / 2* 3);
+                }
+
+                >.avatar-icon {
+                    position: absolute;
+                    block-size: calc(var(--size) * 3 / 8);
+                    inline-size: calc(var(--size) * 3 / 8);
+                    inset-inline-end: calc(var(--size) / 3);
+                    inset-block-end: calc(var(--size) / 3);
+                }
+
+                >.name {
+                    position: absolute;
+                    inset-block-end: 0;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    max-inline-size: 100%;
+                    color: var(--00a1d6);
+                }
+
+                >.title {
+                    position: absolute;
+                    background-color: var(--fb7299);
+                    color: var(--fff);
+                    inset-inline-start: 0;
+                    inset-block-start: 0;
+                    padding-inline: 3px;
+                    padding-block: 2px;
+                    border-radius: 4px;
+                }
+            }
+        }
+
+        &:not(:hover)>.staff {
+            display: none;
+            scale: 1 0;
+        }
+    }
+}
+
+@keyframes coin {
+    to {
+        background-position-x: -1140px;
+    }
+}
+
+@keyframes fav {
+    to {
+        background-position-x: -1260px;
+    }
+}
+
+@keyframes order {
+    to {
+        background-position-x: -1440px;
+    }
+}

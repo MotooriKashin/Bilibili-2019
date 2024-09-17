@@ -1,0 +1,210 @@
+.chief {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    grid-template-areas:
+        "ca ca rc rc rc"
+        "ca ca rc rc rc";
+    grid-auto-rows: 0;
+    gap: 20px;
+    overflow-y: clip;
+    position: relative;
+
+    @media screen and (min-width:1400px) {
+
+        & {
+            grid-template-columns: repeat(6, 1fr);
+            grid-template-areas:
+                "ca ca rc rc rc rc"
+                "ca ca rc rc rc rc";
+        }
+    }
+
+    .carousel {
+        grid-area: ca;
+        position: relative;
+
+        >.box {
+            aspect-ratio: 16 / 9;
+            position: relative;
+            container: carousel / inline-size;
+            overflow: clip;
+            anchor-name: --carousel;
+
+            >a {
+                position: absolute;
+                inline-size: 100%;
+                block-size: 100%;
+                background-size: cover;
+                background-repeat: no-repeat;
+                border-radius: 4px;
+                transition: all 0.7s allow-discrete;
+
+                &:not(.show) {
+                    /* 隐藏样式：显示区域左侧外部 */
+                    translate: -100%;
+                    display: none;
+                }
+
+                @starting-style {
+                    /* 初始样式：显示区域右侧外部 */
+                    translate: 100cqi;
+                }
+
+                &::after {
+                    content: attr(title);
+                    position: absolute;
+                    display: block;
+                    inset-block-end: 0;
+                    inset-inline: 0;
+                    line-height: 35px;
+                    padding-inline: 10px;
+                    font-size: 14px;
+                    color: var(--fff);
+                    background-image: linear-gradient(transparent, var(--00000080));
+                    overflow: clip;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                }
+            }
+        }
+
+        >form {
+            position: absolute;
+            position-anchor: --carousel;
+            inset-area: block-end center;
+            translate: 0 calc(-100% - 6px);
+            inline-size: anchor-size(inline);
+            padding-inline-end: 20px;
+            display: flex;
+            justify-content: flex-end;
+            column-gap: 8px;
+            pointer-events: none;
+
+            >input {
+                appearance: none;
+                display: inline-block;
+                inline-size: 18px;
+                block-size: 18px;
+                margin: 0;
+                padding: 0;
+                border-radius: 50%;
+                background-image: url(//static.hdslb.com/images/base/icons.png);
+                background-position: -855px -790px;
+                cursor: pointer;
+                pointer-events: auto;
+
+                &:checked {
+                    background-position: -855px -727px;
+                    pointer-events: none;
+                }
+            }
+        }
+    }
+
+    .recommend {
+        grid-area: rc;
+        display: contents;
+
+        >a {
+            aspect-ratio: 16 / 9;
+            background-size: cover;
+            background-repeat: no-repeat;
+            border-radius: 4px;
+            overflow: clip;
+            position: relative;
+
+            >.mark {
+                position: absolute;
+                inset-block-end: 0;
+                inset-inline: 0;
+                line-height: 20px;
+                padding-block: 10px;
+                padding-inline: 5px;
+                background-image: linear-gradient(transparent, var(--0000001a) 20%, var(--00000033) 35%, var(--00000099) 65%, var(--000000e6));
+                color: var(--99a2aa);
+                display: flex;
+                flex-direction: column;
+
+                >p {
+                    margin: 0;
+                    padding: 0;
+                    flex-shrink: 0;
+                }
+
+                >.title {
+                    flex: 1;
+                    min-block-size: 0;
+                    color: var(--fff);
+                    overflow: hidden;
+                    word-break: break-all;
+                    word-wrap: break-word;
+                }
+            }
+
+            >i {
+                display: inline-block;
+                position: absolute;
+                inline-size: 22px;
+                block-size: 22px;
+                inset-block-end: .5em;
+                inset-inline-end: .5em;
+                background-image: url(//static.hdslb.com/images/base/icons.png);
+                background-position: -1366px -880px;
+
+                &.d {
+                    background-position: -1436px -880px;
+                }
+            }
+
+            &:not(:hover) {
+
+                >.mark>:not(:first-child),
+                >i {
+                    display: none;
+                }
+            }
+
+            &:hover {
+
+                >.mark {
+                    inset-block-start: 0;
+                    background: var(--000000b3);
+                }
+            }
+        }
+    }
+
+    .rec {
+        position: absolute;
+        inset-inline-start: 100%;
+        inset-block-start: 0;
+        margin-inline-start: 1em;
+        padding: 10px;
+        cursor: pointer;
+        border: 1px solid var(--ccd0d7);
+        border-radius: 4px;
+        font-size: 14px;
+        display: flex;
+        flex-direction: column;
+        row-gap: 5px;
+
+        &::before {
+            content: "";
+            display: inline-block;
+            inline-size: 12px;
+            block-size: 13px;
+            background-image: url(//static.hdslb.com/images/base/icons.png);
+            background-position: -475px -89px;
+            transition: all .5s;
+        }
+
+        &:hover {
+            background-color: var(--ccd0d7);
+
+            &::before {
+                rotate: 1turn;
+            }
+        }
+    }
+}

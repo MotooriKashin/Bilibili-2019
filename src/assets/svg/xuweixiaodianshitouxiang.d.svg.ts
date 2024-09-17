@@ -1,0 +1,2 @@
+declare const svg_xuweixiaodianshitouxiang: string;
+export default svg_xuweixiaodianshitouxiang;

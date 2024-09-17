@@ -1,9 +1,9 @@
-import { IVideoInfoEvent } from "../../../../dash-player";
-import flvjs from "../../../../flv.js";
+import FlvJs from "flv.js";
 import { customElement } from "../../../../utils/Decorator/customElement";
 import { Element } from "../../../../utils/element";
 import { Format } from "../../../../utils/fomat";
-import { PLAYER_EVENT, ev } from "../../../event-target";
+import { ev, PLAYER_EVENT } from "../../../event";
+import { IVideoInfoEvent } from "../../../../dash-player";
 
 /** 播放器节点区域 */
 @customElement('ul')
@@ -36,7 +36,7 @@ export class Statistic extends HTMLUListElement {
     // adoptedCallback() {}
 
     /** 关闭按钮 */
-    private $close = Element.add('i', { class: 'bofqi-statistic-close' }, this);
+    private $close = Element.add('i', { class: 'bofqi-statistic-close', appendTo: this });
 
     /** 是否可见 */
     private isIntersecting = false;
@@ -107,7 +107,7 @@ export class Statistic extends HTMLUListElement {
         ev.bind(PLAYER_EVENT.VIDEO_INFO_DASH, this.dashjs);
         ev.bind(PLAYER_EVENT.VIDEO_INFO_FLV, this.flvjs);
         ev.bind(PLAYER_EVENT.VIDEO_INFO_NATIVE, this.native);
-        ev.bind(PLAYER_EVENT.IDENTIFY, this.identify);
+        ev.bind(PLAYER_EVENT.VIDEO_DESTORY, this.identify);
     }
 
 
@@ -137,7 +137,7 @@ export class Statistic extends HTMLUListElement {
     }
 
     /** 刷新FLV数据 */
-    private flvjs = (ev: CustomEvent<[flvjs.FlvPlayerMediaInfo, flvjs.FlvPlayerStatisticsInfo]>) => {
+    private flvjs = (ev: CustomEvent<[FlvJs.FlvPlayerMediaInfo, FlvJs.FlvPlayerStatisticsInfo]>) => {
         const [mediaInfo, statisticsInfo] = ev.detail;
         this.$mimeType.update(mediaInfo.mimeType);
         this.$playerType.update(statisticsInfo.playerType);
@@ -156,7 +156,7 @@ export class Statistic extends HTMLUListElement {
     }
 
     /** 刷新NATIVE数据 */
-    private native = (ev: CustomEvent<[flvjs.NativePlayerMediaInfo, flvjs.NativePlayerStatisticsInfo]>) => {
+    private native = (ev: CustomEvent<[FlvJs.NativePlayerMediaInfo, FlvJs.NativePlayerStatisticsInfo]>) => {
         const [mediaInfo, statisticsInfo] = ev.detail;
         this.$mimeType.update(mediaInfo.mimeType);
         this.$playerType.update(statisticsInfo.playerType);

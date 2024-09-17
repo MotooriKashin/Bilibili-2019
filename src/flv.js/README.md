@@ -1,1 +1,0 @@
-flv.js 视频核心组件，提取自B站[原生js文件](https://s1.hdslb.com/bfs/static/player/main/core.3447259f.js)，与[开源版本](https://github.com/bilibili/flv.js)有所不同

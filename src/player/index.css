@@ -1,0 +1,133 @@
+@import url(./area/index.css);
+@import url(./auxiliary/index.css);
+@import url(./widget/index.css);
+
+@scope {
+    :scope {
+        --e2e2e2: #e2e2e2;
+        --99a2aa: #99a2aa;
+        --fff: #fff;
+        --353535: #353535;
+        --262626: #262626;
+        --00a1d6: #00a1d6;
+        --000: #000;
+        --f4f5f7: #f4f5f7;
+        --6d757a: #6d757a;
+        --fafafa: #fafafa;
+        --222: #222;
+        --ccd0d7: #ccd0d7;
+        --e5e9ef: #e5e9ef;
+        --017cc3: #017cc3;
+        --8adced: #8adced;
+        --6b6b6b: #6b6b6b;
+        --0006: #0006;
+        --ffa726: #ffa726;
+        --47be8d: #47be8d;
+        --f2509e: #f2509e;
+        --effef5: #effef5;
+        --fffde1: #fffde1;
+        --ffefd8: #ffefd8;
+        --ff792b: #ff792b;
+        --ddd: #ddd;
+        --1c1c1ce6: #1c1c1ce6;
+        --00000080: #00000080;
+        --000000cc: #000000cc;
+        --eee: #eee;
+        --ffffff33: #ffffff33;
+        --ffffff1f: #ffffff1f;
+        --1c1c1ccc: #1c1c1ccc;
+        --ffa500: #ffa500;
+        --00b5e5: #00b5e5;
+        --f5f5f5: #f5f5f5;
+
+        /* 是否启用宽屏 */
+        --screen-wide: 0;
+        /* 是否启用网页全屏 */
+        --screen-web: 0;
+        /* 是否全屏 */
+        --fullscreen: 0;
+
+        color-scheme: light dark;
+        font-family: Arial, Helvetica, Microsoft YaHei, sans-serif;
+        font-size: 12px;
+        box-sizing: border-box;
+        border-radius: 4px;
+        box-shadow: 0 0 8px var(--e2e2e2);
+        background-color: var(--fff);
+        inline-size: 100%;
+        block-size: 100%;
+        margin: 0;
+        margin: 0;
+        padding: 0;
+        text-align: start;
+        container: bofqi / inline-size;
+        display: flex;
+
+        /* 宽屏模式 */
+        &.screen-wide {
+            --screen-wide: 1;
+        }
+
+        /* 网页全屏 */
+        &.screen-web {
+            object-fit: contain;
+            user-select: text;
+            position: fixed !important;
+            box-sizing: border-box !important;
+            min-inline-size: 0px !important;
+            max-inline-size: none !important;
+            min-block-size: 0px !important;
+            max-block-size: none !important;
+            inline-size: 100% !important;
+            block-size: 100% !important;
+            transform: none !important;
+            inset: 0px !important;
+            margin: 0px !important;
+            z-index: 999999;
+
+            --screen-web: 1;
+        }
+
+        /* 全屏模式 */
+        &:fullscreen {
+            --fullscreen: 1;
+        }
+
+        @media (display-mode: picture-in-picture) {
+            & {
+                object-fit: contain;
+                user-select: text;
+                position: fixed !important;
+                box-sizing: border-box !important;
+                min-inline-size: 0px !important;
+                max-inline-size: none !important;
+                min-block-size: 0px !important;
+                max-block-size: none !important;
+                inline-size: 100% !important;
+                block-size: 100% !important;
+                transform: none !important;
+                inset: 0px !important;
+                margin: 0px !important;
+            }
+        }
+    }
+
+    div {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        user-select: none;
+    }
+
+    button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: inherit;
+        background-color: transparent;
+        padding: 0;
+        border: none;
+        cursor: pointer;
+    }
+}

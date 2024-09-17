@@ -1,0 +1,27 @@
+@scope {
+    :scope {
+        color-scheme: light dark;
+    }
+}
+
+.comment-box {
+    inline-size: 980px;
+    padding-block: 30px;
+    padding-inline-end: 300px;
+    margin-inline: auto;
+    box-sizing: border-box;
+
+    @media screen and (min-width:1400px) {
+
+        & {
+            inline-size: 1160px;
+        }
+    }
+
+    @media screen and (min-width:2500px) {
+
+        & {
+            inline-size: 1920px;
+        }
+    }
+}

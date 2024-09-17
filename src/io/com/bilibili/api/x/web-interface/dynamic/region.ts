@@ -1,13 +1,14 @@
 import { Api } from "../../..";
+import { RestType } from "../../../../../../code";
 
-export async function region(
+export async function dynamicRegion(
     rid: REGION
 ) {
     const url = new URL(Api + '/x/web-interface/dynamic/region');
     url.searchParams.set('rid', <any>rid);
     url.searchParams.set('ps', <any>'15');
     const response = await fetch(url, { credentials: 'include' });
-    return <IRegion[]>(await response.json()).data.archives;
+    return <IRegion>await response.json();
 }
 
 export enum REGION {
@@ -47,37 +48,41 @@ export enum REGION {
     NEWS = 202,
 }
 
-export interface IRegion {
-    aid: number;
-    cid: number;
-    ctime: number;
-    desc: string;
-    duration: number;
-    dynamic: string;
-    is_ogv: boolean;
-    owner: {
-        face: string;
-        mid: number;
-        name: string;
-    };
-    pic: string;
-    pub_location: string;
-    pubdate: number;
-    stat: {
-        coin: number;
-        danmaku: number;
-        dislike: number;
-        favorite: number;
-        his_rank: number;
-        like: number;
-        now_rank: number;
-        reply: number;
-        share: number;
-        view: number;
-    };
-    state: number;
-    tid: number;
-    title: string;
-    tname: string;
-    videos: number;
+export interface IRegion extends RestType {
+    data: {
+        archives: {
+            aid: number;
+            cid: number;
+            ctime: number;
+            desc: string;
+            duration: number;
+            dynamic: string;
+            is_ogv: boolean;
+            owner: {
+                face: string;
+                mid: number;
+                name: string;
+            };
+            pic: string;
+            pub_location: string;
+            pubdate: number;
+            stat: {
+                coin: number;
+                danmaku: number;
+                dislike: number;
+                favorite: number;
+                his_rank: number;
+                like: number;
+                now_rank: number;
+                reply: number;
+                share: number;
+                view: number;
+            };
+            state: number;
+            tid: number;
+            title: string;
+            tname: string;
+            videos: number;
+        }[];
+    }
 }

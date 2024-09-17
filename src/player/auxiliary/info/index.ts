@@ -1,11 +1,10 @@
+import { Player } from "../..";
 import { customElement } from "../../../utils/Decorator/customElement";
 import { More } from "./more";
-import { MoreWrap } from "./more/wrap";
 import { Number } from "./number";
 import { Setting } from "./setting";
-import { SettingWrap } from "./setting/wrap";
 
-/** 播放信息栏 */
+/** 播放器信息区域 */
 @customElement('div')
 export class Info extends HTMLDivElement {
 
@@ -23,11 +22,8 @@ export class Info extends HTMLDivElement {
      */
     // attributeChangedCallback(name: IobservedAttributes, oldValue: string, newValue: string) {}
 
-    /** 初始化标记 */
-    // #inited = false;
-
     /** 每当元素添加到文档中时调用。 */
-    // connectedCallback() {}
+    // connectedCallback() { }
 
     /** 每当元素从文档中移除时调用。 */
     // disconnectedCallback() {}
@@ -35,26 +31,21 @@ export class Info extends HTMLDivElement {
     /** 每当元素被移动到新文档中时调用。 */
     // adoptedCallback() {}
 
-    /** 弹幕数及播放人数信息 */
-    $number = this.appendChild(new Number);
+    #player: Player;
 
-    /** 更多按钮 */
-    $more = this.appendChild(new More());
+    #number: Number;
 
-    /** 更多设置面板 */
-    $moreWrap = this.appendChild(new MoreWrap());
+    #more: More;
 
-    /** 设置按钮 */
-    $setting = this.appendChild(new Setting());
+    $setting: Setting;
 
-    /** 设置面版 */
-    $settingWrap = this.appendChild(new SettingWrap());
-
-    constructor() {
+    constructor(player: Player) {
         super();
 
-        this.classList.add('bofqi-auxiliary-info');
-        this.$more.popoverTargetElement = this.$moreWrap;
-        this.$setting.popoverTargetElement = this.$settingWrap;
+        this.#player = player;
+        this.classList.add('bofqi-info');
+        this.#number = this.appendChild(new Number(player));
+        this.#more = this.appendChild(new More(player));
+        this.$setting = this.appendChild(new Setting(player));
     }
 }

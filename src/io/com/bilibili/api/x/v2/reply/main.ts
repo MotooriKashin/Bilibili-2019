@@ -1,5 +1,6 @@
 import { Api } from "../../..";
 import { IReplies } from ".";
+import { RestType } from "../../../../../../code";
 
 /**
  * 请求瀑布流评论
@@ -27,48 +28,50 @@ export async function replyMain(
     url.searchParams.set('type', <any>type);
     url.searchParams.set('plat', <any>plat);
     const response = await fetch(url, { credentials: 'include' });
-    return <IReplyMain>(await response.json()).data;
+    return <IReplyMain>await response.json();
 }
 
-interface IReplyMain {
-    assist: number;
-    blacklist: number;
-    config: {
-        read_only: boolean;
-        show_up_flag: boolean;
-        showtopic: number;
-    };
-    control: {
-        answer_guide_text: string;
-        bg_text: string;
-        child_input_text: string;
-        giveup_input_text: string;
-        input_disable: boolean;
-        root_input_text: string;
-        show_text: string;
-        show_type: number;
-    };
-    cursor: {
-        all_count: number;
-        is_begin: boolean;
-        is_end: boolean;
-        /**
-         * |  |  |
-         * | :-: | :-: |
-         * | 2 | 3 |
-         * | 时间 | 热度 |
-         */
-        mode: 2 | 3;
-        mode_text: string;
-        name: string;
-        next: number;
-        pagination_reply: { next_offset: string };
-        prev: number;
-        session_id: string;
-    };
-    replies: IReplies[];
-    top: { admin?: IReplies, upper?: IReplies, vote?: IReplies };
-    top_replies: IReplies[];
-    up_selection: { pending_count: number; ignore_count: number };
-    upper: { mid: number };
+interface IReplyMain extends RestType {
+    data: {
+        assist: number;
+        blacklist: number;
+        config: {
+            read_only: boolean;
+            show_up_flag: boolean;
+            showtopic: number;
+        };
+        control: {
+            answer_guide_text: string;
+            bg_text: string;
+            child_input_text: string;
+            giveup_input_text: string;
+            input_disable: boolean;
+            root_input_text: string;
+            show_text: string;
+            show_type: number;
+        };
+        cursor: {
+            all_count: number;
+            is_begin: boolean;
+            is_end: boolean;
+            /**
+             * |  |  |
+             * | :-: | :-: |
+             * | 2 | 3 |
+             * | 时间 | 热度 |
+             */
+            mode: 2 | 3;
+            mode_text: string;
+            name: string;
+            next: number;
+            pagination_reply: { next_offset: string };
+            prev: number;
+            session_id: string;
+        };
+        replies: IReplies[];
+        top?: { admin?: IReplies, upper?: IReplies, vote?: IReplies };
+        top_replies?: IReplies[];
+        up_selection: { pending_count: number; ignore_count: number };
+        upper: { mid: number };
+    }
 }
