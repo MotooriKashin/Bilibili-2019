@@ -42,6 +42,7 @@ export class DanmakuInput extends HTMLFormElement {
 
         this.#player = player;
         this.classList.add('bofqi-sendbar-input');
+        this.autocomplete = 'off';
         this.$input.placeholder = '您可以在这里输入弹幕吐槽哦~';
         this.$input.name = 'danmaku';
         this.$input.required = true;
