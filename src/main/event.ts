@@ -72,6 +72,9 @@ export enum MAIN_EVENT {
 
     /** 刷新视频互动数据 */
     RELATION_FLASH,
+
+    /** 关注 */
+    GUAN_ZHU,
 }
 
 /** 播放器事件基类 */
@@ -82,4 +85,5 @@ export interface IPlayerEvent {
     3: void;
     4: [ROUTER, URL];
     5: void;
+    6: boolean;
 }

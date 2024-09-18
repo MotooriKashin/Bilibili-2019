@@ -1,4 +1,5 @@
 import { Api } from "../..";
+import { RestType } from "../../../../../code";
 
 export async function relationModify(
     csrf: string,
@@ -26,5 +27,5 @@ export async function relationModify(
         headers,
         body,
     });
-    return <number>(await response.json()).code;
+    return <RestType>await response.json();
 }

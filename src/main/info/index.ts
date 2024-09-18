@@ -17,6 +17,8 @@ import { relation } from "../../io/com/bilibili/api/x/web-interface/archive/rela
 import { nav } from "../../io/com/bilibili/api/x/web-interface/nav";
 import { Operated } from "./operated";
 import { Collection } from "./collection";
+import { relationModify } from "../../io/com/bilibili/api/x/relation/modify";
+import { cookie } from "../../utils/cookie";
 
 /** 评论区 */
 @customElement(undefined, `info-${Date.now()}`)
@@ -97,6 +99,13 @@ export class Info extends HTMLElement {
         mainEv.bind(MAIN_EVENT.RELATION_FLASH, () => {
             this.$aid = this.#aid;
         });
+        mainEv.bind(MAIN_EVENT.GUAN_ZHU, ({ detail }) => {
+            const d = this.#host.querySelector<HTMLElement>('.b-gz');
+            if (d) {
+                d.classList.toggle('d', detail);
+                d.innerText = detail ? '已关注' : '+ 关注';
+            }
+        });
 
         this.#host.addEventListener('click', ({ target }) => {
             if (target instanceof HTMLElement) {
@@ -105,6 +114,23 @@ export class Info extends HTMLElement {
                     this.#coin.showPopover();
                 } else if (target.closest('.fav')) {
                     this.#collection.showPopover();
+                } else if (target.closest('.b-gz')) {
+                    const gz = target.closest<HTMLElement>('.b-gz')!;
+                    const csrf = cookie.get('bili_jct');
+                    const i = gz.classList.contains('d') ? 2 : 1;
+                    const { mid } = gz.dataset;
+                    if (csrf && mid) {
+                        relationModify(csrf, mid, i)
+                            .then(({ code, message }) => {
+                                if (code !== 0) throw new ReferenceError(message, { cause: { code, message } });
+                                toastr.success(`已${i === 2 ? '取消' : '关注'}关注`, `mid：${mid}`);
+                                mainEv.trigger(MAIN_EVENT.GUAN_ZHU, i === 1);
+                            })
+                            .catch(e => {
+                                toastr.error(`${i === 2 ? '取消' : '关注'}关注出错`, e);
+                                console.error(e);
+                            })
+                    }
                 }
             }
         });
@@ -160,7 +186,7 @@ ${View.stat.his_rank ? `<span title="本日日排行数据过期后，再纳入�
 		<span title="粉丝数${Card.follower}">粉丝：${Format.carry(Card.follower)}</span>
 	</div>
 	<div class="followe">
-		<button class="b-gz">+ 关注</button>
+		<button class="b-gz${Card.following ? ' d' : ''}" data-mid="${Card.card.mid}">+ 关注</button>
 		<button class="b-cd">充电</button>
 	</div>
 </div>`);

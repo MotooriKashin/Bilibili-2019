@@ -281,9 +281,15 @@
                     transition: all .3s;
                     cursor: pointer;
 
-                    &:hover {
+                    &:not(.d):hover {
                         background-color: var(--00b5e5);
                         border-color: var(--00b5e5);
+                    }
+
+                    &.d {
+                        background-color: var(--fff);
+                        color: var(--99a2aa);
+                        border: 1px solid var(--e5e9ef);
                     }
                 }
 
