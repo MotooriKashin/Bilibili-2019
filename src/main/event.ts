@@ -81,6 +81,9 @@ export enum MAIN_EVENT {
 
     /** 请求弹出收藏窗口 */
     REQUEST_FAV,
+
+    /** 追番 */
+    ZHUI_FAN,
 }
 
 /** 播放器事件基类 */
@@ -94,4 +97,5 @@ export interface IPlayerEvent {
     6: boolean;
     7: void;
     8: void;
+    9: boolean;
 }

@@ -124,6 +124,12 @@
                             background-image: url(//s1.hdslb.com/bfs/static/bangumi/play/asserts/icons.png);
                             background-position: -665px -1882px;
                         }
+
+                        &.d {
+                            color: var(--6d757a);
+                            border-color: var(--e5e9ef);
+                            background-color: transparent;
+                        }
                     }
 
                     >.app {

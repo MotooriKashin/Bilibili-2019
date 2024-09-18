@@ -19,6 +19,8 @@ import { Operated } from "./operated";
 import { Collection } from "./collection";
 import { relationModify } from "../../io/com/bilibili/api/x/relation/modify";
 import { cookie } from "../../utils/cookie";
+import { followDel } from "../../io/com/bilibili/api/pgc/web/follow/del";
+import { followAdd } from "../../io/com/bilibili/api/pgc/web/follow/add";
 
 /** 评论区 */
 @customElement(undefined, `info-${Date.now()}`)
@@ -106,6 +108,12 @@ export class Info extends HTMLElement {
                 d.innerText = detail ? '已关注' : '+ 关注';
             }
         });
+        mainEv.bind(MAIN_EVENT.ZHUI_FAN, ({ detail }) => {
+            const d = this.#host.querySelector<HTMLElement>('.order');
+            if (d) {
+                d.classList.toggle('d', detail);
+            }
+        });
         mainEv.bind(MAIN_EVENT.REQUSET_COIN, () => {
             this.#coin.showPopover();
         });
@@ -139,6 +147,23 @@ export class Info extends HTMLElement {
                     }
                 } else if (target.closest('.b-cd')) {
                     toastr.warn('【充电】功能属于支付类风险操作！', '请移步到UP主页等原生页面进行，已保护您的财产安全~').$delay = 10;
+                } else if (target.closest('.order')) {
+                    const gz = target.closest<HTMLElement>('.order')!;
+                    const csrf = cookie.get('bili_jct');
+                    const { ssid } = gz.dataset;
+                    const i = gz.classList.contains('d');
+                    if (csrf && ssid) {
+                        (i ? followDel(csrf, ssid) : followAdd(csrf, ssid))
+                            .then(({ code, message, result }) => {
+                                if (code !== 0) throw new ReferenceError(message, { cause: { code, message } });
+                                toastr.success(result.toast);
+                                mainEv.trigger(MAIN_EVENT.ZHUI_FAN, Boolean(result.status));
+                            })
+                            .catch(e => {
+                                toastr.error(`${i ? '取消' : '添加'}追番出错`, e);
+                                console.error(e);
+                            });
+                    }
                 }
             }
         });
@@ -264,7 +289,7 @@ ${View.stat.his_rank ? `<span title="本日日排行数据过期后，再纳入�
 <span title="总弹幕数${data.stat.danmakus}" class="v dm">${Format.carry(data.stat.danmakus)}</span>
 <span class="line"></span>
 <span title="投硬币枚数${data.stat.coins}" class="u coin">硬币 ${Format.carry(data.stat.coins)}</span>
-<span title="追番数${data.stat.favorites}" class="u order">追番 ${Format.carry(data.stat.favorites)}</span>`;
+<span title="追番数${data.stat.favorites}" class="u order${data.user_status.follow ? ' d' : ''}" data-ssid="${data.season_id}">追番 ${Format.carry(data.stat.favorites)}</span>`;
                             this.#coin.dataset.aid = this.#collection.dataset.aid = this.$aid = <any>ep.aid;
                         })
                         .catch(e => {

@@ -1,6 +1,9 @@
 import { IModulePositiveEpisode, pgcAppSeason } from "../../../../io/com/bilibili/api/pgc/view/v2/app/season";
 import { IEpisode, pgcSection } from "../../../../io/com/bilibili/api/pgc/view/web/season/user/section";
+import { followAdd } from "../../../../io/com/bilibili/api/pgc/web/follow/add";
+import { followDel } from "../../../../io/com/bilibili/api/pgc/web/follow/del";
 import { toastr } from "../../../../toastr";
+import { cookie } from "../../../../utils/cookie";
 import { customElement } from "../../../../utils/Decorator/customElement";
 import { Element } from "../../../../utils/element";
 import { Format } from "../../../../utils/fomat";
@@ -77,6 +80,8 @@ export class Detail extends HTMLElement {
 
     #sponsorList = Element.add('div', { class: 'body', appendTo: this.#sponsorLeft });
 
+    #follow = <HTMLElement>this.#titleFunc.firstElementChild!
+
     #ssid = 0;
 
     #epid = 0;
@@ -117,8 +122,27 @@ export class Detail extends HTMLElement {
                 history.replaceState(undefined, '', url);
             }
         });
+        this.#follow.addEventListener('click', () => {
+            const csrf = cookie.get('bili_jct');
+            const i = this.#follow.classList.contains('d');
+            if (csrf && this.#ssid) {
+                (i ? followDel(csrf, this.#ssid) : followAdd(csrf, this.#ssid))
+                    .then(({ code, message, result }) => {
+                        if (code !== 0) throw new ReferenceError(message, { cause: { code, message } });
+                        toastr.success(result.toast);
+                        mainEv.trigger(MAIN_EVENT.ZHUI_FAN, Boolean(result.status));
+                    })
+                    .catch(e => {
+                        toastr.error(`${i ? '取消' : '添加'}追番出错`, e);
+                        console.error(e);
+                    });
+            }
+        })
 
         mainEv.bind(MAIN_EVENT.NAVIGATE, ({ detail }) => { this.$navigate(...detail) });
+        mainEv.bind(MAIN_EVENT.ZHUI_FAN, ({ detail }) => {
+            this.#follow.innerText = this.#follow.classList.toggle('d', detail) ? '已追番' : '追番';
+        });
     }
 
     /** 页面路由 */
@@ -203,6 +227,7 @@ export class Detail extends HTMLElement {
 </div>` });
                                 });
                             }
+                            this.#follow.innerText = this.#follow.classList.toggle('d', Boolean(data.user_status.follow)) ? '已追番' : '追番';
                         })
                         .catch(e => {
                             console.error(e);

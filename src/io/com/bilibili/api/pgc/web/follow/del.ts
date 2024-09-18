@@ -19,5 +19,5 @@ export async function followDel(
         headers,
         body,
     });
-    return <IPgcFollow>(await response.json()).result;
+    return <IPgcFollow>await response.json();
 }
