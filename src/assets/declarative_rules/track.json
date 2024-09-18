@@ -140,5 +140,20 @@
                 "xmlhttprequest"
             ]
         }
+    },
+    {
+        "id": 7,
+        "action": {
+            "type": "block"
+        },
+        "condition": {
+            "requestDomains": [
+                "s1.hdslb.com"
+            ],
+            "urlFilter": "reporter-pb",
+            "resourceTypes": [
+                "script"
+            ]
+        }
     }
 ]
