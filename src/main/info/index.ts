@@ -131,6 +131,8 @@ export class Info extends HTMLElement {
                                 console.error(e);
                             })
                     }
+                } else if (target.closest('.b-cd')) {
+                    toastr.warn('【充电】功能属于支付类风险操作！', '请移步到UP主页等原生页面进行，已保护您的财产安全~').$delay = 10;
                 }
             }
         });
