@@ -1,4 +1,5 @@
 import { Header } from ".";
+import { Element } from "../../../utils/element";
 import { ProxyHook } from "../../../utils/hook/Proxy";
 
 export class BiliHeader {
@@ -15,6 +16,8 @@ export class BiliHeader {
                 }
             }
             init(el: HTMLElement) {
+                // 兼容处理：部分页面使用顶栏脚本提供的UserStatus对象判定登录状态
+                Element.add('script', { appendTo: document.head, attribute: { src: '//s1.hdslb.com/bfs/seed/jinkela/header/header.js' } });
                 return el.replaceWith(this.$header);
             }
         });
