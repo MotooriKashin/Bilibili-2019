@@ -10,7 +10,7 @@
 			},
 			"problemMatcher": [],
 			"label": "npm: build",
-			"detail": "node scripts/build.mjs"
+			"detail": "node --experimental-strip-types ./src/build/index.ts"
 		}
 	]
 }

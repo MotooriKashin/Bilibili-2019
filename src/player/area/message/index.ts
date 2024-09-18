@@ -1,8 +1,8 @@
+import { Player } from "../..";
+import svg_12sent from "../../../assets/svg/12sent.svg";
 import { customElement } from "../../../utils/Decorator/customElement";
-import { Element } from "../../../utils/element";
-import svg_sent from "../../assets/svg/sent.svg";
 
-/** 播放器通知区域 */
+/** 播放器消息区域 */
 @customElement('div')
 export class Message extends HTMLDivElement {
 
@@ -20,11 +20,8 @@ export class Message extends HTMLDivElement {
      */
     // attributeChangedCallback(name: IobservedAttributes, oldValue: string, newValue: string) {}
 
-    /** 初始化标记 */
-    // #inited = false;
-
     /** 每当元素添加到文档中时调用。 */
-    // connectedCallback() {}
+    // connectedCallback() { }
 
     /** 每当元素从文档中移除时调用。 */
     // disconnectedCallback() {}
@@ -32,15 +29,23 @@ export class Message extends HTMLDivElement {
     /** 每当元素被移动到新文档中时调用。 */
     // adoptedCallback() {}
 
-    private $prev = Element.add('button', { class: 'bofqi-message-prev' }, this, svg_sent);
+    #player: Player;
 
-    private $panel = Element.add('div', { class: 'bofqi-message-panel' }, this);
+    #prev = this.appendChild(document.createElement('div'));
 
-    private $next = Element.add('button', { class: 'bofqi-message-next' }, this, svg_sent);
+    #panel = this.appendChild(document.createElement('div'));
 
-    constructor() {
+    #next = this.appendChild(document.createElement('div'));
+
+    constructor(player: Player) {
         super();
 
+        this.#player = player;
         this.classList.add('bofqi-area-message');
+        this.#prev.classList.add('bofqi-message-prev');
+        this.#prev.innerHTML = svg_12sent;
+        this.#panel.classList.add('bofqi-message-panel');
+        this.#next.classList.add('bofqi-message-next');
+        this.#next.innerHTML = svg_12sent;
     }
 }

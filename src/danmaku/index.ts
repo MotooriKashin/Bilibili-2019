@@ -1,5 +1,8 @@
+import { CSSStyleSheet2HTMLStyleElement } from "../utils/CSSStyleSheet2HTMLStyleElement";
 import { customElement } from "../utils/Decorator/customElement";
 import { DANMAKU } from "./block";
+import { DanmakuEvent, IDanmakuEvent } from "./event";
+import stylesheet from "./index.css" with {type: 'css'};
 import { Mode1 } from "./render/mode1";
 import { Mode4 } from "./render/mode4";
 import { Mode5 } from "./render/mode5";
@@ -7,15 +10,12 @@ import { Mode6 } from "./render/mode6";
 import { Mode7 } from "./render/mode7";
 import { Mode8 } from "./render/mode8";
 import { rootSprite } from "./render/mode8/Display/DisplayObject";
-import { Mode9 } from "./render/mode9";
+import { IDanmakuBAS, Mode9 } from "./render/mode9";
 import ParserWorker from './render/mode9/bas-parser';
 
-/**
- * 弹幕组件  
- * 需要引入`/style/index.css`
- */
-@customElement('div')
-export class Danmaku extends HTMLDivElement {
+/** 播放器核心 */
+@customElement(undefined, `danmaku-${Date.now()}`)
+export class Danmaku extends HTMLElement {
 
     /**
      * 需要监听变动的属性。
@@ -31,17 +31,191 @@ export class Danmaku extends HTMLDivElement {
      */
     // attributeChangedCallback(name: IobservedAttributes, oldValue: string, newValue: string) {}
 
-    /** 初始化标记 */
-    // #inited = false;
-
     /** 每当元素添加到文档中时调用。 */
-    // connectedCallback() { }
+    // connectedCallback() {}
 
     /** 每当元素从文档中移除时调用。 */
     // disconnectedCallback() {}
 
     /** 每当元素被移动到新文档中时调用。 */
     // adoptedCallback() {}
+
+    #video: HTMLVideoElement;
+
+    /** 原始弹幕序列 */
+    #dms: IDanmaku[] = [];
+
+    /** 弹幕时间轴序列 */
+    #timeLine: IDanmaku[] = [];
+
+    /** 排序延时句柄 */
+    #timer?: ReturnType<typeof setTimeout>;
+
+    /** 渲染句柄 */
+    #animationTimer?: number;
+
+    /** 弹幕渲染起始游标 */
+    #i = 0;
+
+    /** 弹幕可见性 */
+    #visible = true;
+
+    $host = this.attachShadow({ mode: 'closed' });
+
+    /** 弹幕基准时间 */
+    $duration = 4500;
+
+    /** 弹幕容器宽度 */
+    $width = 0;
+
+    /** 弹幕容器高度 */
+    $height = 0;
+
+    /** 速度 */
+    $speedPlus = 1;
+
+    /** 同步视频速度 */
+    $speedSync = false;
+
+    /** 弹幕速率倍率 */
+    $rate = 1;
+
+    /** 当前已渲染弹幕数 */
+    $danmakuNow = 0;
+
+    /** 显示区域：0-100(0为无限，50为半屏，100为满屏 */
+    $danmakuArea = 0;
+
+    /** 防挡字幕 */
+    $preventShade = false;
+
+    /** 弹幕渲染起始时间戳 */
+    $playTimeStamp = 0;
+
+    /** 弹幕渲染暂停时间戳 */
+    $pauseTimeStamp = 0;
+
+    /** 上次渲染弹幕的时间戳 */
+    $progress = 0;
+
+    /** 提前渲染时间 */
+    #preTime = 500;
+
+    /** 同屏弹幕密度 */
+    $danmakuNumber = 0;
+
+    /** 弹幕屏蔽等级 */
+    $weiget = 0;
+
+    /** 当前弹幕时间戳：/s */
+    $currentTime = 0;
+
+    /** mode7 自适应 */
+    $mode7Scale = false;
+
+    #block = 0;
+
+    /**
+     * 弹幕屏蔽类型
+     * 根据{@link DANMAKU}的二进制位判定
+     */
+    get $block() {
+        return this.#block;
+    }
+
+    set $block(v) {
+        v & DANMAKU.LIKE ? this.style.setProperty('--like', '0') : this.style.removeProperty('--like');
+        v & DANMAKU.VIP ? this.style.setProperty('--colorful', '0') : this.style.removeProperty('--colorful');
+        this.#block = v;
+    }
+
+    get $heightFix() {
+        return this.$preventShade ? this.$height * 0.85 : this.$height;
+    }
+
+    private $worker?: Worker;
+
+    /** BAS代码解析 Worker */
+    get worker() {
+        if (!this.$worker) {
+            this.$worker = new ParserWorker();
+            this.$worker.addEventListener('message', e => {
+                if (!e.data.error) {
+                    this.#dms = this.#dms.concat(e.data);
+                    this.#sort();
+                }
+            });
+        }
+        return this.$worker;
+    }
+
+    constructor(video: HTMLVideoElement) {
+        super();
+
+        this.#video = video;
+        // this.#host.adoptedStyleSheets = [stylesheet]; // 文档画中画模式会导致构造的样式表丢失，暂时取道 style 元素代替
+        this.$host.appendChild(CSSStyleSheet2HTMLStyleElement(stylesheet));
+
+        // 绑定代码弹幕容器
+        rootSprite.$host = <any>this.$host;
+
+        new ResizeObserver(this.#resizeObserver).observe(this);
+        video.addEventListener('play', () => {
+            if (!video.paused) {
+                this.$playTimeStamp = performance.now();
+                this.style.removeProperty('--animation-play-state');
+                this.#time();
+                this.dispatchEvent(new Event('play'));
+            }
+        });
+        video.addEventListener('pause', () => {
+            if (video.paused) {
+                this.$pauseTimeStamp = performance.now();
+                this.style.setProperty('--animation-play-state', 'paused');
+                this.#pause();
+                this.dispatchEvent(new Event('pause'));
+            }
+        });
+        video.addEventListener('playing', () => {
+            this.$playTimeStamp = performance.now();
+            this.style.removeProperty('--animation-play-state');
+            this.#time();
+            this.dispatchEvent(new Event('play'));
+        });
+        video.addEventListener('waiting', () => {
+            this.$pauseTimeStamp = performance.now();
+            this.style.setProperty('--animation-play-state', 'paused');
+            this.#pause();
+            this.dispatchEvent(new Event('pause'));
+        });
+        video.addEventListener('ended', () => {
+            if (video.ended) {
+                this.$pauseTimeStamp = performance.now();
+                this.style.setProperty('--animation-play-state', 'paused');
+                this.#pause();
+                this.dispatchEvent(new Event('ended'));
+            }
+        });
+        video.addEventListener('emptied', () => {
+            if (video.paused) {
+                this.$pauseTimeStamp = performance.now();
+                this.style.setProperty('--animation-play-state', 'paused');
+                this.#pause();
+                this.dispatchEvent(new Event('pause'));
+            }
+        });
+        video.addEventListener('ratechange', () => {
+            this.$rate = video.playbackRate;
+        });
+        video.addEventListener('timeupdate', () => {
+            this.$currentTime = video.currentTime * 1e3;
+            video.paused && this.#pause();
+        });
+
+        this.addEventListener('click', () => {
+            video.paused ? video.play() : video.pause();
+        });
+    }
 
     /**
      * 事件监听（只监听一次）
@@ -86,204 +260,42 @@ export class Danmaku extends HTMLDivElement {
         // });
     }
 
-
-    /** 原始弹幕序列 */
-    $dms: IDanmaku[] = [];
-
-    /** 弹幕时间轴序列 */
-    protected $timeLine: IDanmaku[] = [];
-
-    /** 排序延时句柄 */
-    #timer?: number;
-
-    /** 弹幕渲染起始游标 */
-    #i = 0;
-
-    /** 弹幕基准存活时间 */
-    $duration = 4500;
-
-    /** 速度 */
-    $speedPlus = 1;
-
-    /** 同步视频速度 */
-    $speedSync = false;
-
-    /** 弹幕速率倍率 */
-    $rate = 1;
-
-    /** 弹幕区域宽度 */
-    $width = 0;
-
-    /** 弹幕区域高度 */
-    $height = 0;
-
-    get $heightFix() {
-        return this.$preventShade ? this.$height * 0.85 : this.$height;
-    }
-
-    /** 当前弹幕数 */
-    $danmakuNow = 0;
-
-    /** 显示区域：0-100(0为无限，50为半屏，100为满屏 */
-    $danmakuArea = 0;
-
-    /** 弹幕渲染起始时间戳 */
-    $playTimeStamp = 0;
-
-    /** 弹幕渲染暂停时间戳 */
-    $pauseTimeStamp = 0;
-
-    /** 当前弹幕时间戳：/s */
-    $currentTime = 0;
-
-    /** 渲染句柄 */
-    #animationTimer?: number;
-
-    /** 弹幕可见性 */
-    #visible = true;
-
-    /** 上次渲染弹幕的时间戳 */
-    $progress = 0;
-
-    /** 提前渲染时间 */
-    #preTime = 500;
-
-    /** 同屏弹幕密度 */
-    $danmakuNumber = 0;
-
-    /** 防挡字幕 */
-    $preventShade = false;
-
-    #block = 0;
-
-    /**
-     * 弹幕屏蔽类型
-     * 根据{@link DANMAKU}的二进制位判定
-     */
-    get $block() {
-        return this.#block;
-    }
-
-    set $block(v) {
-        v & DANMAKU.LIKE ? this.style.setProperty('--like', '0') : this.style.removeProperty('--like');
-        v & DANMAKU.VIP ? this.style.setProperty('--colorful', '0') : this.style.removeProperty('--colorful');
-        this.#block = v;
-    }
-
-    /** 弹幕屏蔽等级 */
-    $weiget = 0;
-
-    private $worker?: Worker;
-
-    /** BAS代码解析 Worker */
-    get worker() {
-        if (!this.$worker) {
-            this.$worker = new ParserWorker();
-            this.$worker.addEventListener('message', e => {
-                if (!e.data.error) {
-                    this.$dms = this.$dms.concat(e.data.map((d: IDanmakuBAS) => {
-                        Mode9.pretreatDanmaku(d);
-                        return d;
-                    }));
-                    this.sort();
+    /** 弹幕容器大小变化回调 */
+    #resizeObserver = (entries: ResizeObserverEntry[]) => {
+        for (const { contentBoxSize } of entries) {
+            for (const { inlineSize, blockSize } of contentBoxSize) {
+                this.$width = inlineSize;
+                this.$height = blockSize;
+                const { videoWidth, videoHeight } = this.#video;
+                const radio = inlineSize / blockSize;
+                const radioVideo = videoWidth / videoHeight;
+                if (radio > radioVideo) {
+                    this.style.removeProperty('--inset-block');
+                    this.style.setProperty('--inset-inline', `${(radio - radioVideo) / radio / 2 * 100}cqi`);
+                } else if (radio < radioVideo) {
+                    this.style.setProperty('--inset-block', `${(radioVideo - radio) / radioVideo / 2 * 100}cqb`);
+                    this.style.removeProperty('--inset-inline');
+                } else {
+                    this.style.removeProperty('--inset-block');
+                    this.style.removeProperty('--inset-inline');
                 }
-            });
+            }
         }
-        return this.$worker;
-    }
-
-    constructor(
-        /** 关联的视频元素 */
-        private $video: HTMLVideoElement
-    ) {
-        super();
-
-        this.classList.add('b-danmaku');
-
-        // 绑定代码弹幕容器
-        rootSprite.$host = this;
-
-        this.$video.addEventListener('play', () => {
-            if (!this.$video.paused) {
-                this.$playTimeStamp = performance.now();
-                this.style.removeProperty('--animation-play-state');
-                this.time();
-                this.dispatchEvent(new Event('play'));
-            }
-        });
-        this.$video.addEventListener('pause', () => {
-            if (this.$video.paused) {
-                this.$pauseTimeStamp = performance.now();
-                this.style.setProperty('--animation-play-state', 'paused');
-                this.pause();
-                this.dispatchEvent(new Event('pause'));
-            }
-        });
-        this.$video.addEventListener('playing', () => {
-            this.$playTimeStamp = performance.now();
-            this.style.removeProperty('--animation-play-state');
-            this.time();
-            this.dispatchEvent(new Event('play'));
-        });
-        this.$video.addEventListener('waiting', () => {
-            this.$pauseTimeStamp = performance.now();
-            this.style.setProperty('--animation-play-state', 'paused');
-            this.pause();
-            this.dispatchEvent(new Event('pause'));
-        });
-        this.$video.addEventListener('ended', () => {
-            if (this.$video.ended) {
-                this.$pauseTimeStamp = performance.now();
-                this.style.setProperty('--animation-play-state', 'paused');
-                this.pause();
-                this.dispatchEvent(new Event('ended'));
-            }
-        });
-        this.$video.addEventListener('emptied', () => {
-            if (this.$video.paused) {
-                this.$pauseTimeStamp = performance.now();
-                this.style.setProperty('--animation-play-state', 'paused');
-                this.pause();
-                this.dispatchEvent(new Event('pause'));
-            }
-        });
-        this.$video.addEventListener('ratechange', () => {
-            this.$rate = this.$video.playbackRate;
-        });
-        this.$video.addEventListener('timeupdate', () => {
-            this.$currentTime = this.$video.currentTime * 1e3;
-            this.$video.paused && this.pause();
-        });
-
-        this.addEventListener('click', () => {
-            this.$video.paused ? this.$video.play() : this.$video.pause();
-        });
-
-        new ResizeObserver(d => {
-            for (const entry of d) {
-                for (const size of entry.borderBoxSize) {
-                    this.$width = size.inlineSize;
-                    this.$height = size.blockSize;
-                    this.style.setProperty('--wraps', <any>(size.blockSize / 440));
-                }
-            }
-            this.modeIdentity();
-        }).observe(this);
     }
 
     /** 弹幕排序 */
-    private sort() {
+    #sort() {
         clearTimeout(this.#timer);
         this.#timer = setTimeout(() => {
-            this.$dms.sort((a, b) => this.compare(a.idStr, b.idStr));
-            this.$dms.sort((a, b) => this.compare(a.progress, b.progress));
-            this.$timeLine = this.$dms;
+            this.#dms.sort((a, b) => this.#compare(a.idStr, b.idStr));
+            this.#dms.sort((a, b) => this.#compare(a.progress, b.progress));
+            this.#timeLine = this.#dms;
             this.#i = 0;
         });
     }
 
     /** 排序比较算法 */
-    private compare(num1: number | string | bigint = 0, num2: number | string | bigint = 0) {
+    #compare(num1: number | string | bigint = 0, num2: number | string | bigint = 0) {
         typeof num1 === 'string' && (num1 = BigInt(num1));
         typeof num2 === 'string' && (num2 = BigInt(num2));
         if (num1 > num2) {
@@ -295,8 +307,124 @@ export class Danmaku extends HTMLDivElement {
         }
     }
 
+    /** 时间主循环 */
+    #time = () => {
+        this.#pause(); // 防止多个主循环触发
+        this.#render();
+        this.#animationTimer = requestAnimationFrame(this.#time);
+    }
+
+    /** 暂停循环 */
+    #pause = () => {
+        this.#animationTimer && cancelAnimationFrame(this.#animationTimer);
+    }
+
+    /** 渲染函数 */
+    #render() {
+        if (this.#visible) {
+            const time = this.$currentTime;
+            if (this.$progress > time + 3000 + this.#preTime * this.$rate) {
+                // 上次渲染弹幕的时间戳远大于视频时间，重置时间戳
+                this.#flesh();
+            }
+            for (; this.#i < this.#timeLine.length; this.#i++) {
+                const progress = this.#timeLine[this.#i].progress || 0;
+                if (progress < time - 1000) {
+                    continue;
+                } else if (progress < time + this.#preTime * this.$rate) {
+                    // 初次渲染未必从time=0开始，导致progress=0的弹幕渲染不到，何妨反向获取1000ms
+                    this.#draw(this.#timeLine[this.#i], progress - time);
+                    this.$progress = progress;
+                } else {
+                    break;
+                }
+            }
+        }
+    }
+
+    /** 绘制弹幕 */
+    #draw(dm: IDanmaku, delay = 0) {
+        if (!dm.on) {
+            switch (dm.mode) {
+                case 1:
+                case 2:
+                case 3: {
+                    if (this.$danmakuNumber && this.$danmakuNow > this.$danmakuNumber) break;
+                    if (this.$weiget && 'weight' in dm && dm.weight !== undefined && dm.weight < this.$weiget) {
+                        break;
+                    }
+                    if (this.$block & DANMAKU.SCROLL) break;
+                    if (dm.color && dm.color !== 0xFFFFFF && (this.$block & DANMAKU.COLOR)) break;
+                    new Mode1(dm, this).execute(delay);
+                    break;
+                }
+                case 4: {
+                    if (this.$danmakuNumber && this.$danmakuNow > this.$danmakuNumber) break;
+                    if (this.$weiget && 'weight' in dm && dm.weight !== undefined && dm.weight < this.$weiget) {
+                        break;
+                    }
+                    if (this.$block & DANMAKU.BOTTOM) break;
+                    if (dm.color && dm.color !== 0xFFFFFF && (this.$block & DANMAKU.COLOR)) break;
+                    new Mode4(dm, this).execute(delay);
+                    break;
+                }
+                case 5: {
+                    if (this.$danmakuNumber && this.$danmakuNow > this.$danmakuNumber) break;
+                    if (this.$weiget && 'weight' in dm && dm.weight !== undefined && dm.weight < this.$weiget) {
+                        break;
+                    }
+                    if (this.$block & DANMAKU.TOP) break;
+                    if (dm.color && dm.color !== 0xFFFFFF && (this.$block & DANMAKU.COLOR)) break;
+                    new Mode5(dm, this).execute(delay);
+                    break;
+                }
+                case 6: {
+                    if (this.$weiget && 'weight' in dm && dm.weight !== undefined && dm.weight < this.$weiget) {
+                        break;
+                    }
+                    if (this.$block & DANMAKU.SCROLL) break;
+                    if (dm.color && dm.color !== 0xFFFFFF && (this.$block & DANMAKU.COLOR)) break;
+                    new Mode6(dm, this).execute(delay);
+                    break;
+                }
+                case 7: {
+                    if (this.$block & DANMAKU.ADVANCE) break;
+                    new Mode7(dm, this).execute(delay);
+                    break;
+                }
+                case 8: {
+                    if (this.$block & DANMAKU.SCRIPT) break;
+                    new Mode8(dm, this).execute();
+                    break;
+                }
+                case 9: {
+                    if (this.$block & DANMAKU.BAS) break;
+                    new Mode9(<IDanmakuBAS>dm, this).execute(delay);
+                    break;
+                }
+            }
+        }
+    }
+
+    /** 刷新弹幕 */
+    #flesh() {
+        this.$host.replaceChildren(...this.$host.querySelectorAll('style'));
+        this.#i = 0;
+        this.$progress = 0;
+        this.$danmakuNow = 0;
+        this.#modeIdentity();
+    }
+
+    /** 重置渲染空间 */
+    #modeIdentity() {
+        Mode1.identity();
+        Mode4.identity();
+        Mode5.identity();
+        Mode6.identity();
+    }
+
     /** 添加弹幕 */
-    add(dms: IDanmaku | IDanmaku[]) {
+    $add(dms: IDanmaku | IDanmaku[]) {
         Array.isArray(dms) || (dms = [dms]);
         const arr: IDanmaku[] = [];
         const bas: IDanmaku[] = [];
@@ -312,9 +440,9 @@ export class Danmaku extends HTMLDivElement {
                 }
             }
         }
-        this.$dms = this.$dms.concat(arr);
+        this.#dms = this.#dms.concat(arr);
         bas.length && this.worker.postMessage(bas);
-        this.sort();
+        this.#sort();
         this.trigger(DanmakuEvent.DANMAKU_ADD, dms);
     }
 
@@ -323,7 +451,7 @@ export class Danmaku extends HTMLDivElement {
      * 
      * @param xml xml文本字符串或文档
      */
-    fromXML(xml: string | Document) {
+    $fromXML(xml: string | Document) {
         if (typeof xml === 'string') {
             // B站输出的xml可能包含不标准的字符,会引起浏览器自动解析失败
             // remove-invalid-xml-characters.js
@@ -354,137 +482,17 @@ export class Danmaku extends HTMLDivElement {
                 dms.push(dm);
             }
         });
-        this.add(dms);
-    }
-
-    /** 时间主循环 */
-    private time = () => {
-        this.pause(); // 防止多个主循环触发
-        this.render();
-        this.#animationTimer = requestAnimationFrame(this.time);
-    }
-
-    /** 暂停循环 */
-    private pause = () => {
-        this.#animationTimer && cancelAnimationFrame(this.#animationTimer);
-    }
-
-    /** 渲染函数 */
-    private render() {
-        if (this.#visible) {
-            const time = this.$currentTime;
-            if (this.$progress > time + 3000 + this.#preTime * this.$rate) {
-                // 上次渲染弹幕的时间戳远大于视频时间，重置时间戳
-                this.flesh();
-            }
-            for (; this.#i < this.$timeLine.length; this.#i++) {
-                const progress = this.$timeLine[this.#i].progress || 0;
-                if (progress < time - 1000) {
-                    continue;
-                } else if (progress < time + this.#preTime * this.$rate) {
-                    // 初次渲染未必从time=0开始，导致progress=0的弹幕渲染不到，何妨反向获取1000ms
-                    this.draw(this.$timeLine[this.#i], progress - time);
-                    this.$progress = progress;
-                } else {
-                    break;
-                }
-            }
-        }
-    }
-
-    /** 绘制弹幕 */
-    private draw(dm: IDanmaku, delay = 0) {
-        switch (dm.mode) {
-            case 1: {
-                if (this.$danmakuNumber && this.$danmakuNow > this.$danmakuNumber) break;
-                if (this.$weiget && 'weight' in dm && dm.weight !== undefined && dm.weight < this.$weiget) {
-                    break;
-                }
-                if (this.$block & DANMAKU.SCROLL) break;
-                if (dm.color && dm.color !== 0xFFFFFF && (this.$block & DANMAKU.COLOR)) break;
-                new Mode1(this, dm).execute(delay);
-                break;
-            }
-            case 2: {
-                new Mode1(this, dm).execute(delay);
-                break;
-            }
-            case 3: {
-                new Mode1(this, dm).execute(delay);
-                break;
-            }
-            case 4: {
-                if (this.$danmakuNumber && this.$danmakuNow > this.$danmakuNumber) break;
-                if (this.$weiget && 'weight' in dm && dm.weight !== undefined && dm.weight < this.$weiget) {
-                    break;
-                }
-                if (this.$block & DANMAKU.BOTTOM) break;
-                if (dm.color && dm.color !== 0xFFFFFF && (this.$block & DANMAKU.COLOR)) break;
-                new Mode4(this, dm).execute(delay);
-                break;
-            }
-            case 5: {
-                if (this.$danmakuNumber && this.$danmakuNow > this.$danmakuNumber) break;
-                if (this.$weiget && 'weight' in dm && dm.weight !== undefined && dm.weight < this.$weiget) {
-                    break;
-                }
-                if (this.$block & DANMAKU.TOP) break;
-                if (dm.color && dm.color !== 0xFFFFFF && (this.$block & DANMAKU.COLOR)) break;
-                new Mode5(this, dm).execute(delay);
-                break;
-            }
-            case 6: {
-                if (this.$weiget && 'weight' in dm && dm.weight !== undefined && dm.weight < this.$weiget) {
-                    break;
-                }
-                if (this.$block & DANMAKU.SCROLL) break;
-                if (dm.color && dm.color !== 0xFFFFFF && (this.$block & DANMAKU.COLOR)) break;
-                new Mode6(this, dm).execute(delay);
-                break;
-            }
-            case 7: {
-                if (this.$block & DANMAKU.ADVANCE) break;
-                new Mode7(this, dm).execute(delay);
-                break;
-            }
-            case 8: {
-                if (this.$block & DANMAKU.SCRIPT) break;
-                new Mode8(this, dm).execute();
-                break;
-            }
-            case 9: {
-                if (this.$block & DANMAKU.BAS) break;
-                new Mode9(this, <any>dm).execute(delay);
-                break;
-            }
-        }
-    }
-
-    /** 刷新弹幕 */
-    private flesh() {
-        this.replaceChildren();
-        this.#i = 0;
-        this.$progress = 0;
-        this.$danmakuNow = 0;
-        this.modeIdentity();
-    }
-
-    /** 重置渲染空间 */
-    private modeIdentity() {
-        Mode1.identity();
-        Mode4.identity();
-        Mode5.identity();
-        Mode6.identity();
+        this.$add(dms);
     }
 
     /** 播放 */
     $play() {
-        this.$video.play();
+        this.#video.play();
     }
 
 
     $pause() {
-        this.$video.pause();
+        this.#video.pause();
     }
 
     /**
@@ -493,23 +501,24 @@ export class Danmaku extends HTMLDivElement {
      * @param t 目标时间：/s
      */
     $seek(t: number) {
-        this.$video.currentTime = t;
+        this.#video.currentTime = t;
     }
 
     /** 显示弹幕 */
-    on() {
+    $on() {
         this.#visible = true;
     }
 
     /** 关闭弹幕 */
-    off() {
+    $off() {
         this.#visible = false;
-        this.flesh();
+        this.#flesh();
     }
 
-    identify = () => {
-        this.$timeLine.length = 0;
-        this.$dms.length = 0;
+    $indentify = () => {
+        clearTimeout(this.#timer);
+        this.#timeLine.length = 0;
+        this.#dms.length = 0;
         this.$pauseTimeStamp = 0;
         this.$playTimeStamp = 0;
         this.$danmakuNow = 0;
@@ -517,7 +526,7 @@ export class Danmaku extends HTMLDivElement {
         this.style.removeProperty('--animation-play-state');
         this.$worker?.terminate();
         delete this.$worker;
-        this.flesh();
+        this.#flesh();
     }
 }
 
@@ -566,151 +575,9 @@ export interface IDanmaku {
     animation?: string;
     /** 笔触 */
     colorful?: number;
-
     /** 图片弹幕 */
     picture?: string;
-}
 
-export interface IDanmakuElem {
-
-    /** 唯一id，已超过JavaScript整数上限，如非必要切莫转化为数字 */
-    $idStr: string;
-
-    /** 弹幕位于视频中的时间点（单位毫秒） */
-    $progress: number;
-
-    /** 弹幕数据 */
-    $dm: IDanmaku
-
-    /**
-     * 绘制
-     * 
-     * @param delay 延时：/ms
-     */
-    execute(delay?: number): void;
-}
-
-export interface IDanmakuBAS extends IDanmaku {
-    // 以下为BAS弹幕专用
-    duration: number;
-    def2set: Record<string, IAnimation[]>;
-    defs: IDef[];
-    sets: ISet[];
-    setsIntervals: Record<keyof IDefAttrs, number[][]>;
-}
-
-export interface IAnimation {
-    delay: number;
-    duration: number;
-    easing: string;
-    group: number;
-    name: string;
-    valueStart?: IDefAttrs;
-    valueEnd: IDefAttrs;
-}
-
-export interface IPercentNum {
-    numType: 'number' | 'percent';
-    value: number;
-}
-
-export interface IDef {
-    attrs: IDefAttrs;
-    name: string;
-    obj_type: string;
-    type: 'DefText' | 'DefButton' | 'DefPath';
-    _reg_order: number;
-}
-
-export interface ISet {
-    type: 'Serial' | 'Parallel' | 'Unit';
-    items?: ISet[];
-    attrs?: IDefAttrs;
-    defaultEasing?: string;
-    default_easing?: string;
-    duration?: number;
-    targetName?: string;
-    target_name?: string;
-}
-
-/** 通用属性 */
-interface ICommon {
-    x?: IPercentNum | number;
-    y?: IPercentNum | number;
-    zIndex?: IPercentNum | number;
-    scale?: IPercentNum | number;
-    duration?: number;
-}
-
-/** 文本属性 */
-interface IText extends ICommon {
-    content?: string;
-    alpha?: IPercentNum | number;
-    color?: number;
-    anchorX?: IPercentNum | number;
-    anchorY?: IPercentNum | number;
-    fontSize?: IPercentNum | number;
-    fontFamily?: string;
-    bold?: IPercentNum | number;
-    textShadow?: IPercentNum | number;
-    strokeWidth?: IPercentNum | number;
-    strokeColor?: number;
-    rotateX?: IPercentNum | number;
-    rotateY?: IPercentNum | number;
-    rotateZ?: IPercentNum | number;
-    parent?: string;
-}
-
-/** 按钮属性 */
-interface IButton extends ICommon {
-    text?: string;
-    fontSize?: IPercentNum | number;
-    textColor?: number;
-    textAlpha?: IPercentNum | number;
-    fillColor?: number;
-    fillAlpha?: IPercentNum | number;
-    target?: IButtonTarget;
-}
-
-/** 按钮回调 */
-interface IButtonTarget {
-    objType: 'av' | 'bangumi' | 'seek';
-    time?: number;
-    page?: number;
-    av?: number;
-    bvid?: string;
-    seasonId?: number;
-    episodeId?: number;
-}
-
-interface IPath extends ICommon {
-    d?: string;
-    viewBox?: string;
-    borderColor?: number;
-    borderAlpha?: IPercentNum | number;
-    borderWidth?: IPercentNum | number;
-    fillColor?: number;
-    fillAlpha?: IPercentNum | number;
-}
-
-export interface IDefAttrs extends IText, IButton, IPath {
-    width?: number;
-    height?: number;
-}
-
-/** 弹幕事件 */
-export enum DanmakuEvent {
-
-    /** 添加弹幕，注意参数为新增弹幕 */
-    DANMAKU_ADD,
-
-    /** 发送弹幕 */
-    DANMAKU_SEND,
-}
-
-
-/** 弹幕事件对应的数据类型 */
-export interface IDanmakuEvent {
-    0: IDanmaku[];
-    1: IDanmaku;
+    /** 是否正在渲染 */
+    on?: boolean;
 }

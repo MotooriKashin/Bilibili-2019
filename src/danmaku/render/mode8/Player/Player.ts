@@ -1,4 +1,5 @@
-import { Danmaku, DanmakuEvent, IDanmaku } from "../../..";
+import { Danmaku, IDanmaku } from "../../..";
+import { DanmakuEvent } from "../../../event";
 import { DisplayObject, rootSprite } from "../Display/DisplayObject";
 import { CommentData } from "./CommentData";
 import { Sound } from "./Sound";

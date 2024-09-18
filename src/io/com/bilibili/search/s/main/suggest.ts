@@ -1,4 +1,5 @@
 import { Ssearch } from "..";
+import { RestType } from "../../../../../code";
 
 /**
  * 获取搜索建议
@@ -19,14 +20,18 @@ export async function searchSuggest(
     url.searchParams.set('rnd', <any>Math.random());
     url.searchParams.set('_', <any>Date.now());
     const response = await fetch(url, { signal });
-    return <ISearchSuggest[]>(await response.json()).result.tag;
+    return <ISearchSuggest>(await response.json());
 }
 
-interface ISearchSuggest {
-    name: string;
-    ref: number;
-    spid: number;
-    term: string;
-    type: string;
-    value: string;
+interface ISearchSuggest extends RestType {
+    result: {
+        tag: {
+            name: string;
+            ref: number;
+            spid: number;
+            term: string;
+            type: string;
+            value: string;
+        }[];
+    }
 }

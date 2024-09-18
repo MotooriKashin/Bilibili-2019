@@ -1,0 +1,22 @@
+@import url(./choose/index.css);
+@import url(./color/index.css);
+@import url(./input/input.css);
+
+.bofqi-area-sendbar {
+    block-size: 38px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    padding-inline-start: 1em;
+    column-gap: 2em;
+    position: relative;
+
+    @container bofqi style(--fullscreen: 1) {
+        & {
+            margin-inline: 230px;
+            background-color: var(--fff);
+            border: 1px solid var(--e2e2e2);
+            pointer-events: auto;
+        }
+    }
+}

@@ -1,0 +1,137 @@
+@scope {
+    :scope {
+        color-scheme: light dark;
+
+        --e5e9ef: #e5e9ef;
+        --6d757a: #6d757a;
+        --00a1d6: #00a1d6;
+        --222: #222;
+    }
+
+    a {
+        text-decoration: none;
+        outline: none;
+    }
+}
+
+.container {
+    inline-size: 980px;
+    margin-inline: auto;
+    box-sizing: border-box;
+    font-size: 12px;
+    display: flex;
+
+    @media screen and (min-width:1400px) {
+
+        & {
+            inline-size: 1160px;
+        }
+    }
+
+    @media screen and (min-width:2500px) {
+
+        & {
+            inline-size: 1920px;
+        }
+    }
+
+    >.left {
+        flex: 1;
+        min-inline-size: 0;
+        padding-block-start: 30px;
+        display: flex;
+        flex-direction: column;
+        row-gap: 30px;
+
+        >.inside-wrp {
+            font-size: 14px;
+            border: 1px solid var(--e5e9ef);
+            border-radius: 4px;
+            display: flex;
+
+            >:first-child {
+                flex: 1;
+                min-inline-size: 0;
+                padding-inline-start: 20px;
+                font-weight: bold;
+                align-content: center;
+            }
+
+            >:last-child {
+                flex-shrink: 0;
+                block-size: 100px;
+                inline-size: 320px;
+                background-repeat: no-repeat;
+                background-size: cover;
+            }
+        }
+
+        >.s_tag {
+            border-block-end: 1px solid var(--e5e9ef);
+            padding-block-end: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            column-gap: 10px;
+            row-gap: 8px;
+
+            >a {
+                padding-inline: 10px;
+                border: 1px solid var(--e5e9ef);
+                border-radius: 20px;
+                color: var(--6d757a);
+                line-height: 22px;
+                transition: all .3s;
+
+                &:hover {
+                    border-color: var(--00a1d6);
+                    color: var(--00a1d6);
+                }
+            }
+        }
+
+        >.v-desc {
+            border-block-end: 1px solid var(--e5e9ef);
+            padding-block-end: 30px;
+            display: flex;
+            flex-direction: column;
+            row-gap: 20px;
+
+            >:first-child {
+                color: var(--222);
+                display: flex;
+                align-items: center;
+                column-gap: 3px;
+
+                &::before {
+                    content: "";
+                    display: inline-block;
+                    inline-size: 14px;
+                    block-size: 14px;
+                    background-image: url(//static.hdslb.com/images/base/icons.png);
+                    background-position: -793px -537px;
+                }
+
+                &::after {
+                    content: "未经作者授权 禁止转载";
+                }
+            }
+
+            >:last-child {
+                line-height: 20px;
+                color: var(--6d757a);
+                overflow: clip;
+                white-space: pre-line;
+                transition: all .3s;
+
+                >a {
+                    color: var(--00a1d6);
+                }
+            }
+        }
+    }
+
+    >.right {
+        flex-shrink: 0;
+        inline-size: 300px;
+    }
+}

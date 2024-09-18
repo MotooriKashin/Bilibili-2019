@@ -1,0 +1,2 @@
+declare const svg_biankuangxiaosanjiaoyoushang: string;
+export default svg_biankuangxiaosanjiaoyoushang;

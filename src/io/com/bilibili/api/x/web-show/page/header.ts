@@ -1,4 +1,5 @@
 import { Api } from "../../..";
+import { RestType } from "../../../../../../code";
 
 /**
  * 获取Banner信息
@@ -9,21 +10,23 @@ export async function header(resource_id = 142) {
     const url = new URL(Api + '/x/web-show/page/header');
     url.searchParams.set('resource_id', <any>resource_id);
     CATCH[resource_id] || (CATCH[resource_id] = fetch(url, { credentials: 'include' }));
-    return <IHeader>(await (await CATCH[resource_id]).clone().json()).data;
+    return <IHeader>await (await CATCH[resource_id]).clone().json();
 }
 
 /** 同一请求缓存 */
 const CATCH: Record<number, Promise<Response>> = {};
 
-interface IHeader {
-    is_split_layer: number;
-    litpic: string;
-    name: string;
-    pic: string;
-    request_id: string;
-    /** 格式化后{@link ISplitLayer} */
-    split_layer: string;
-    url: string;
+interface IHeader extends RestType {
+    data: {
+        is_split_layer: number;
+        litpic: string;
+        name: string;
+        pic: string;
+        request_id: string;
+        /** 格式化后{@link ISplitLayer} */
+        split_layer: string;
+        url: string;
+    }
 }
 
 export interface ISplitLayer {

@@ -1,10 +1,11 @@
+import { Player } from "..";
 import { customElement } from "../../utils/Decorator/customElement";
 import { Control } from "./control";
 import { Message } from "./message";
 import { Sendbar } from "./sendbar";
 import { Wrap } from "./wrap";
 
-/** 播放器区域 */
+/** 播放器主区域 */
 @customElement('div')
 export class Area extends HTMLDivElement {
 
@@ -22,11 +23,8 @@ export class Area extends HTMLDivElement {
      */
     // attributeChangedCallback(name: IobservedAttributes, oldValue: string, newValue: string) {}
 
-    /** 初始化标记 */
-    // #inited = false;
-
     /** 每当元素添加到文档中时调用。 */
-    // connectedCallback() {}
+    // connectedCallback() { }
 
     /** 每当元素从文档中移除时调用。 */
     // disconnectedCallback() {}
@@ -34,21 +32,26 @@ export class Area extends HTMLDivElement {
     /** 每当元素被移动到新文档中时调用。 */
     // adoptedCallback() {}
 
-    /** 播放器通知区域 */
-    $message = this.appendChild(new Message());
+    #player: Player;
 
-    /** 播放器容器区域 */
-    $wrap = this.appendChild(new Wrap());
+    #message: Message;
 
-    /** 播放器控制区域 */
-    $control = this.appendChild(new Control());
+    #wrap: Wrap;
 
-    /** 播放器发送区域 */
-    $sendbar = this.appendChild(new Sendbar());
+    $control: Control;
 
-    constructor() {
+    #sendbar: Sendbar;
+
+    constructor(player: Player) {
         super();
 
+        this.#player = player;
         this.classList.add('bofqi-area');
+        this.#message = this.appendChild(new Message(this.#player));
+        this.#wrap = this.appendChild(new Wrap(this.#player));
+        const buttom = this.appendChild(document.createElement('div'));
+        buttom.classList.add('bofqi-area-contents');
+        this.$control = buttom.appendChild(new Control(this.#player));
+        this.#sendbar = buttom.appendChild(new Sendbar(this.#player));
     }
 }

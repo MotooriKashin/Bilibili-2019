@@ -1,0 +1,129 @@
+@scope {
+    :scope {
+        display: inline-block;
+        position: absolute;
+        /* 修正弹幕容器分辨率以适应视频分辨率 */
+        inset-block: var(--inset-block);
+        inset-inline: var(--inset-inline);
+        /* 高级弹幕透视效果在原版是固定的 288 多一点，在不同播放器分辨率下显示会形变，要等比放大 */
+        perspective: calc((100cqb - var(--inset-block)) / 440 * 288.1473083496094);
+        opacity: 1;
+        container: mode7 / size;
+    }
+}
+
+pre {
+    /* 弹幕基准放大倍率 */
+    --font-basis: calc(100cqb / 440);
+
+    /** 初始透明度 */
+    --sOpacity: 1;
+    /** 最终透明度 */
+    --eOpacity: 1;
+    /** 初始横坐标 */
+    --startX: 0;
+    /** 初始纵坐标 */
+    --startY: 0;
+    /** 最终横坐标 */
+    --endX: 0;
+    /** 最终纵坐标 */
+    --endY: 0;
+    /** z轴旋转角 */
+    --zRotate: 0;
+    /** y轴旋转角 */
+    --yRotate: 0;
+    /** 生存时间 */
+    --duration: 4500;
+    /** 运动时间 */
+    --aTime: 0;
+    /** 初始位置暂停时间 */
+    --aDelay: 0;
+    /* 动画统一延时 */
+    --delay: 0;
+    /**
+     * 路径追踪
+     * 参考svg path算法
+     * 
+     * @example
+     * 'M107,82L108,83L109,84L111,88'
+     */
+    --path: "";
+
+    position: absolute;
+    line-height: 1;
+    display: inline-block;
+    line-height: 1;
+    transform-origin: 0% 0% 0px;
+    content-visibility: auto;
+    margin: 0;
+    animation-timing-function: linear;
+    /* 高级弹幕的一大困境是字体大小不会随着播放器分辨率变大，这里强制等比放大 */
+    font-size: calc(var(--fontsize) * var(--font-basis));
+    font-weight: var(--font-weight);
+    /* y z 轴同时旋转始终不知道如何用 rotate 函数处理，只能强行写复杂的 matrix3d 函数，16 位数调试起来简直地狱难度 */
+    transform: matrix3d(calc(cos(var(--yRotate) * 1deg) * cos(var(--zRotate) * 1deg)), calc(cos(var(--yRotate) * 1deg) * sin(var(--zRotate) * 1deg)), calc(sin(var(--yRotate) * 1deg)), 0, calc(0 - sin(var(--zRotate) * 1deg)), calc(cos(var(--zRotate) * 1deg)), 0, 0, calc(0 - sin(var(--yRotate) * 1deg) * cos(var(--zRotate) * 1deg)), calc(0 - sin(var(--yRotate) * 1deg) * sin(var(--zRotate) * 1deg)), calc(cos(var(--yRotate) * 1deg)), 0, 0, 0, 0, 1);
+    animation-name: inset, opacity;
+    animation-duration: calc(var(--aTime) * 1ms), calc(var(--duration) * 1ms);
+    animation-delay: calc((var(--aDelay) + var(--delay)) * 1ms), calc(var(--delay) * 1ms);
+    animation-fill-mode: both;
+
+    &:not(.no-stroked) {
+        text-shadow: 1px 0 1px var(--text-shadow), 0 1px 1px var(--text-shadow), 0 -1px 1px var(--text-shadow), -1px 0 1px var(--text-shadow);
+
+        @container danmaku style(--fontBorder: 1) {
+            & {
+                text-shadow: 0px 0px 1px var(--text-shadow), 0 0 1px var(--text-shadow), 0 0 1px var(--text-shadow);
+            }
+        }
+
+        @container danmaku style(--fontBorder: 2) {
+            & {
+                text-shadow: 1px 1px 2px var(--text-shadow), 0 0 1px var(--text-shadow);
+            }
+        }
+    }
+
+    &.path {
+        /* 使用 CSS 运动路径的一大难题是 path 路径取值如何等比放大，以后碰到用例再优化吧，或者考虑回滚 inset 动画 */
+        offset-path: path(var(--path));
+        animation-name: path, opacity;
+    }
+
+    @container danmaku style(--animation-play-state: paused) {
+        & {
+            animation-play-state: paused !important;
+        }
+    }
+}
+
+@keyframes opacity {
+    from {
+        opacity: var(--sOpacity);
+    }
+
+    to {
+        opacity: var(--eOpacity);
+    }
+}
+
+@keyframes path {
+    from {
+        offset-distance: 0%;
+    }
+
+    to {
+        offset-distance: 100%;
+    }
+}
+
+@keyframes inset {
+    from {
+        inset-inline-start: var(--startX);
+        inset-block-start: var(--startY);
+    }
+
+    to {
+        inset-inline-start: var(--endX);
+        inset-block-start: var(--endY);
+    }
+}

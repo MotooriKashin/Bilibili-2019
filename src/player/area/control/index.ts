@@ -1,17 +1,18 @@
+import { Player } from "../..";
 import { customElement } from "../../../utils/Decorator/customElement";
-import { ClosedCaption } from "./closed-caption";
 import { Danmaku } from "./danmaku";
-import { Fullscreen } from "./fullscreen";
-import { FullscreenWeb } from "./fullscreen-web";
 import { Next } from "./next";
-import { Pip } from "./pip";
 import { Progress } from "./progress";
 import { Quality } from "./quality";
 import { Repeat } from "./repeat";
+import { ScreenFull } from "./screen-full";
+import { ScreenPip } from "./screen-pip";
+import { ScreenWeb } from "./screen-web";
+import { ScreenWide } from "./screen-wide";
+import { Subtitle } from "./subtitle";
 import { Time } from "./time";
 import { Toggle } from "./toggle";
 import { Volume } from "./volume";
-import { Wide } from "./wide";
 
 /** 播放器控制区域 */
 @customElement('div')
@@ -31,9 +32,6 @@ export class Control extends HTMLDivElement {
      */
     // attributeChangedCallback(name: IobservedAttributes, oldValue: string, newValue: string) {}
 
-    /** 初始化标记 */
-    // #inited = false;
-
     /** 每当元素添加到文档中时调用。 */
     // connectedCallback() { }
 
@@ -43,48 +41,51 @@ export class Control extends HTMLDivElement {
     /** 每当元素被移动到新文档中时调用。 */
     // adoptedCallback() {}
 
-    /** 播放器播放暂停控制 */
-    $play = this.appendChild(new Toggle());
+    #player: Player;
 
-    /** 播放器下一视频控制 */
-    $next = this.appendChild(new Next());
+    #toggle: Toggle;
 
-    /** 进度条 */
-    $progress = this.appendChild(new Progress());
+    #next: Next;
 
-    /** 播放器时间轴显示 */
-    $time = this.appendChild(new Time());
+    $progress: Progress;
 
-    /** 播放器音量控制 */
-    $volume = this.appendChild(new Volume());
+    #time: Time;
 
-    /** 播放器画质控制 */
-    $quality = this.appendChild(new Quality());
+    #volume: Volume;
 
-    /** 播放器弹幕控制 */
-    $danmaku = this.appendChild(new Danmaku());
+    $quality: Quality;
 
-    /** 播放器字幕控制 */
-    $closedCaption = this.appendChild(new ClosedCaption());
+    #danmaku: Danmaku;
 
-    /** 播放器洗脑循环控制 */
-    $repeat = this.appendChild(new Repeat());
+    $subtitle: Subtitle;
 
-    /** 播放器宽屏控制 */
-    $wide = this.appendChild(new Wide());
+    #repeat: Repeat;
 
-    /** 播放器全屏控制 */
-    $fullscreen = this.appendChild(new Fullscreen());
+    #screenWide: ScreenWide;
 
-    /** 播放器网页全屏控制 */
-    $fullscreenWeb = this.appendChild(new FullscreenWeb());
+    #screenFull: ScreenFull;
 
-    /** 播放器画中画控制 */
-    $pip = this.appendChild(new Pip());
+    #screenWeb: ScreenWeb;
 
-    constructor() {
+    #screenPip: ScreenPip;
+
+    constructor(player: Player) {
         super();
 
+        this.#player = player;
         this.classList.add('bofqi-area-control');
+        this.#toggle = this.appendChild(new Toggle(player));
+        this.#next = this.appendChild(new Next(player));
+        this.$progress = this.appendChild(new Progress(player));
+        this.#time = this.appendChild(new Time(player));
+        this.#volume = this.appendChild(new Volume(player));
+        this.$quality = this.appendChild(new Quality(player));
+        this.#danmaku = this.appendChild(new Danmaku(player));
+        this.$subtitle = this.appendChild(new Subtitle(player));
+        this.#repeat = this.appendChild(new Repeat(player));
+        this.#screenWide = this.appendChild(new ScreenWide(player));
+        this.#screenFull = this.appendChild(new ScreenFull(player));
+        this.#screenWeb = this.appendChild(new ScreenWeb(player));
+        this.#screenPip = this.appendChild(new ScreenPip(player));
     }
 }

@@ -1,0 +1,217 @@
+.danmaku-elem {
+    flex-shrink: 0;
+    block-size: 24px;
+    display: flex;
+    align-items: center;
+    content-visibility: auto;
+    contain-intrinsic-block-size: 24px;
+    position: relative;
+
+    .progress,
+    .content,
+    .sent {
+        display: flex;
+        align-items: center;
+    }
+
+    .progress {
+        flex-shrink: 0;
+        inline-size: 60px;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+    .content {
+        flex-grow: 1;
+        min-inline-size: 0;
+
+        >p {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+    }
+
+    .sent {
+        flex-shrink: 0;
+        inline-size: 88px;
+        white-space: nowrap;
+        overflow: hidden;
+        anchor-name: --danmaku-sent;
+    }
+
+    .block {
+        display: none;
+        position: absolute;
+        inset-inline-end: 0;
+        block-size: 100%;
+        inline-size: 88px;
+        background-color: var(--fff);
+        text-align: end;
+        padding-inline-end: 26px;
+    }
+
+    .attr {
+        display: none;
+        position: absolute;
+        inset-inline-end: anchor(--danmaku-sent end);
+        block-size: 1.125em;
+        aspect-ratio: 1;
+        border-radius: 50%;
+    }
+
+    &:is(.protect, .live, .like):hover {
+        .attr {
+            display: block;
+            background: conic-gradient(var(--ffa726) 120deg, var(--47be8d) 120deg 240deg, var(--f2509e) 240deg);
+
+        }
+
+        &:not(.live) {
+            .attr {
+                background: conic-gradient(var(--ffa726) 180deg, var(--47be8d) 180deg);
+
+            }
+
+            &:not(.protect) {
+                .attr {
+                    background: var(--ffa726);
+
+                }
+            }
+        }
+
+        &:not(.protect) {
+            .attr {
+                background: conic-gradient(var(--ffa726) 180deg, var(--f2509e) 180deg);
+
+            }
+
+            &:not(.like) {
+                .attr {
+                    background: var(--f2509e);
+
+                }
+            }
+        }
+
+        &:not(.like) {
+            .attr {
+                background: conic-gradient(var(--47be8d) 180deg, var(--f2509e) 180deg);
+
+            }
+
+            &:not(.live) {
+                .attr {
+                    background: var(--47be8d);
+
+                }
+            }
+        }
+    }
+
+    &.mode7 {
+        background-color: var(--effef5);
+        color: var(--47be8d);
+    }
+
+    &.mode8 {
+        background-color: var(--fffde1);
+        color: var(--ffa726);
+    }
+
+    &.mode9 {
+        background-color: var(--ffefd8);
+        color: var(--ff792b);
+    }
+
+    &:hover {
+        color: var(--00a1d6);
+    }
+}
+
+.block-1 {
+
+    .mode1,
+    .mode6 {
+        color: var(--ccd0d7);
+
+        &:hover {
+            color: var(--ccd0d7);
+        }
+
+        .block {
+            display: block;
+        }
+    }
+}
+
+.block-4 {
+    .mode4 {
+        color: var(--ccd0d7);
+
+        &:hover {
+            color: var(--ccd0d7);
+        }
+
+        .block {
+            display: block;
+        }
+    }
+}
+
+.block-5 {
+    .mode5 {
+        color: var(--ccd0d7);
+
+        &:hover {
+            color: var(--ccd0d7);
+        }
+
+        .block {
+            display: block;
+        }
+    }
+}
+
+.block-7 {
+    .mode7 {
+        color: var(--ccd0d7);
+
+        &:hover {
+            color: var(--ccd0d7);
+        }
+
+        .block {
+            display: block;
+        }
+    }
+}
+
+.block-8 {
+    .mode8 {
+        color: var(--ccd0d7);
+
+        &:hover {
+            color: var(--ccd0d7);
+        }
+
+        .block {
+            display: block;
+        }
+    }
+}
+
+.block-9 {
+    .mode9 {
+        color: var(--ccd0d7);
+
+        &:hover {
+            color: var(--ccd0d7);
+        }
+
+        .block {
+            display: block;
+        }
+    }
+}

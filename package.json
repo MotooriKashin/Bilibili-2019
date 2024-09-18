@@ -1,17 +1,16 @@
 {
-  "scripts": {
-    "build": "node scripts/build.mjs",
-    "arbitrary-extensions": "node scripts/arbitrary-extensions.mjs",
-    "github-pages": "node scripts/github-pages.mjs"
+  "dependencies": {
+    "flv.js": "*",
+    "protobufjs": "*"
   },
   "devDependencies": {
-    "@types/chrome": "*",
+    "@types/fs-extra": "*",
     "esbuild": "*",
-    "navigation-api-types": "*"
+    "fs-extra": "*"
   },
-  "dependencies": {
-    "buffer": "*",
-    "events": "*",
-    "protobufjs": "*"
-  }
+  "scripts": {
+    "build": "node --no-warnings --experimental-strip-types ./src/build/index.ts",
+    "arbitrary-extensions": "node --no-warnings --experimental-strip-types ./src/build/arbitrary-extensions.ts"
+  },
+  "type": "module"
 }

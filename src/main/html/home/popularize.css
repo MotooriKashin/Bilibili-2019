@@ -1,0 +1,25 @@
+.popularize {
+
+    .headline::before {
+        background-position: -141px -75px;
+    }
+
+    .storey-box {
+        grid-template-rows: 1fr;
+    }
+
+    >.right>.online {
+        line-height: 34px;
+        border-radius: 4px;
+        color: var(--6d757a);
+        background-color: var(--e5e9ef);
+        white-space: nowrap;
+        text-align: center;
+        align-content: center;
+        transition: .2s;
+
+        &:hover {
+            color: var(--00a1d6);
+        }
+    }
+}

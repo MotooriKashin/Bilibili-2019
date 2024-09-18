@@ -1,0 +1,22 @@
+@import url(./video/index.css);
+@import url(./state/index.css);
+@import url(./panel/index.css);
+
+.bofqi-area-wrap {
+    flex: 1;
+    min-inline-size: 0;
+    background-color: var(--000);
+    position: relative;
+    contain: strict;
+
+    @container bofqi style(--fullscreen: 1) {
+        & {
+            cursor: none;
+        }
+    }
+
+    >video {
+        inline-size: 100%;
+        block-size: 100%;
+    }
+}

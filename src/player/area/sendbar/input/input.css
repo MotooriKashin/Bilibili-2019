@@ -1,0 +1,40 @@
+.bofqi-sendbar-input {
+    flex-grow: 1;
+    block-size: 100%;
+    background-image: linear-gradient(var(--f5f5f5), var(--fff));
+    display: flex;
+
+    >input {
+        flex-grow: 1;
+        border: 0;
+        outline: none;
+        color: var(--6b6b6b);
+    }
+
+    >.sendbar-hint {
+        flex-shrink: 0;
+        color: var(--99a2aa);
+        cursor: pointer;
+        align-content: center;
+
+        &:hover {
+            color: var(--00a1d6);
+        }
+    }
+
+    >button {
+        flex-shrink: 0;
+        block-size: 28px;
+        margin-block: auto;
+        margin-inline-start: 9px;
+        margin-inline-end: 5px;
+        padding-inline-start: 14px;
+        padding-inline-end: 10px;
+
+        &:hover {
+            color: var(--fff);
+            background-color: var(--00b5e5);
+            border-color: var(--00b5e5);
+        }
+    }
+}

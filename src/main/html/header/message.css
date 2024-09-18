@@ -1,0 +1,70 @@
+.message {
+    anchor-name: --message;
+    position: relative;
+
+    &[data-num]::after {
+        content: attr(data-num);
+        position: absolute;
+        color: var(--fff);
+        background-color: var(--f25d8e);
+        inset-block-start: 0;
+        inset-inline-end: 0;
+        line-height: 1;
+        border-radius: 10px;
+        padding-block: .1em;
+        padding-inline: .5em;
+    }
+
+    &:not(:hover)~.message-wrap:not(:hover) {
+        display: none;
+        scale: 1 0;
+    }
+
+}
+
+.message-wrap {
+    position: absolute;
+    position-anchor: --message;
+    position-area: block-end;
+    inline-size: 110px;
+    background: var(--fff);
+    box-shadow: 0 2px 4px var(--00000029);
+    border-end-start-radius: 4px;
+    border-end-end-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    transform-origin: center 0;
+    transition: all .3s allow-discrete;
+
+    @starting-style {
+        scale: 1 0;
+    }
+
+    &:not(.d) {
+        display: none;
+    }
+
+    >a {
+        line-height: 42px;
+        color: inherit;
+        text-align: center;
+        position: relative;
+
+        &[data-num]::after {
+            content: attr(data-num);
+            position: absolute;
+            color: var(--fff);
+            background-color: var(--f25d8e);
+            line-height: 1;
+            inset-inline-end: 0;
+            border-radius: 10px;
+            padding-block: .1em;
+            padding-inline: .5em;
+        }
+
+        &:hover {
+            color: var(--00a1d6);
+            background-color: var(--e5e9ef);
+        }
+    }
+}

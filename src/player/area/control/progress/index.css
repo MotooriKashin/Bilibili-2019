@@ -1,0 +1,74 @@
+@scope {
+    :scope {
+        &:hover>.bofqi-area-progress-detail {
+            display: flex;
+            flex-direction: column-reverse;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        &.disabled {
+            pointer-events: none;
+        }
+    }
+
+    progress.buffer {
+        --linear-gradient: linear-gradient(to right, transparent 0% 100%);
+
+        &::-webkit-progress-bar {
+            background-image: var(--linear-gradient);
+        }
+    }
+
+    .bofqi-area-progress-detail {
+        --inline-start: 0px;
+        position: absolute;
+        pointer-events: none;
+        display: none;
+        inset-inline-start: var(--inline-start);
+        inset-block-end: 50%;
+        inline-size: 160px;
+        block-size: 90px;
+        translate: -50% 0;
+
+        >.progress-detail-sign {
+            block-size: 16px;
+            inset-block-end: -8px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            &:before,
+            &::after {
+                content: "";
+                position: absolute;
+                inline-size: 0;
+                block-size: 0;
+                border-block-color: var(--00a1d6);
+                border-inline: 4px transparent;
+                border-style: solid;
+            }
+
+            &::before {
+                inset-block-start: 0;
+                border-block-start-width: 4px;
+                border-block-end-width: 0;
+            }
+
+            &::after {
+                inset-block-end: 0;
+                border-block-start: 0px;
+                border-block-end-width: 4px;
+            }
+        }
+
+        >time {
+            background-color: var(--e5e9ef);
+            color: var(--6b6b6b);
+            padding-block: 3px;
+            padding-inline: 5px;
+            border-radius: 4px;
+        }
+    }
+}

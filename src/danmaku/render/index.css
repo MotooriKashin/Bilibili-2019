@@ -1,0 +1,68 @@
+@import url(./mode1.css);
+@import url(./mode4.css);
+@import url(./mode5.css);
+@import url(./mode6.css);
+@import url(./mode8/index.css);
+@import url(./mode9/index.css);
+
+.dm {
+    /* 弹幕基准放大倍率 */
+    --font-basis: calc(100cqb / 440);
+
+    line-height: 1.125;
+    white-space: pre;
+    pointer-events: none;
+    align-content: center;
+    font-size: calc(var(--fontsize) * var(--fontSize) * 1px);
+    text-shadow: 1px 0 1px var(--text-shadow), 0 1px 1px var(--text-shadow), 0 -1px 1px var(--text-shadow), -1px 0 1px var(--text-shadow);
+    font-family: var(--font-family);
+    font-weight: var(--font-weight);
+    opacity: var(--opacity);
+
+    &.wraps {
+        font-size: calc(var(--fontsize) * var(--font-basis));
+    }
+
+    @container danmaku style(--full-screen-sync: 1) {
+        &:not(.wraps) {
+            font-size: calc(var(--fontsize) * var(--fontSize) * var(--font-basis));
+        }
+    }
+
+    @container danmaku style(--fontBorder: 1) {
+        & {
+            text-shadow: 0px 0px 1px var(--text-shadow), 0 0 1px var(--text-shadow), 0 0 1px var(--text-shadow);
+        }
+    }
+
+    @container danmaku style(--fontBorder: 2) {
+        & {
+            text-shadow: 1px 1px 2px var(--text-shadow), 0 0 1px var(--text-shadow);
+        }
+    }
+
+    @container danmaku style(--colorful: 1) {
+        &.colorful {
+            background-size: cover;
+            text-shadow: none;
+            background-image: linear-gradient(to right, #F2509E, #308BCD);
+            background-clip: text;
+            -webkit-text-fill-color: #ffffff;
+            -webkit-text-stroke: 2px transparent;
+        }
+    }
+
+    @container danmaku style(--animation-play-state: paused) {
+        & {
+            animation-play-state: paused !important;
+        }
+    }
+
+    &.pause {
+        animation-play-state: paused;
+    }
+
+    >img {
+        block-size: 1.125em;
+    }
+}

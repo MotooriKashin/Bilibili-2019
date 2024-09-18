@@ -1,4 +1,5 @@
 import { Passport } from "../..";
+import { RestType } from "../../../../../code";
 
 /**
  * 退出登录
@@ -24,5 +25,11 @@ export async function exit(
         headers,
         body,
     });
-    return <string>(await response.json()).data.redirectUrl;
+    return <IExit>await response.json();
+}
+
+interface IExit extends RestType {
+    data: {
+        redirectUrl: string;
+    }
 }

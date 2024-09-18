@@ -1,11 +1,11 @@
-import { video } from ".";
+import { Video } from ".";
 import { customElement } from "../../../../utils/Decorator/customElement";
-import { PLAYER_EVENT, ev } from "../../../event-target";
+import { ev, PLAYER_EVENT } from "../../../event";
 import { options } from "../../../option";
 
 /** 播放器字幕节点 */
 @customElement('track')
-class Track extends HTMLTrackElement {
+export class Track extends HTMLTrackElement {
 
     /**
      * 需要监听变动的属性。
@@ -27,7 +27,7 @@ class Track extends HTMLTrackElement {
                     this.track.mode = 'disabled';
                     this.remove();
                 } else {
-                    video.contains(this) || video.appendChild(this);
+                    this.#video.contains(this) || this.#video.appendChild(this);
                     this.track.mode = 'showing';
                 }
                 break;
@@ -50,15 +50,18 @@ class Track extends HTMLTrackElement {
     /** 每当元素被移动到新文档中时调用。 */
     // adoptedCallback() {}
 
+    #video: Video
+
     /** 是否初始化 */
     $hasTrack = false;
 
     /** 等比缩放 */
     private $scale = false;
 
-    constructor() {
+    constructor(video: Video) {
         super();
 
+        this.#video = video;
         new ResizeObserver((e) => {
             for (const entry of e) {
                 for (const size of entry.borderBoxSize) {
@@ -75,37 +78,37 @@ class Track extends HTMLTrackElement {
 
     private $styleFlush(ops = options) {
         const { fontSize, scale, color, shadow, opacity, fontFamily } = ops.subtile;
-        video.style.setProperty('--cue-font-size', `${28 * fontSize}px`);
-        video.style.setProperty('--cue-scale', <any>((this.$scale = scale) ? (video.getBoundingClientRect().width || 1) / 1139 : 1));
-        video.style.setProperty('--cue-color', color);
+        this.#video.style.setProperty('--cue-font-size', `${28 * fontSize}px`);
+        this.#video.style.setProperty('--cue-scale', <any>((this.$scale = scale) ? (this.#video.getBoundingClientRect().width || 1) / 1139 : 1));
+        this.#video.style.setProperty('--cue-color', color);
         switch (shadow) {
             case '重墨': {
-                video.style.setProperty('--cue-shadow', '#000 1px 0px 1px, #000 0px 1px 1px, #000 0px -1px 1px, #000 -1px 0px 1px');
+                this.#video.style.setProperty('--cue-shadow', '#000 1px 0px 1px, #000 0px 1px 1px, #000 0px -1px 1px, #000 -1px 0px 1px');
                 break;
             }
             case '描边': {
-                video.style.setProperty('--cue-shadow', '#000 0px 0px 1px, #000 0px 0px 1px ,#000 0px 0px 1px');
+                this.#video.style.setProperty('--cue-shadow', '#000 0px 0px 1px, #000 0px 0px 1px ,#000 0px 0px 1px');
                 break;
             }
             case '45°投影': {
-                video.style.setProperty('--cue-shadow', '#000 1px 1px 2px, #000 0px 0px 1px');
+                this.#video.style.setProperty('--cue-shadow', '#000 1px 1px 2px, #000 0px 0px 1px');
                 break;
             }
             default: {
-                video.style.removeProperty('--cue-shadow');
+                this.#video.style.removeProperty('--cue-shadow');
                 break;
             }
         }
-        video.style.setProperty('--cue-background', `rgba(0, 0, 0, ${opacity / 100})`);
+        this.#video.style.setProperty('--cue-background', `rgba(0, 0, 0, ${opacity / 100})`);
         switch (fontFamily) {
             case '':
             case '默认':
             case 'inherit': {
-                video.style.removeProperty('--cue-font-family');
+                this.#video.style.removeProperty('--cue-font-family');
                 break;
             }
             default: {
-                video.style.setProperty('--cue-font-family', fontFamily);
+                this.#video.style.setProperty('--cue-font-family', fontFamily);
                 break;
             }
         }
@@ -148,6 +151,3 @@ class Track extends HTMLTrackElement {
         this.$hasTrack = false;
     }
 }
-
-/** 播放器字幕节点 */
-export const track = new Track();

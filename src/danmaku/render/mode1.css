@@ -1,0 +1,15 @@
+.mode1 {
+    --dealy: 0;
+    --duation: 4500;
+
+    position: absolute;
+    will-change: translate;
+    translate: 100cqi;
+    animation: dmMode1 calc(var(--duation) * 1ms) linear calc(var(--dealy) * 1ms) both;
+}
+
+@keyframes dmMode1 {
+    to {
+        translate: -100%;
+    }
+}

@@ -1,0 +1,148 @@
+.bofqi-sendbar-choose {
+    flex-shrink: 0;
+    padding: 0;
+    font-size: 14px;
+    cursor: pointer;
+    text-align: center;
+    align-content: center;
+    transition: 0.3s;
+    anchor-name: --sendbar-choose;
+
+    >svg {
+        block-size: 1em;
+        aspect-ratio: 1;
+        fill: var(--99a2aa);
+        transition: 0.3s;
+    }
+
+    &:hover {
+        background-color: var(--f4f5f7);
+        color: var(--6d757a);
+
+        >svg {
+            fill: var(--6d757a);
+        }
+    }
+}
+
+.sendbar-choose-wrap {
+    position-anchor: --sendbar-choose;
+    position-area: block-start span-inline-end;
+    position-visibility: anchors-visible;
+    padding-inline: 10px;
+    padding-block: 20px;
+    border: 1px solid var(--e2e2e2);
+    border-radius: 4px;
+    background-color: var(--fff);
+    transition: all .3s ease-in-out;
+    border-start-start-radius: 4px;
+    border-start-end-radius: 4px;
+    flex-direction: column;
+    row-gap: 1em;
+    transform-origin: 0 100%;
+    transition: all .3s allow-discrete;
+
+    @starting-style {
+        opacity: 0;
+        scale: 0 1;
+    }
+
+    &[popover]:popover-open:not(dialog) {
+        display: flex;
+    }
+
+    &[popover]:not(:popover-open):not(dialog[open]) {
+        opacity: 0;
+        scale: 0 1;
+    }
+
+    >.choose-wrap-form {
+        display: flex;
+        align-items: center;
+        column-gap: 1em;
+
+        &::before {
+            content: attr(data-label);
+            inline-size: 3em;
+        }
+
+        >label {
+            border: 1px solid transparent;
+            padding: 4px 5px;
+            border-radius: 4px;
+            transition: all .3s ease-in-out;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: color .3s;
+            position: relative;
+
+            >input {
+                display: none;
+                appearance: none;
+            }
+
+            >svg {
+                block-size: 1em;
+                aspect-ratio: 1;
+
+                &:not(:first-child) {
+                    font-size: 48px;
+                    fill: var(--99a2aa);
+                    transition: fill .3s;
+                    anchor-name: --danmaku-select;
+                }
+
+                &:last-child {
+                    position: absolute;
+                    inset-inline-end: anchor(--danmaku-select end);
+                    inset-block-end: anchor(--danmaku-select end);
+                    font-size: 24px;
+                    background-color: var(--fff);
+                    border: 3px solid var(--fff);
+                    fill: var(--99a2aa);
+                    border-radius: 50%;
+                    box-sizing: border-box;
+                    opacity: 0;
+                    transition: all .3s;
+                }
+            }
+
+            &[data-label]:after {
+                pointer-events: none;
+                content: attr(data-label);
+                display: block;
+            }
+
+            &:not(:has(input:disabled)):hover {
+                color: #00a1d6;
+
+                >svg {
+                    fill: var(--6d757a);
+
+                    &:last-child {
+                        opacity: 1;
+                    }
+                }
+            }
+
+            &:has(input:checked) {
+                color: var(--00a1d6);
+                border-color: var(--00a1d6);
+                pointer-events: none;
+                cursor: default;
+
+                >svg:last-child {
+                    opacity: 1;
+                    fill: var(--00a1d6);
+                }
+            }
+
+            &:has(input:disabled) {
+                color: var(--99a2aa);
+                cursor: not-allowed;
+            }
+        }
+    }
+}

@@ -1,0 +1,547 @@
+@scope {
+    :scope {
+        color-scheme: light dark;
+
+        --e5e9ef: #e5e9ef;
+        --222: #222;
+        --f36392: #f36392;
+        --fff: #fff;
+        --6d757a: #6d757a;
+        --00a1d6: #00a1d6;
+        --99a2aa: #99a2aa;
+        --999: #999;
+        --ffa058: #ffa058;
+        --61666d: #61666d;
+        --f5b23d: #f5b23d;
+        --ffdc7c80: #ffdc7c80;
+        --ffc154: #ffc154;
+        --ccd0d7: #ccd0d7;
+
+        font-size: 12px;
+    }
+
+    a {
+        text-decoration: none;
+        outline: none;
+    }
+}
+
+.container {
+    inline-size: 980px;
+    margin-inline: auto;
+    box-sizing: border-box;
+    font-size: 12px;
+    display: flex;
+    flex-direction: column;
+
+    @media screen and (min-width:1400px) {
+
+        & {
+            inline-size: 1160px;
+        }
+    }
+
+    @media screen and (min-width:2500px) {
+
+        & {
+            inline-size: 1920px;
+        }
+    }
+
+    >.info {
+        padding-block-start: 24px;
+        padding-block-end: 20px;
+        border-block-end: 1px solid var(--e5e9ef);
+        display: flex;
+        column-gap: 24px;
+
+        >.left {
+            flex-shrink: 0;
+
+            img {
+                inline-size: 120px;
+            }
+        }
+
+        >.right {
+            flex: 1;
+            min-inline-size: 0;
+            display: flex;
+            flex-direction: column;
+
+            >.title {
+                display: flex;
+                justify-content: space-between;
+
+                >.name {
+                    color: var(--222);
+                    font-weight: 400;
+                    font-size: 18px;
+                    line-height: 18px;
+                    display: flex;
+                    column-gap: .5em;
+
+                    >.score {
+                        font-size: 13px;
+                        color: var(--ffa058);
+
+                        &::before {
+                            content: attr(data-score);
+                            font-size: 20px;
+                        }
+                    }
+
+                    >.count {
+                        font-size: 12px;
+                        color: var(--61666d);
+                    }
+                }
+
+                >.func {
+                    display: flex;
+                    column-gap: 20px;
+
+                    >.follow {
+                        inline-size: 80px;
+                        block-size: 28px;
+                        padding: 0;
+                        background-color: var(--f36392);
+                        border: 1px solid var(--f36392);
+                        border-radius: 4px;
+                        color: var(--fff);
+                        font-size: 14px;
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        column-gap: 7px;
+
+                        &::before {
+                            display: inline-block;
+                            inline-size: 14px;
+                            block-size: 12px;
+                            background-repeat: no-repeat;
+                            background-image: url(//s1.hdslb.com/bfs/static/bangumi/play/asserts/icons.png);
+                            background-position: -665px -1882px;
+                        }
+
+                        &.d {
+                            color: var(--6d757a);
+                            border-color: var(--e5e9ef);
+                            background-color: transparent;
+                        }
+                    }
+
+                    >.app {
+                        inline-size: 86px;
+                        block-size: 28px;
+                        font-size: 14px;
+                        padding: 0;
+                        color: var(--6d757a);
+                        border: 1px solid var(--e5e9ef);
+                        border-radius: 4px;
+                        background-color: transparent;
+                        cursor: pointer;
+
+                        &:hover {
+                            color: var(--00a1d6);
+                            border-color: var(--00a1d6);
+                        }
+                    }
+
+                    >.icon {
+                        inline-size: 30px;
+                        block-size: 30px;
+                        background-repeat: no-repeat;
+                        background-image: url(//s1.hdslb.com/bfs/static/bangumi/play/asserts/icons.png);
+                        cursor: pointer;
+                        padding: 0;
+                        border: 0;
+                        background-color: transparent;
+
+                        &.weibo {
+                            background-position: -1168px -913px;
+
+                            &:hover {
+                                background-position: -1105px -913px;
+                            }
+                        }
+
+                        &.zone {
+                            background-position: -1168px -720px;
+
+                            &:hover {
+                                background-position: -1105px -720px;
+                            }
+                        }
+
+                        &.qq {
+                            background-position: -977px -913px;
+
+                            &:hover {
+                                background-position: -977px -849px;
+                            }
+                        }
+
+                        &.baidu {
+                            background-position: -1168px -785px;
+
+                            &:hover {
+                                background-position: -1105px -785px;
+                            }
+                        }
+                    }
+                }
+            }
+
+            >.top-block {
+                margin-block-start: 16px;
+                border-block-end: 1px solid var(--e5e9ef);
+                display: flex;
+                justify-content: space-between;
+
+                >.ss-list-wrapper {
+                    display: flex;
+                    column-gap: 30px;
+
+                    >label {
+                        display: inline-block;
+                        block-size: 26px;
+                        border-block-end: 1px solid transparent;
+                        font-size: 12px;
+                        cursor: pointer;
+                        position: relative;
+                        transition: .3s;
+
+                        >input {
+                            appearance: none;
+                            display: none;
+                        }
+
+                        &:hover {
+                            color: var(--00a1d6);
+                        }
+
+                        &:has(input:checked) {
+                            border-block-end-color: var(--00a1d6);
+                            color: var(--00a1d6);
+                            pointer-events: none;
+
+                            &::after {
+                                content: "";
+                                position: absolute;
+                                inset-block-end: 0;
+                                inset-inline-start: calc(50% - 3px);
+                                border-block-end: 3px solid var(--00a1d6);
+                                border-block-start: 3px solid transparent;
+                                border-inline: 3px solid transparent;
+                            }
+                        }
+                    }
+                }
+
+                >.mode-select {
+                    display: flex;
+                    column-gap: 20px;
+
+                    >label {
+                        inline-size: 16px;
+                        block-size: 16px;
+                        background-repeat: no-repeat;
+                        background-image: url(//s1.hdslb.com/bfs/static/bangumi/play/asserts/icons.png);
+                        cursor: pointer;
+
+                        >input {
+                            appearance: none;
+                            display: none;
+                        }
+
+                        &.detail-mode {
+                            background-position: -279px -1815px;
+
+                            &:has(input:checked) {
+                                background-position: -343px -1815px;
+                            }
+                        }
+
+                        &.simple-mode {
+                            background-position: -281px -1880px;
+
+                            &:has(input:checked) {
+                                background-position: -345px -1880px;
+                            }
+                        }
+                    }
+                }
+            }
+
+            >.episode-list {
+                display: flex;
+                column-gap: 10px;
+                margin-block-start: 14px;
+                padding-block: 6px;
+                overflow-x: auto;
+                scrollbar-width: thin;
+
+                >label {
+                    flex-shrink: 0;
+                    inline-size: 100px;
+                    block-size: 48px;
+                    cursor: pointer;
+                    background-color: var(--fff);
+                    border: 1px solid var(--e5e9ef);
+                    border-radius: 4px;
+                    padding: 8px;
+                    position: relative;
+
+                    >input {
+                        appearance: none;
+                        display: none;
+                    }
+
+                    >.ep-index {
+                        line-height: 19px;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+
+                        &.d {
+                            &::before {
+                                content: "第";
+                            }
+
+                            &::after {
+                                content: "话";
+                            }
+                        }
+                    }
+
+                    >.ep-title {
+                        line-height: 16px;
+                        max-block-size: 32px;
+                        color: var(--99a2aa);
+                        display: -webkit-box;
+                        -webkit-line-clamp: 2;
+                        -webkit-box-orient: vertical;
+                        white-space: normal;
+                        word-break: break-word;
+                        word-wrap: break-word;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                    }
+
+                    >.mark {
+                        position: absolute;
+                        inset-block-start: -7px;
+                        inset-inline-end: -7px;
+                        padding-inline: 4px;
+                        line-height: 18px;
+                        border-radius: 9px;
+                        background-color: var(--999);
+                        color: var(--fff);
+                    }
+
+                    &:has(input:checked) {
+                        border-color: var(--00a1d6);
+                        background-color: var(--00a1d6);
+                        pointer-events: none;
+
+                        >.ep-index,
+                        >.ep-title {
+                            color: var(--fff);
+                        }
+                    }
+
+                    &:hover {
+                        border-color: var(--00a1d6);
+
+                        >.ep-index,
+                        >.ep-title {
+                            color: var(--00a1d6);
+                        }
+                    }
+                }
+
+                &.simple {
+                    flex-wrap: wrap;
+                    column-gap: 8px;
+                    row-gap: 9px;
+
+                    >label {
+                        inline-size: 66px;
+                        block-size: 28px;
+                        padding: 0;
+
+                        >.ep-index {
+                            font-size: 14px;
+                            color: var(--6d757a);
+                            line-height: 28px;
+                            text-align: center;
+
+                            &::before,
+                            &::after {
+                                display: none;
+                            }
+                        }
+
+                        >.ep-title {
+                            display: none;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    >.sponsor {
+        padding-block: 20px;
+        border-block-end: 1px solid var(--e5e9ef);
+        display: flex;
+
+        >.left {
+            flex: 1;
+            min-inline-size: 0;
+            display: flex;
+            flex-direction: column;
+            row-gap: 20px;
+
+            >.header {
+                display: flex;
+                justify-content: space-between;
+                color: var(--222);
+
+                >.title {
+                    font-size: 18px;
+                    line-height: 24px;
+                    font-weight: bold;
+                }
+
+                >.view {
+                    line-height: 22px;
+                    padding-inline: 15px;
+                    border: 1px solid var(--ccd0d7);
+                    border-radius: 4px;
+                    cursor: pointer;
+
+                    &:hover {
+                        color: var(--00a1d6);
+                        border-color: var(--00a1d6);
+                    }
+                }
+            }
+
+            >.body {
+                display: flex;
+                flex-wrap: wrap;
+                column-gap: 30px;
+                overflow-x: auto;
+                scrollbar-width: thin;
+
+                >div {
+                    display: flex;
+
+                    >:first-child>.avatar {
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        position: relative;
+                        --size: 50px;
+
+                        >img {
+                            block-size: var(--size);
+                            inline-size: var(--size);
+                            margin-inline-end: calc(var(--size) / 3);
+                            border-radius: 50%;
+                        }
+                    }
+
+                    >:last-child {
+                        display: flex;
+                        flex-direction: column;
+                        row-gap: 10px;
+
+                        >.info {
+                            font-size: 14px;
+                            line-height: 16px;
+                            color: var(--222);
+                            font-weight: bold;
+                            text-overflow: ellipsis;
+                            overflow: hidden;
+                            white-space: nowrap;
+                        }
+
+                        >.msg {
+                            line-height: 20px;
+                            padding-block: 1px;
+                            padding-inline: 5px;
+                            border: 1px solid var(--e5e9ef);
+                            border-start-end-radius: 4px;
+                            border-end-end-radius: 4px;
+                            color: var(--99a2aa);
+                            word-break: break-all;
+                            inline-size: 145px;
+                            position: relative;
+
+                            >i {
+                                border-color: var(--e5e9ef) var(--e5e9ef) transparent transparent;
+                                border-style: solid;
+                                border-width: 5px;
+                                position: absolute;
+                                inset-inline-start: -10px;
+                                inset-block-start: -2px;
+
+                                &::before {
+                                    content: "";
+                                    border-color: var(--fff) var(--fff) transparent transparent;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        >.right {
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            row-gap: 5px;
+
+            >img {
+                inline-size: 260px;
+            }
+
+            >.count {
+                text-align: center;
+                font-size: 12px;
+                margin-block-end: 15px;
+                color: var(--6d757a);
+
+                >span {
+                    color: var(--222);
+                    font-weight: 700;
+                }
+            }
+
+            >button {
+                inline-size: 192px;
+                line-height: 47px;
+                margin-inline: auto;
+                border: 0;
+                padding: 0;
+                font-size: 18px;
+                font-weight: 700;
+                color: var(--fff);
+                background-color: var(--f5b23d);
+                border-radius: 4px;
+                box-shadow: 0 2px 4px var(--ffdc7c80);
+                cursor: pointer;
+                transition: background-color .3s ease;
+
+                &:hover {
+                    background-color: var(--ffc154);
+                }
+            }
+        }
+    }
+}

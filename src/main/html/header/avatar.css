@@ -1,0 +1,254 @@
+.avatar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    transition: .3s;
+    anchor-name: --avatar;
+
+    --size: 32px;
+
+    >.avatar-face {
+        block-size: var(--size);
+        inline-size: var(--size);
+        border-radius: 50%;
+    }
+
+    >.avatar-pendant {
+        position: absolute;
+        block-size: calc(var(--size) / 2* 3);
+        inline-size: calc(var(--size) / 2* 3);
+    }
+
+    &:not(:hover) {
+        >.avatar-pendant {
+            display: none;
+        }
+
+        ~.avatar-wrap:not(:hover) {
+            display: none;
+            scale: 1 0;
+        }
+    }
+
+    &:hover,
+    &:has(~.avatar-wrap:hover) {
+        --size: 64px;
+        translate: 0 50%;
+        z-index: 1;
+    }
+
+    &:not(.d)~.avatar-wrap {
+        display: none;
+    }
+}
+
+.avatar-wrap {
+    position: absolute;
+    position-anchor: --avatar;
+    position-area: block-end;
+    inline-size: 280px;
+    padding-block-start: 40px;
+    background-color: var(--fff);
+    box-shadow: 0 2px 4px var(--00000029);
+    display: flex;
+    flex-direction: column;
+    row-gap: 15px;
+    transform-origin: center 0;
+    transition: all .3s allow-discrete;
+
+    @starting-style {
+        scale: 1 0;
+    }
+
+    >.header-uname {
+        text-align: center;
+        font-weight: bold;
+    }
+
+    >.btns-profile {
+        display: flex;
+        justify-content: space-around;
+
+        >a {
+            color: var(--222);
+            display: flex;
+
+            &::before {
+                content: "";
+                display: inline-block;
+                inline-size: 18px;
+                block-size: 18px;
+                background-image: url(//static.hdslb.com/images/base/icons.png);
+            }
+        }
+
+        >.coin::before {
+            background-position: -343px -471px;
+        }
+
+        >.b-coin::before {
+            background-position: -407px -471px;
+        }
+
+        >.bindphone {
+            &::before {
+                background-position: -279px -534px;
+            }
+
+            &.verified::before {
+                background-position: -343px -534px;
+            }
+        }
+
+        >.bindmail {
+            &::before {
+                background-position: -279px -599px;
+            }
+
+            &.verified::before {
+                background-position: -343px -599px;
+            }
+        }
+    }
+
+    >.grade {
+        margin-block: 15px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        column-gap: 1em;
+        position: relative;
+
+        >progress {
+            appearance: none;
+            inline-size: 170px;
+            block-size: 8px;
+            display: flex;
+            align-items: center;
+
+            &::-webkit-progress-bar {
+                background-color: var(--eee);
+            }
+
+            &::-webkit-progress-value {
+                background-color: var(--f3cb85);
+            }
+
+            &::before {
+                content: "";
+                display: inline-block;
+                inline-size: 18px;
+                block-size: 18px;
+                border-radius: 9px;
+                background-color: var(--f3cb85);
+                background-image: url(//s1.hdslb.com/bfs/static/jinkela/home/asserts/grade_icon.png);
+                background-repeat: no-repeat;
+            }
+
+            &.lv0::before {
+                background-position: -153px -8px;
+                background-color: var(--ccc);
+            }
+
+            &.lv1::before {
+                background-position: -153px -44px
+            }
+
+            &.lv2::before {
+                background-position: -153px -80px
+            }
+
+            &.lv3::before {
+                background-position: -153px -116px
+            }
+
+            &.lv4::before {
+                background-position: -153px -152px
+            }
+
+            &.lv5::before {
+                background-position: -153px -188px
+            }
+
+            &.lv6::before {
+                background-position: -153px -224px
+            }
+        }
+
+        >label {
+            position: absolute;
+            inset-block-end: -20px;
+            inset-inline-end: 1em;
+        }
+    }
+
+    >.member-menu {
+        border-block-start: 1px solid #e5e9ef;
+        padding-block: 10px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        row-gap: 10px;
+        column-gap: 20px;
+
+        >a {
+            inline-size: 100px;
+            color: var(--222);
+            white-space: nowrap;
+            display: flex;
+            column-gap: 10px;
+
+            &::before {
+                content: "";
+                inline-size: 16px;
+                block-size: 16px;
+                background-image: url(//static.hdslb.com/images/base/icons.png);
+            }
+
+            &.account::before {
+                background-position: -472px -407px;
+            }
+
+            &.member::before {
+                background-position: -536px -1046px;
+            }
+
+            &.wallet::before {
+                background-position: -472px -472px;
+            }
+
+            &.live::before {
+                background-position: -473px -855px;
+            }
+
+            &.bml::before {
+                background-position: -663px -280px;
+            }
+
+            &.cheese::before {
+                background-position: -1368px -216px;
+            }
+        }
+    }
+
+    >.member-bottom {
+        block-size: 30px;
+        padding-inline: 20px;
+        background-color: var(--f4f5f7);
+        display: flex;
+        justify-content: flex-end;
+
+        >button {
+            padding: 0;
+            border: 0;
+            color: var(--222);
+            background-color: transparent;
+            cursor: pointer;
+
+            &:hover {
+                color: var(--00a1d6);
+            }
+        }
+    }
+}

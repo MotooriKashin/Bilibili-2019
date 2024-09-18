@@ -1,0 +1,248 @@
+.m-rank {
+    .headline {
+        --background-position: initial;
+
+        &::before {
+            background-position: var(--background-position);
+        }
+
+        >form {
+            display: flex;
+            column-gap: 12px;
+
+            >label {
+                line-height: 20px;
+                padding-block-start: 1px;
+                padding-block-end: 2px;
+                border-block-end: 1px solid transparent;
+                cursor: pointer;
+                transition: .2s;
+                position: relative;
+
+                &:hover {
+                    color: var(--00a1d6);
+                }
+
+                &:has(input:checked) {
+                    border-block-end-color: var(--00a1d6);
+                    color: var(--00a1d6);
+                    pointer-events: none;
+
+                    &::after {
+                        content: "";
+                        position: absolute;
+                        inset-block-end: 0;
+                        inset-inline-start: calc(50% - 3px);
+                        border-block-end: 3px solid var(--00a1d6);
+                        border-block-start: 3px solid transparent;
+                        border-inline: 3px solid transparent;
+                    }
+                }
+
+                >input {
+                    appearance: none;
+                    display: none;
+                }
+            }
+        }
+    }
+
+    .storey-box {
+        >a {
+            >.num {
+                position: absolute;
+                inset-block-end: 0;
+                inline-size: 100%;
+                line-height: 20px;
+                color: var(--9ba3ab);
+                background-color: var(--fff);
+                transition: all .3s;
+                display: flex;
+
+                >span {
+                    flex: 1;
+                    display: flex;
+                    align-items: center;
+                    column-gap: 5px;
+
+                    &::before {
+                        content: "";
+                        display: inline-block;
+                        inline-size: 12px;
+                        block-size: 12px;
+                        background-image: url(//static.hdslb.com/images/base/icons.png);
+                    }
+
+                    &.play::before {
+                        background-position: -282px -90px;
+                    }
+
+                    &.danmu::before {
+                        background-position: -282px -218px;
+                    }
+                }
+            }
+
+            &:hover>.num {
+                inset-block-end: -20px;
+            }
+        }
+    }
+
+    >.right {
+        row-gap: 20px;
+
+        >header {
+            flex-shrink: 0;
+            display: flex;
+            justify-content: space-between;
+
+            >h3 {
+                margin: 0;
+                font-size: 18px;
+                font-weight: 400;
+            }
+
+            >form {
+                display: flex;
+                column-gap: 12px;
+                cursor: not-allowed;
+
+                >label {
+                    line-height: 20px;
+                    padding-block-start: 1px;
+                    padding-block-end: 2px;
+                    border-block-end: 1px solid transparent;
+                    cursor: pointer;
+                    transition: .2s;
+                    position: relative;
+                    pointer-events: none;
+
+                    &:hover {
+                        color: var(--00a1d6);
+                    }
+
+                    &:has(input:checked) {
+                        border-block-end-color: var(--00a1d6);
+                        color: var(--00a1d6);
+                        pointer-events: none;
+
+                        &::after {
+                            content: "";
+                            position: absolute;
+                            inset-block-end: 0;
+                            inset-inline-start: calc(50% - 3px);
+                            border-block-end: 3px solid var(--00a1d6);
+                            border-block-start: 3px solid transparent;
+                            border-inline: 3px solid transparent;
+                        }
+                    }
+
+                    >input {
+                        appearance: none;
+                        display: none;
+                    }
+                }
+            }
+
+            >select {
+                border: 1px solid var(--ccd0d7);
+                border-radius: 4px;
+                cursor: pointer;
+                outline: 0;
+                pointer-events: none;
+            }
+        }
+
+        >.rank {
+            flex: 1;
+            min-block-size: 0;
+            display: flex;
+            flex-direction: column;
+            row-gap: 15px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            counter-reset: rank;
+
+            >a {
+                display: flex;
+                align-items: flex-start;
+                column-gap: 5px;
+
+                &::before {
+                    flex-shrink: 0;
+                    counter-increment: rank;
+                    content: counter(rank);
+                    display: inline-block;
+                    min-inline-size: 12px;
+                    line-height: 18px;
+                    padding-inline: 3px;
+                    border-radius: 4px;
+                    background-color: var(--b8c0cc);
+                    color: var(--fff);
+                    font-weight: bolder;
+                    text-align: center;
+                }
+
+                &:nth-child(-n+3)::before {
+                    background-color: var(--f25d8e);
+                }
+
+                >.preview {
+                    flex-shrink: 0;
+                    inline-size: 80px;
+                    block-size: 50px;
+                    background-size: cover;
+                    background-repeat: no-repeat;
+                }
+
+                &:not(:first-child)>.preview {
+                    display: none;
+                }
+
+                >.r-i {
+                    flex: 1;
+                    min-inline-size: 0;
+                    line-height: 18px;
+                    color: var(--222);
+                    overflow: clip;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                }
+
+                &:first-child>.r-i {
+                    display: -webkit-box;
+                    -webkit-box-orient: vertical;
+                    -webkit-line-clamp: 3;
+                    white-space: initial;
+                }
+
+                &:hover>.r-i {
+                    color: var(--00a1d6);
+                }
+            }
+
+            &:empty {
+                flex-direction: row;
+                justify-content: center;
+                align-items: flex-start;
+                column-gap: 5px;
+
+                &::before {
+                    content: "";
+                    display: inline-block;
+                    inline-size: 20px;
+                    block-size: 20px;
+                    background-image: url(//s1.hdslb.com/bfs/static/jinkela/home/asserts/empty-icon.png);
+                    background-repeat: no-repeat;
+                    background-position: center -598px;
+                }
+
+                &::after {
+                    content: '没有数据(-_-#)';
+                    color: var(--99a2aa);
+                }
+            }
+        }
+    }
+}

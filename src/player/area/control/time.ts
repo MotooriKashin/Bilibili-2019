@@ -1,8 +1,7 @@
+import { Player } from "../..";
 import { customElement } from "../../../utils/Decorator/customElement";
-import { Element } from "../../../utils/element";
 import { Format } from "../../../utils/fomat";
-import { PLAYER_EVENT, ev } from "../../event-target";
-import { video } from "../wrap/video";
+import { ev, PLAYER_EVENT } from "../../event";
 
 /** 播放器时间轴显示 */
 @customElement('output')
@@ -34,98 +33,111 @@ export class Time extends HTMLOutputElement {
     /** 每当元素被移动到新文档中时调用。 */
     // adoptedCallback() {}
 
+    #player: Player;
+
     /** 跳转输入 */
-    protected $seek = Element.add('input', { class: 'bofqi-control-time-seek', value: "00:00" }, this);
+    #seek = this.appendChild(document.createElement('input'));
 
     /** 时间戳容器 */
-    protected $wrap = Element.add('div', { class: 'bofqi-control-time-wrap' }, this);
+    #wrap = this.appendChild(document.createElement('div'));
 
     /** 当前时间 */
-    protected $current = Element.add('span', { class: 'bofqi-control-time-now' }, this.$wrap, '00:00');
+    #current = this.#wrap.appendChild(document.createElement('time'));
 
     /** 分隔符 */
-    protected $divider = Element.add('span', { class: 'bofqi-control-divider' }, this.$wrap, '/');
+    #divider = this.#wrap.appendChild(document.createElement('span'));
 
     /** 合计时间 */
-    protected $total = Element.add('span', { class: 'bofqi-control-time-total' }, this.$wrap, '00:00');
+    #total = this.#wrap.appendChild(document.createElement('time'));
 
-    #current = 0;
+    #currentTime = 0;
 
     /** 当前时间 */
-    set current(value: number) {
-        this.$current.textContent = Format.fmSeconds(this.#current = value);
+    set $current(value: number) {
+        this.#current.dateTime = this.#current.textContent = Format.fmSeconds(this.#currentTime = value);
     }
 
-    #total = 0;
+    #totalTime = 0;
 
     /** 合计时间 */
-    set total(value: number) {
-        this.$total.textContent = Format.fmSeconds(this.#total = value);
+    set $total(value: number) {
+        this.#total.dateTime = this.#total.textContent = Format.fmSeconds(this.#totalTime = value);
     }
 
-    constructor() {
+    constructor(player: Player) {
         super();
 
+        this.#player = player;
         this.classList.add('bofqi-control-time');
+        this.#seek.classList.add('bofqi-control-time-seek');
+        this.#seek.value = '00:00';
+        this.#wrap.classList.add('bofqi-control-time-wrap');
+        this.#current.classList.add('bofqi-control-time-now');
+        this.#divider.classList.add('bofqi-control-divider');
+        this.#divider.innerText = '/';
+        this.#total.classList.add('bofqi-control-time-total');
 
-        video.addEventListener('timeupdate', () => {
+
+        player.$video.addEventListener('timeupdate', () => {
             // 当前时间更新
-            this.current = video.currentTime;
+            this.$current = player.$video.currentTime;
         })
-        video.addEventListener('durationchange', () => {
+        player.$video.addEventListener('durationchange', () => {
             // 合计时间更新
-            this.total = video.duration;
+            this.$total = player.$video.duration;
         });
-        ev.bind(PLAYER_EVENT.IDENTIFY, this.identity);
-        this.$wrap.addEventListener('click', e => {
+        ev.bind(PLAYER_EVENT.VIDEO_DESTORY, this.#identity);
+        this.#wrap.addEventListener('click', e => {
             // 输入跳帧
             e.stopPropagation();
-            if (this.#total) {
+            if (this.#totalTime) {
                 this.classList.add('seeking');
-                this.$seek.focus();
-                this.$seek.value = Format.fmSeconds(this.#current);
-                this.$seek.addEventListener('focusout', this.focusout, { once: true });
-                this.$seek.addEventListener('keydown', this.keydown);
+                this.#seek.focus();
+                this.#seek.value = Format.fmSeconds(this.#currentTime);
+                this.#seek.addEventListener('focusout', this.#onFocusOut, { once: true });
+                this.#seek.addEventListener('keydown', this.#onKeyDown);
             }
         });
+
+        this.#identity();
     }
 
-    protected focusout = () => {
-        this.$seek.removeEventListener('keydown', this.keydown);
+    #onFocusOut = () => {
+        this.#seek.removeEventListener('keydown', this.#onKeyDown);
         this.classList.remove('seeking');
-        const newTime = Format.fmSecondsReverse(this.$seek.value);
-        if (this.#current !== newTime) {
+        const newTime = Format.fmSecondsReverse(this.#seek.value);
+        if (this.#currentTime !== newTime) {
             // 跳帧播放
-            video.seek(newTime);
+            this.#player.$video.$seek(newTime);
         }
     }
 
-    protected keydown = (e: KeyboardEvent) => {
+    #onKeyDown = (e: KeyboardEvent) => {
         e.stopPropagation();
         switch (e.key) {
             case 'Enter': {
-                this.$seek.removeEventListener('focusout', this.focusout);
-                this.$seek.removeEventListener('keydown', this.keydown);
+                this.#seek.removeEventListener('focusout', this.#onFocusOut);
+                this.#seek.removeEventListener('keydown', this.#onKeyDown);
                 this.classList.remove('seeking');
-                const newTime = Format.fmSecondsReverse(this.$seek.value);
-                if (this.#current !== newTime) {
+                const newTime = Format.fmSecondsReverse(this.#seek.value);
+                if (this.#currentTime !== newTime) {
                     // 跳帧播放
-                    video.seek(newTime);
+                    this.#player.$video.$seek(newTime);
                 }
-                this.$seek.removeEventListener('keydown', this.keydown);
+                this.#seek.removeEventListener('keydown', this.#onKeyDown);
                 break;
             }
             case 'Escape': {
-                this.$seek.removeEventListener('focusout', this.focusout);
-                this.$seek.removeEventListener('keydown', this.keydown);
+                this.#seek.removeEventListener('focusout', this.#onFocusOut);
+                this.#seek.removeEventListener('keydown', this.#onKeyDown);
                 this.classList.remove('seeking');
-                this.$seek.removeEventListener('keydown', this.keydown);
+                this.#seek.removeEventListener('keydown', this.#onKeyDown);
                 break;
             }
         }
     }
 
-    protected identity = () => {
-        this.#current = this.#total = 0;
+    #identity = () => {
+        this.$current = this.$total = 0;
     }
 }

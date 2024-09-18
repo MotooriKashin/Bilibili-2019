@@ -1,0 +1,41 @@
+.bofqi-sendbar-color {
+    flex-shrink: 0;
+    padding: 0;
+    font-size: 14px;
+    cursor: pointer;
+    text-align: center;
+    align-content: center;
+    transition: 0.3s;
+    background-color: var(--color-select);
+    anchor-name: --bpui-color;
+
+    >svg {
+        block-size: 1em;
+        aspect-ratio: 1;
+        fill: var(--99a2aa);
+        transition: 0.3s;
+    }
+
+    &:hover {
+        color: var(--6d757a);
+
+        >svg {
+            fill: var(--6d757a);
+        }
+    }
+
+    &~.bpui-color {
+        transform-origin: 0 100%;
+        transition: all .3s allow-discrete;
+
+        @starting-style {
+            opacity: 0;
+            scale: 0 1;
+        }
+
+        &[popover]:not(:popover-open):not(dialog[open]) {
+            opacity: 0;
+            scale: 0 1;
+        }
+    }
+}

@@ -1,4 +1,4 @@
-import { Danmaku, IAnimation, IDanmakuBAS, IDef, IDefAttrs, IPercentNum, ISet } from "../..";
+import { Danmaku, IDanmaku } from "../..";
 import { customElement } from "../../../utils/Decorator/customElement";
 import { AV } from "../../../utils/av";
 import { Format } from "../../../utils/fomat";
@@ -210,6 +210,16 @@ export class Mode9 extends HTMLDivElement {
         }
     }
 
+    /** 每当元素添加到文档中时调用。 */
+    connectedCallback() {
+        this.$dm.on = true;
+    }
+
+    /** 每当元素从文档中移除时调用。 */
+    disconnectedCallback() {
+        this.$dm.on = false;
+    }
+
     private get xProportion() {
         return this.$container.$width / 100;
     };
@@ -232,13 +242,14 @@ export class Mode9 extends HTMLDivElement {
     private $style = document.createElement('style');
 
     constructor(
-        /** 弹幕管理组件 */
-        protected $container: Danmaku,
         /** 弹幕数据 */
         public $dm: IDanmakuBAS,
+        /** 弹幕管理组件 */
+        protected $container: Danmaku,
     ) {
         super();
 
+        Mode9.pretreatDanmaku($dm);
         this.defs = $dm.defs;
         this.sets = $dm.sets;
     }
@@ -360,7 +371,7 @@ export class Mode9 extends HTMLDivElement {
             }
         }
 
-        this.$container.appendChild(this);
+        this.$container.$host.appendChild(this);
     }
 
     /** 动画回调处理函数 */
@@ -688,4 +699,129 @@ export class Mode9 extends HTMLDivElement {
         this.percentObj2Num(this.$dm);
         this.init();
     }
+}
+
+export interface IDanmakuBAS extends IDanmaku {
+    // 以下为BAS弹幕专用
+    duration: number;
+    def2set: Record<string, IAnimation[]>;
+    defs: IDef[];
+    sets: ISet[];
+    setsIntervals: Record<keyof IDefAttrs, number[][]>;
+}
+
+/** 通用属性 */
+interface ICommon {
+    x?: IPercentNum | number;
+    y?: IPercentNum | number;
+    zIndex?: IPercentNum | number;
+    scale?: IPercentNum | number;
+    duration?: number;
+}
+
+/** 文本属性 */
+interface IText extends ICommon {
+    content?: string;
+    alpha?: IPercentNum | number;
+    color?: number;
+    anchorX?: IPercentNum | number;
+    anchorY?: IPercentNum | number;
+    fontSize?: IPercentNum | number;
+    fontFamily?: string;
+    bold?: IPercentNum | number;
+    textShadow?: IPercentNum | number;
+    strokeWidth?: IPercentNum | number;
+    strokeColor?: number;
+    rotateX?: IPercentNum | number;
+    rotateY?: IPercentNum | number;
+    rotateZ?: IPercentNum | number;
+    parent?: string;
+}
+
+/** 按钮属性 */
+interface IButton extends ICommon {
+    text?: string;
+    fontSize?: IPercentNum | number;
+    textColor?: number;
+    textAlpha?: IPercentNum | number;
+    fillColor?: number;
+    fillAlpha?: IPercentNum | number;
+    target?: IButtonTarget;
+}
+
+/** 按钮回调 */
+interface IButtonTarget {
+    objType: 'av' | 'bangumi' | 'seek';
+    time?: number;
+    page?: number;
+    av?: number;
+    bvid?: string;
+    seasonId?: number;
+    episodeId?: number;
+}
+
+interface IPath extends ICommon {
+    d?: string;
+    viewBox?: string;
+    borderColor?: number;
+    borderAlpha?: IPercentNum | number;
+    borderWidth?: IPercentNum | number;
+    fillColor?: number;
+    fillAlpha?: IPercentNum | number;
+}
+
+export interface IDefAttrs extends IText, IButton, IPath {
+    width?: number;
+    height?: number;
+}
+
+/** 弹幕事件 */
+export enum DanmakuEvent {
+
+    /** 添加弹幕，注意参数为新增弹幕 */
+    DANMAKU_ADD,
+
+    /** 发送弹幕 */
+    DANMAKU_SEND,
+}
+
+
+/** 弹幕事件对应的数据类型 */
+export interface IDanmakuEvent {
+    0: IDanmaku[];
+    1: IDanmaku;
+}
+
+export interface IAnimation {
+    delay: number;
+    duration: number;
+    easing: string;
+    group: number;
+    name: string;
+    valueStart?: IDefAttrs;
+    valueEnd: IDefAttrs;
+}
+
+export interface IPercentNum {
+    numType: 'number' | 'percent';
+    value: number;
+}
+
+export interface IDef {
+    attrs: IDefAttrs;
+    name: string;
+    obj_type: string;
+    type: 'DefText' | 'DefButton' | 'DefPath';
+    _reg_order: number;
+}
+
+export interface ISet {
+    type: 'Serial' | 'Parallel' | 'Unit';
+    items?: ISet[];
+    attrs?: IDefAttrs;
+    defaultEasing?: string;
+    default_easing?: string;
+    duration?: number;
+    targetName?: string;
+    target_name?: string;
 }

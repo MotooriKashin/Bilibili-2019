@@ -1,0 +1,42 @@
+@scope {
+    :scope {
+        color-scheme: light dark;
+
+        --f6f9fa: #f6f9fa;
+        --e5e9ef: #e5e9ef;
+        --00a1d6: #00a1d6;
+
+        position: fixed;
+        inset-inline-end: 10%;
+        inset-block-end: 10%;
+        animation: gotop 3s linear;
+        animation-timeline: scroll();
+    }
+}
+
+.gotop {
+    inline-size: 46px;
+    block-size: 48px;
+    background-image: url(//static.hdslb.com/images/base/icons.png);
+    background-color: var(--f6f9fa);
+    background-position: -648px -72px;
+    background-repeat: no-repeat;
+    border: 1px solid var(--e5e9ef);
+    cursor: pointer;
+    opacity: calc(max(var(--scroll-positon) - 17, 0) / max(var(--scroll-positon) - 17, 0));
+
+    &:hover {
+        background-color: var(--00a1d6);
+        background-position: -714px -72px;
+        border-color: var(--00a1d6);
+    }
+}
+
+
+/* shadowroot stylesheet 里似乎无法注册自定义属性，将在 js 里注册 */
+@keyframes gotop {
+
+    to {
+        --scroll-positon: 100;
+    }
+}

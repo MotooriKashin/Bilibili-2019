@@ -1,0 +1,23 @@
+input[type="checkbox" i] {
+    margin: 0;
+    cursor: pointer;
+}
+
+label.bpui-checkbox {
+    vertical-align: middle;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+
+    input[type="checkbox"] {
+        appearance: auto;
+        vertical-align: middle;
+        cursor: pointer;
+        margin-inline: 4px;
+    }
+
+    &:has(input:disabled) {
+        cursor: not-allowed;
+        color: var(--ccd0d7);
+    }
+}

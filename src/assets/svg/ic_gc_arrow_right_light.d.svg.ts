@@ -1,0 +1,2 @@
+declare const svg_ic_gc_arrow_right_light: string;
+export default svg_ic_gc_arrow_right_light;

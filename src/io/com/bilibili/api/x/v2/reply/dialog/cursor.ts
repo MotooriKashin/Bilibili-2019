@@ -1,5 +1,6 @@
 import { Api } from "../../../..";
-import { IReplies } from "../../reply";
+import { IReplies } from "..";
+import { RestType } from "../../../../../../../code";
 
 export async function cursor(
     oid: number | string,
@@ -17,42 +18,44 @@ export async function cursor(
     url.searchParams.set('type', <any>type);
     url.searchParams.set('size', <any>size);
     const response = await fetch(url, { credentials: 'include' });
-    return <IReplyCursor>(await response.json()).data;
+    return <IReplyCursor>await response.json();
 }
 
-interface IReplyCursor {
-    assist: number;
-    blacklist: number;
-    config: {
-        read_only: boolean;
-        show_up_flag: boolean;
-        showtopic: number;
-    };
-    control: {
-        answer_guide_text: string;
-        bg_text: string;
-        child_input_text: string;
-        giveup_input_text: string;
-        input_disable: boolean;
-        root_input_text: string;
-        show_text: string;
-        show_type: number;
-    };
-    cursor: {
-        is_begin: boolean;
-        max_floor: number;
-        min_floor: number;
-        next: number;
-        pagination_reply: { next_offset: string };
-        session_id: string;
-        size: number;
-    };
-    dialog: {
-        max_floor: number;
-        min_floor: number;
-    };
-    note: number;
-    replies: IReplies[];
-    upper: { mid: number };
-    vote: number;
+interface IReplyCursor extends RestType {
+    data: {
+        assist: number;
+        blacklist: number;
+        config: {
+            read_only: boolean;
+            show_up_flag: boolean;
+            showtopic: number;
+        };
+        control: {
+            answer_guide_text: string;
+            bg_text: string;
+            child_input_text: string;
+            giveup_input_text: string;
+            input_disable: boolean;
+            root_input_text: string;
+            show_text: string;
+            show_type: number;
+        };
+        cursor: {
+            is_begin: boolean;
+            max_floor: number;
+            min_floor: number;
+            next: number;
+            pagination_reply: { next_offset: string };
+            session_id: string;
+            size: number;
+        };
+        dialog: {
+            max_floor: number;
+            min_floor: number;
+        };
+        note: number;
+        replies: IReplies[];
+        upper: { mid: number };
+        vote: number;
+    }
 }

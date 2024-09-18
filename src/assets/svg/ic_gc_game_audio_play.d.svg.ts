@@ -1,0 +1,2 @@
+declare const svg_ic_gc_game_audio_play: string;
+export default svg_ic_gc_game_audio_play;

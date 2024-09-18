@@ -1,0 +1,197 @@
+.zone {
+    display: flex;
+    flex-direction: column;
+    row-gap: 15px;
+
+    >.headline {
+        display: flex;
+        column-gap: 10px;
+        align-items: center;
+        position: relative;
+
+        &::before {
+            content: "";
+            display: inline-block;
+            inline-size: 40px;
+            block-size: 40px;
+            background-image: url(//static.hdslb.com/images/base/icons.png);
+        }
+
+        >.name {
+            font-size: 24px;
+
+            &:is(a) {
+                color: var(--222);
+                transition: color .2s;
+
+                &:hover {
+                    color: var(--00a1d6);
+                }
+            }
+        }
+
+        >.more {
+            position: absolute;
+            inset-inline-end: 0;
+            inline-size: 52px;
+            line-height: 22px;
+            border: 1px solid var(--ccd0d7);
+            border-radius: 4px;
+            color: var(--555);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            column-gap: 2px;
+            transition: all .2s;
+
+            &::after {
+                content: "";
+                display: inline-block;
+                inline-size: 6px;
+                block-size: 12px;
+                background-image: url(//static.hdslb.com/images/base/icons.png);
+                background-position: -478px -217px;
+            }
+
+            &:hover {
+                background-color: var(--ccd0d7);
+                column-gap: 5px;
+            }
+        }
+
+        >.push {
+            position: absolute;
+            inset-inline-end: 62px;
+            line-height: 22px;
+            border: 1px solid var(--ccd0d7);
+            border-radius: 4px;
+            padding-inline: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all .2s;
+            cursor: pointer;
+
+            >b {
+                pointer-events: none;
+            }
+
+            &::before {
+                content: "";
+                display: inline-block;
+                inline-size: 12px;
+                block-size: 12px;
+                margin-inline-end: 5px;
+                background-image: url(//static.hdslb.com/images/base/icons.png);
+                background-position: -475px -89px;
+                transition: all .5s;
+            }
+
+            &:hover {
+                background-color: var(--ccd0d7);
+
+                &::before {
+                    rotate: 1turn;
+                }
+            }
+        }
+    }
+
+    >.storey-box {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+        grid-template-rows: repeat(2, 1fr);
+        grid-auto-rows: 0;
+        overflow-y: clip;
+
+        @media screen and (min-width:1400px) {
+
+            & {
+                grid-template-columns: repeat(5, 1fr);
+            }
+        }
+
+        >a {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            row-gap: 8px;
+            overflow-y: clip;
+
+            >img {
+                inline-size: 100%;
+                aspect-ratio: 16 / 9;
+                border-radius: 4px;
+                anchor-name: --img;
+            }
+
+            >.mask {
+                position: absolute;
+                position-anchor: --img;
+                position-area: center;
+                inline-size: anchor-size(inline);
+                block-size: anchor-size(block);
+                background-color: var(--00000033);
+                pointer-events: none;
+            }
+
+            >.dur {
+                color: var(--fff);
+                position: absolute;
+                position-anchor: --img;
+                position-area: block-end;
+                translate: 0 calc(-100% - 2px);
+                inline-size: 100%;
+                padding-inline: 6px;
+                box-sizing: border-box;
+                pointer-events: none;
+            }
+
+            >p {
+                margin: 0;
+                border: 0;
+                block-size: 40px;
+                line-height: 20px;
+                color: var(--222);
+                word-wrap: break-word;
+                word-break: break-all;
+                overflow: clip;
+                transition: all .2s linear;
+            }
+
+            >.wl {
+                position: absolute;
+                position-anchor: --img;
+                position-area: block-end;
+                translate: 0 calc(-100% - 2px);
+                inline-size: 22px;
+                block-size: 22px;
+                inset-block-end: .5em;
+                inset-inline-end: .5em;
+                margin-inline-start: calc(100% - 32px);
+                background-image: url(//static.hdslb.com/images/base/icons.png);
+                background-position: -1366px -880px;
+
+                &.d {
+                    background-position: -1436px -880px;
+                }
+            }
+
+            &:not(:hover) {
+
+                >.mask,
+                >.dur,
+                >.wl {
+                    display: none;
+                }
+
+
+            }
+
+            &:hover>p {
+                color: var(--00a1d6);
+            }
+        }
+    }
+}

@@ -1,0 +1,273 @@
+.m-timeline {
+
+    >.left {
+        >.headline {
+            --background-position: initial;
+
+            &::before {
+                background-position: var(--background-position);
+            }
+
+            >form {
+                font-size: 18px;
+                display: flex;
+                column-gap: 8px;
+
+                >label {
+                    inline-size: 70px;
+                    line-height: 20px;
+                    padding-block-start: 2px;
+                    padding-block-end: 7px;
+                    border-block-end: 1px solid transparent;
+                    text-align: center;
+                    cursor: pointer;
+                    transition: .2s;
+                    position: relative;
+
+                    @media screen and (max-width: 1400px) {
+                        inline-size: 48px;
+                    }
+
+                    &:hover {
+                        color: var(--00a1d6);
+                    }
+
+                    &:has(input:checked) {
+                        border-block-end-color: var(--00a1d6);
+                        color: var(--00a1d6);
+                        pointer-events: none;
+
+                        &::after {
+                            content: "";
+                            position: absolute;
+                            inset-block-end: 0;
+                            inset-inline-start: calc(50% - 3px);
+                            border-block-end: 3px solid var(--00a1d6);
+                            border-block-start: 3px solid transparent;
+                            border-inline: 3px solid transparent;
+                        }
+                    }
+
+                    >input {
+                        appearance: none;
+                        display: none;
+                    }
+                }
+            }
+
+            >.c-clink {
+                inline-size: 104px;
+                line-height: 34px;
+                color: var(--f25d8e);
+                border-color: var(--f25d8e);
+                font-size: 14px;
+                column-gap: 5px;
+
+                &:hover {
+                    color: var(--fff);
+                    background-color: var(--f25d8e);
+
+                    &::after {
+                        background-position: -541px -217px;
+                    }
+                }
+
+                &::after {
+                    background-position: -478px -280px;
+                }
+
+            }
+        }
+
+        >.timeline-box {
+            block-size: 478px;
+            display: grid;
+            grid-auto-rows: min-content;
+            grid-template-columns: repeat(3, 1fr);
+            column-gap: 34px;
+            row-gap: 36px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+
+            @media screen and (min-width:1400px) {
+
+                & {
+                    grid-template-columns: repeat(4, 1fr);
+                    block-size: 456px;
+                }
+            }
+
+            @media screen and (min-width:2500px) {
+
+                & {
+                    block-size: 777px;
+                }
+            }
+
+            >div {
+                display: flex;
+                column-gap: 12px;
+
+                >.pic {
+                    flex: 3;
+                    aspect-ratio: 1;
+                    border-radius: 4px;
+                    background-size: cover;
+                }
+
+                >.r-text {
+                    flex: 4;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-between;
+                    align-items: flex-start;
+                    contain: strict;
+
+                    >:first-child {
+                        line-height: 18px;
+                        color: var(--222);
+                        display: -webkit-box;
+                        -webkit-box-orient: vertical;
+                        -webkit-line-clamp: 3;
+                        overflow: clip;
+                        text-overflow: ellipsis;
+                        word-break: break-all;
+                        word-wrap: break-word;
+                        transition: color .2s;
+
+                        &:hover {
+                            color: var(--00a1d6);
+                        }
+                    }
+
+                    >:last-child {
+                        min-inline-size: 28px;
+                        line-height: 18px;
+                        padding-inline: 4px;
+                        border-radius: 9px;
+                        color: var(--fff);
+                        background-color: var(--b8c0cc);
+                        white-space: nowrap;
+                        text-align: center;
+                        text-overflow: ellipsis;
+                        overflow: hidden;
+
+                        &.published {
+                            background-color: var(--ff8eb3);
+                        }
+                    }
+                }
+            }
+
+            &:empty {
+                display: flex;
+                justify-content: center;
+
+                &::before {
+                    content: url(//s1.hdslb.com/bfs/static/jinkela/home/asserts/bgm-nodata.png);
+                }
+            }
+        }
+    }
+
+    >.right {
+        row-gap: 20px;
+
+        >header {
+            flex-shrink: 0;
+            display: flex;
+            justify-content: space-between;
+
+            >h3 {
+                margin: 0;
+                font-size: 18px;
+                font-weight: 400;
+            }
+
+            >select {
+                border: 1px solid var(--ccd0d7);
+                border-radius: 4px;
+                cursor: pointer;
+                outline: 0;
+                pointer-events: none;
+            }
+        }
+
+        >.rank {
+            flex: 1;
+            min-block-size: 0;
+            display: flex;
+            flex-direction: column;
+            row-gap: 15px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            counter-reset: rank;
+
+            >a {
+                display: flex;
+                align-items: flex-start;
+                column-gap: 10px;
+
+                &::before {
+                    flex-shrink: 0;
+                    counter-increment: rank;
+                    content: counter(rank);
+                    display: inline-block;
+                    min-inline-size: 12px;
+                    line-height: 18px;
+                    padding-inline: 3px;
+                    border-radius: 4px;
+                    background-color: var(--b8c0cc);
+                    color: var(--fff);
+                    font-weight: bolder;
+                    text-align: center;
+                }
+
+                >:first-child {
+                    min-inline-size: 0;
+                    color: var(--222);
+                    overflow: clip;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+
+                    &:hover {
+                        color: var(--00a1d6);
+                    }
+                }
+
+                >:last-child {
+                    color: var(--99a2aa);
+                    overflow: clip;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                }
+
+                &:nth-child(-n+3)::before {
+                    background-color: var(--f25d8e);
+                }
+            }
+
+            &:empty {
+                flex-direction: row;
+                justify-content: center;
+                align-items: flex-start;
+                column-gap: 5px;
+
+                &::before {
+                    content: "";
+                    display: inline-block;
+                    inline-size: 20px;
+                    block-size: 20px;
+                    background-image: url(//s1.hdslb.com/bfs/static/jinkela/home/asserts/empty-icon.png);
+                    background-repeat: no-repeat;
+                    background-position: center -598px;
+                }
+
+                &::after {
+                    content: '没有数据(-_-#)';
+                    color: var(--99a2aa);
+                }
+            }
+        }
+    }
+}

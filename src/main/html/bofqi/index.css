@@ -1,0 +1,54 @@
+@import url(./part/index.css);
+@import url(./toolbar/index.css);
+
+@scope {
+    :scope {
+        --e5e9ef: #e5e9ef;
+        --f6f9fa: #f6f9fa;
+        --fff: #fff;
+        --444: #444;
+        --6d757a: #6d757a;
+        --00000029: #00000029;
+        --333: #333;
+        --ccd0d7: #ccd0d7;
+        --00a1d6: #00a1d6;
+        --ccc: #ccc;
+        --000: #000;
+
+        display: block;
+        border-block: 1px solid var(--e5e9ef);
+        background-color: var(--f6f9fa);
+        padding-block: 22px;
+        background-size: cover;
+    }
+
+    a {
+        text-decoration: none;
+        outline: none;
+    }
+}
+
+.player-box {
+    --inline-size: 980px;
+
+    inline-size: var(--inline-size);
+    margin-inline: auto;
+
+    @media screen and (min-width:1400px) {
+
+        & {
+            --inline-size: 1160px;
+        }
+    }
+
+    @media screen and (min-width:2500px) {
+
+        & {
+            --inline-size: 1920px;
+        }
+    }
+
+    >.bilibili-player {
+        block-size: calc(var(--inline-size) / 16 * 9 + 68px);
+    }
+}

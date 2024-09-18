@@ -1,0 +1,102 @@
+.bpui-color {
+    position-anchor: --bpui-color;
+    position-area: block-start span-inline-end;
+    position-visibility: anchors-visible;
+    padding-inline: 6px;
+    padding-block-end: 10px;
+    border: 1px solid var(--e2e2e2);
+    border-radius: 4px;
+    background-color: var(--fff);
+    transition: all .3s ease-in-out;
+    border-start-start-radius: 4px;
+    border-start-end-radius: 4px;
+
+    &[popover]:popover-open:not(dialog) {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        align-items: flex-start;
+        cursor: default;
+        overflow: initial;
+        color: #222;
+    }
+
+    .bpui-color-row {
+        padding: 5px;
+
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 20px);
+            column-gap: 5px;
+
+            &.theme {
+                grid-template-rows: 30px repeat(5, 20px);
+
+            }
+
+            &.standard {
+                grid-template-rows: 20px;
+            }
+
+            >span {
+                cursor: pointer;
+                inline-size: 20px;
+                padding: 0;
+                aspect-ratio: 1;
+
+                &:hover {
+                    box-shadow: inset 0 0 0 1px var(--ffa500), inset 0 0 0 2px var(--fff);
+                }
+            }
+        }
+
+        &::before {
+            content: attr(data-label);
+            margin-inline: 5px;
+            margin-block-start: 5px;
+            margin-block-end: 10px;
+            display: block;
+            font-weight: bold;
+            text-align: start;
+        }
+
+        &:not(:first-child) {
+            border-block-start: 1px solid var(--e2e2e2);
+        }
+    }
+
+    .bpui-color-eye {
+        padding: 5px 10px;
+        border-block-start: 1px solid var(--e2e2e2);
+        display: flex;
+        gap: 5px;
+        align-items: center;
+        inline-size: 100%;
+        cursor: pointer;
+
+        &::before {
+            content: '';
+            display: inline-block;
+            inline-size: 20px;
+            aspect-ratio: 1;
+            background-image: url(../../../assets/color.png);
+            background-size: contain;
+        }
+
+        &::after {
+            content: attr(data-value);
+            display: inline-block;
+            flex-grow: 1;
+            padding-block: 3px;
+            color: var(--6b6b6b);
+            border: 1px solid var(--e2e2e2);
+            border-radius: 4px;
+        }
+
+        &:hover {
+            background-color: var(--f4f5f7);
+            color: var(--6d757a);
+        }
+    }
+}

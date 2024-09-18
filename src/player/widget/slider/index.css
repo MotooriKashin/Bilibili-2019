@@ -1,0 +1,83 @@
+@scope {
+    :scope {
+        flex-grow: 1;
+        display: flex;
+        align-items: center;
+        position: relative;
+
+        >.slider {
+            appearance: none;
+            outline: 0;
+            margin: 0;
+            border: 0;
+            cursor: pointer;
+            position: relative;
+            inline-size: 100%;
+            background-color: transparent;
+
+
+            &::-webkit-slider-runnable-track {
+                background-color: transparent;
+                border-radius: 4px;
+                block-size: .5em;
+            }
+
+            &::-webkit-slider-thumb {
+                appearance: none;
+                border-radius: 7px;
+                cursor: pointer;
+                box-shadow: 0 0 3px var(--017cc3);
+                background-color: var(--fff);
+                inline-size: 14px;
+                block-size: 14px;
+                position: relative;
+                inset-block-start: -4.5px;
+                anchor-name: --slider-thumb;
+            }
+
+            &.hint {
+                &::after {
+                    content: attr(data-value);
+                    background-color: var(--fff);
+                    position: absolute;
+                    position-anchor: --slider-thumb;
+                    position-area: block-start;
+                    transition: all .3s;
+                    opacity: 0;
+                    padding-inline: 4px;
+                    padding-block: 2px;
+                    border-radius: 4px;
+
+                }
+
+                &:hover::after {
+                    opacity: 1;
+                }
+            }
+        }
+
+        >progress {
+            appearance: none;
+            position: absolute;
+            inline-size: 100%;
+            inset-inline: 0;
+            block-size: .5em;
+            border-radius: 4px;
+            vertical-align: unset;
+            overflow: clip;
+            pointer-events: none;
+
+            &::-webkit-progress-bar {
+                background-color: transparent;
+            }
+
+            &::-webkit-progress-value {
+                background-color: var(--00a1d6);
+            }
+
+            &.bar::-webkit-progress-bar {
+                background-color: var(--e5e9ef);
+            }
+        }
+    }
+}

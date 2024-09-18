@@ -1,0 +1,241 @@
+@import url(./send.css);
+@import url(./reply.css);
+@import url(./sub-reply.css);
+
+@scope {
+    :scope {
+        color-scheme: light dark;
+
+        --222: #222;
+        --e5e9ef: #e5e9ef;
+        --00a1d6: #00a1d6;
+        --f4f5f7: #f4f5f7;
+        --555: #555;
+        --fff: #fff;
+        --99a2aa: #99a2aa;
+        --6a738540: #6a738540;
+        --00b5e5: #00b5e5;
+        --6d757a: #6d757a;
+        --6a73854d: #6a73854d;
+        --757575: #757575;
+        --ddd: #ddd;
+        --f4f4f4: #f4f4f4;
+        --fb7299: #fb7299;
+        --ff81aa: #ff81aa;
+        --b8c0cc: #b8c0cc;
+        --0000005c: #0000005c;
+        --736ce721: #736ce721;
+        --00a1d621: #00a1d621;
+        --00d4ff21: #00d4ff21;
+        --18191cd9: #18191cd9;
+
+        inline-size: 100%;
+        font-size: 12px;
+        display: flex;
+        flex-direction: column;
+        row-gap: 20px;
+    }
+
+    a {
+        text-decoration: none;
+    }
+}
+
+.head {
+    font-size: 18px;
+    color: var(--222);
+    display: flex;
+    column-gap: 10px;
+
+    &::before {
+        content: attr(data-total);
+    }
+}
+
+.body {
+    display: flex;
+    flex-direction: column;
+
+    >.header {
+        margin-block-end: 24px;
+        border-block-end: 1px solid var(--e5e9ef);
+        display: flex;
+        justify-content: space-between;
+
+        >form {
+            display: flex;
+            column-gap: 16px;
+
+            >label {
+                block-size: 20px;
+                font-size: 14px;
+                border-block-end: 1px solid transparent;
+                padding-block: 8px;
+                font-weight: bold;
+                color: var(--222);
+                cursor: pointer;
+                text-align: center;
+                align-content: center;
+                position: relative;
+
+                &:hover {
+                    color: var(--00a1d6);
+                }
+
+                &:has(input:checked) {
+                    border-block-end-color: var(--00a1d6);
+                    color: var(--00a1d6);
+                    pointer-events: none;
+
+                    &::after {
+                        content: "";
+                        position: absolute;
+                        inset-block-end: 0;
+                        inset-inline-start: calc(50% - 3px);
+                        border-block-end: 3px solid var(--00a1d6);
+                        border-block-start: 3px solid transparent;
+                        border-inline: 3px solid transparent;
+                    }
+                }
+
+                >input {
+                    appearance: none;
+                    display: none;
+                }
+            }
+        }
+
+        >.interaction {
+            display: flex;
+            align-items: center;
+
+            &::before {
+                content: "共" attr(data-num) "页";
+                margin-inline-end: 10px;
+            }
+
+            >a {
+                margin-inline: 4px;
+                cursor: pointer;
+
+                &:hover {
+                    color: var(--00a1d6);
+                }
+
+                &.on,
+                &.more {
+                    pointer-events: none;
+                }
+
+                &.on {
+                    color: var(--00a1d6);
+                    font-weight: bold;
+                }
+            }
+        }
+    }
+
+    >.list {
+        padding-block-start: 20px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    >.paging {
+        inline-size: 100%;
+        position: relative;
+
+        >a {
+            font-size: 14px;
+            block-size: 36px;
+            border-radius: 4px;
+            min-inline-size: 15px;
+            margin-inline: 2px;
+            padding-inline: 10px;
+            background-color: var(--fff);
+            border: solid 1px var(--ddd);
+            cursor: pointer;
+            transition: 0.2s all;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            &.prev,
+            &.next {
+                padding-inline: 15px;
+            }
+
+            &.on,
+            &.more {
+                pointer-events: none;
+            }
+
+            &.more {
+                border: 0;
+            }
+
+            &:hover,
+            &.on {
+                background-color: var(--00a1d6);
+                color: var(--fff);
+                border: 1px solid var(--00a1d6);
+            }
+        }
+
+        >.page-jump {
+            color: var(--99a2aa);
+            position: absolute;
+            inset-inline-end: 0;
+
+            >input {
+                inline-size: 24px;
+                block-size: 24px;
+                margin-inline: 5px;
+                padding-inline: 10px;
+                border-radius: 4px;
+                font-size: 12px;
+                border: 1px solid var(--ddd);
+                text-align: center;
+                outline: none;
+                box-shadow: none;
+            }
+        }
+
+        &:empty {
+            display: none;
+        }
+    }
+}
+
+.image-popover {
+    inline-size: 100vi;
+    block-size: 100vb;
+    border: 0;
+    background: var(--18191cd9);
+    transition: all .5s allow-discrete;
+
+    @starting-style {
+        scale: 0;
+    }
+
+    &:not(:popover-open):not(dialog[open]) {
+        scale: 0;
+    }
+
+    >.image-con {
+        inline-size: 100%;
+        block-size: 100%;
+        padding-inline: 100px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow-y: auto;
+        scrollbar-width: none;
+        cursor: zoom-out;
+
+        >img {
+            max-inline-size: 100%;
+            cursor: default;
+        }
+    }
+}

@@ -1,10 +1,10 @@
+import { Player } from "../..";
 import { IDanmaku } from "../../../danmaku";
 import { ATTR } from "../../../danmaku/attr";
 import { customElement } from "../../../utils/Decorator/customElement";
 import { Element } from "../../../utils/element";
 import { Format } from "../../../utils/fomat";
-import { video } from "../../area/wrap/video";
-import { PLAYER_EVENT, ev } from "../../event-target";
+import { ev, PLAYER_EVENT } from "../../event";
 
 /** 弹幕项 */
 @customElement('div')
@@ -37,25 +37,24 @@ export class DanmakuElem extends HTMLDivElement {
     // adoptedCallback() {}
 
     /** 时间 */
-    private $progress = Element.add('div', { class: 'progress' }, this);
+    private $progress = Element.add('div', { class: 'progress', appendTo: this });
 
     /** 弹幕内容 */
-    private $content = Element.add('div', { class: 'content' }, this);
+    private $content = Element.add('div', { class: 'content', appendTo: this });
 
     /** 发送时间 */
-    private $sent = Element.add('div', { class: 'sent' }, this);
+    private $sent = Element.add('div', { class: 'sent', appendTo: this });
 
     /** 屏蔽显示 */
-    private $block = Element.add('div', { class: 'block' }, this, '已屏蔽');
+    private $block = Element.add('div', { class: 'block', appendTo: this, innerText: '已屏蔽' });
 
     /** 弹幕属性 */
-    private $attr = Element.add('div', { class: 'attr' }, this);
+    private $attr = Element.add('div', { class: 'attr', appendTo: this });
 
-    constructor($dm: IDanmaku) {
+    constructor($dm: IDanmaku, player: Player) {
         super();
 
         this.classList.add('danmaku-elem', `mode${$dm.mode}`);
-        $dm.midHash && (this.dataset.mid = $dm.midHash);
         $dm.color && this.classList.add('color');
         this.$progress.textContent = Format.fmSeconds($dm.progress / 1000);
         this.$content.appendChild(document.createElement('p')).textContent = $dm.content || '';
@@ -79,7 +78,7 @@ export class DanmakuElem extends HTMLDivElement {
                     : this.getDate($dm.ctime * 1000);
 
         this.addEventListener('dblclick', () => {
-            video.seek($dm.progress / 1000)
+            player.$video.$seek($dm.progress / 1000)
         });
         this.addEventListener('contextmenu', () => {
             ev.trigger(PLAYER_EVENT.DANMAKU_CONTEXT, $dm);

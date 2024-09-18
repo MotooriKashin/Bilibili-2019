@@ -1,4 +1,5 @@
 import { ApiVc } from "../../..";
+import { RestType } from "../../../../../../../code";
 
 export async function dynamic_new(
     uid: number | string,
@@ -8,18 +9,20 @@ export async function dynamic_new(
     url.searchParams.set('uid', <any>uid);
     url.searchParams.set('type_list', type_list.join(','));
     const response = await fetch(url, { credentials: 'include' });
-    return <IDynamicNew>(await response.json()).data;
+    return <IDynamicNew>await response.json();
 }
 
-interface IDynamicNew {
-    cards: IDynamicNewCards[];
-    exist_gap: number;
-    /** @deprecated 丢失精度，勿用 */
-    history_offset: number;
-    /** @deprecated 丢失精度，勿用 */
-    max_dynamic_id: number;
-    new_num: number;
-    update_num: number;
+interface IDynamicNew extends RestType {
+    data: {
+        cards: IDynamicNewCards[];
+        exist_gap: number;
+        /** @deprecated 丢失精度，勿用 */
+        history_offset: number;
+        /** @deprecated 丢失精度，勿用 */
+        max_dynamic_id: number;
+        new_num: number;
+        update_num: number;
+    }
 }
 
 export interface IDynamicNewCards {

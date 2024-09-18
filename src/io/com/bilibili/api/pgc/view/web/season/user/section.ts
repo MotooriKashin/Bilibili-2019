@@ -1,27 +1,30 @@
 import { Api } from "../../../../..";
+import { RestType } from "../../../../../../../../code";
 
 export async function pgcSection(season_id: number) {
     const url = new URL(Api + '/pgc/web/season/section');
     url.searchParams.set('season_id', <any>season_id);
     CATCH[season_id] || (CATCH[season_id] = fetch(url, { credentials: 'include' }));
-    return <IPgcSection>(await (await CATCH[season_id]).clone().json()).result;
+    return <IPgcSection>await (await CATCH[season_id]).clone().json();
 }
 
 const CATCH: Record<number, Promise<Response>> = {};
 
-interface IPgcSection {
-    main_section: {
-        episodes: IEpisode[];
-        id: number;
-        title: string;
-        type: number;
+interface IPgcSection extends RestType {
+    result: {
+        main_section?: {
+            episodes: IEpisode[];
+            id: number;
+            title: string;
+            type: number;
+        }
+        section: {
+            episodes: IEpisode[];
+            id: number;
+            title: string;
+            type: number;
+        }[];
     }
-    section: {
-        episodes: IEpisode[];
-        id: number;
-        title: string;
-        type: number;
-    }[];
 }
 
 /** 基本分P数据 */

@@ -1,19 +1,21 @@
 import { ApiLive } from "../../../..";
+import { RestType } from "../../../../../../../../code";
 
 /** 获取直播首页推荐数据 */
 export async function getList() {
     const url = new URL(ApiLive + '/xlive/web-interface/v1/webMain/getList');
     url.searchParams.set('platform', 'web');
     const response = await fetch(url);
-    const json = await response.json();
-    return <IGetList>json.data;
+    return <IGetList>await response.json();
 }
 
-interface IGetList {
-    dynamic: number;
-    online_total: number;
-    ranking_list?: IRankingList[];
-    recommend_room_list: IRecommendRoomList[];
+interface IGetList extends RestType {
+    data: {
+        dynamic: number;
+        online_total: number;
+        ranking_list?: IRankingList[];
+        recommend_room_list: IRecommendRoomList[];
+    }
 }
 
 interface IRankingList {
@@ -54,6 +56,7 @@ export interface IRecommendRoomList {
     };
     head_box_type: number;
     is_ad: boolean;
+    keyframe: string;
     online: number;
     roomid: number;
     status: boolean;

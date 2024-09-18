@@ -4,7 +4,6 @@ export namespace AV {
     const MASK_CODE = 2251799813685247n;
 
     const MAX_AID = 1n << 51n;
-    const MIN_AID = 1n;
 
     const BASE = 58n;
     const BYTES = ['B', 'V', 1, '', '', '', '', '', '', '', '', ''];

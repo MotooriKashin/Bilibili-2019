@@ -1,5 +1,5 @@
 import { Api } from "../../..";
-import { IDefaultResponse } from "../archive/like";
+import { RestType } from "../../../../../../code";
 
 export async function coinAdd(
     csrf: string,
@@ -20,5 +20,5 @@ export async function coinAdd(
         headers,
         body,
     });
-    return <IDefaultResponse>(await response.json());
+    return <RestType>(await response.json());
 }

@@ -9,7 +9,8 @@ on:
     branches:
       - 'master'
     paths:
-      - 'src/docs/**'
+      - 'src/options/**'
+      - 'src/player/**'
 
   # 也可以在 GitHub Actions 手动运行
   workflow_dispatch:
@@ -48,11 +49,11 @@ jobs:
       - name: Build and release
         run: npm run github-pages
 
-      # 上传网页资源（位于 /src/docs/ 目录）
+      # 上传网页资源（位于 /dist/options/ 目录）
       - name: Upload Artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './src/docs/'
+          path: './dist/options/'
 
       # 部署网页
       - name: Deploy to GitHub Pages

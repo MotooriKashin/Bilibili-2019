@@ -1,0 +1,37 @@
+:root {
+    color-scheme: light dark;
+}
+
+body {
+    margin: 0;
+
+    /* 测试用 */
+    block-size: 100vb;
+    text-align: center;
+    align-content: center;
+}
+
+.player-box {
+    --inline-size: 980px;
+
+    inline-size: var(--inline-size);
+    margin-inline: auto;
+
+    @media screen and (min-width:1400px) {
+
+        & {
+            --inline-size: 1160px;
+        }
+    }
+
+    @media screen and (min-width:2500px) {
+
+        & {
+            --inline-size: 1920px;
+        }
+    }
+
+    >.bilibili-player {
+        block-size: calc(var(--inline-size) / 16 * 9 + 68px);
+    }
+}

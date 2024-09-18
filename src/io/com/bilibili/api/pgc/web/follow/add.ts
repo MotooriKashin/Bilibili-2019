@@ -1,4 +1,5 @@
 import { Api } from "../../..";
+import { RestType } from "../../../../../../code";
 
 export async function followAdd(
     csrf: string,
@@ -17,12 +18,14 @@ export async function followAdd(
         headers,
         body,
     });
-    return <IPgcFollow>(await response.json()).result;
+    return <IPgcFollow>await response.json();
 }
 
-export interface IPgcFollow {
-    fmid: number;
-    relation: boolean;
-    status: number;
-    toast: string;
+export interface IPgcFollow extends RestType {
+    result: {
+        fmid: number;
+        relation: boolean;
+        status: number;
+        toast: string;
+    }
 }

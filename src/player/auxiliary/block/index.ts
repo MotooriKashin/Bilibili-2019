@@ -1,17 +1,18 @@
+import { Player } from "../..";
+import svg_24danmuforbid from "../../../assets/svg/24danmuforbid.svg";
+import svg_48danmubottom from "../../../assets/svg/48danmubottom.svg";
+import svg_48danmucode from "../../../assets/svg/48danmucode.svg";
+import svg_48danmucolor from "../../../assets/svg/48danmucolor.svg";
+import svg_48danmunorm from "../../../assets/svg/48danmunorm.svg";
+import svg_48danmunormal from "../../../assets/svg/48danmunormal.svg";
+import svg_48danmuspe from "../../../assets/svg/48danmuspe.svg";
+import svg_48danmutext from "../../../assets/svg/48danmutext.svg";
+import svg_48danmutop from "../../../assets/svg/48danmutop.svg";
+import svg_48danmuunreg from "../../../assets/svg/48danmuunreg.svg";
 import { DANMAKU } from "../../../danmaku/block";
 import { customElement } from "../../../utils/Decorator/customElement";
 import { Element } from "../../../utils/element";
-import svg_danmaku_color from "../../assets/svg/danmaku-color.svg";
-import svg_danmaku_forbid from "../../assets/svg/danmaku-forbid.svg";
-import svg_danmaku_mode_1 from "../../assets/svg/danmaku-mode-1.svg";
-import svg_danmaku_mode_4 from "../../assets/svg/danmaku-mode-4.svg";
-import svg_danmaku_mode_5 from "../../assets/svg/danmaku-mode-5.svg";
-import svg_danmaku_mode_7 from "../../assets/svg/danmaku-mode-7.svg";
-import svg_danmaku_mode_8 from "../../assets/svg/danmaku-mode-8.svg";
-import svg_danmaku_normal from "../../assets/svg/danmaku-normal.svg";
-import svg_danmaku_text from "../../assets/svg/danmaku-text.svg";
-import svg_danmaku_unregister from "../../assets/svg/danmaku-unregister.svg";
-import { PLAYER_EVENT, ev } from "../../event-target";
+import { ev, PLAYER_EVENT } from "../../event";
 import { options } from "../../option";
 import { Slider } from "../../widget/slider";
 
@@ -33,11 +34,8 @@ export class Block extends HTMLDivElement {
      */
     // attributeChangedCallback(name: IobservedAttributes, oldValue: string, newValue: string) {}
 
-    /** 初始化标记 */
-    // #inited = false;
-
     /** 每当元素添加到文档中时调用。 */
-    // connectedCallback() {}
+    // connectedCallback() { }
 
     /** 每当元素从文档中移除时调用。 */
     // disconnectedCallback() {}
@@ -46,59 +44,50 @@ export class Block extends HTMLDivElement {
     // adoptedCallback() {}
 
     /** 按类型屏蔽 */
-    private $type = Element.add('div', { class: 'bofqi-auxiliary-block-filter' }, this, `<header>按类型屏蔽</header>`);
+    #type = Element.add('div', { class: 'bofqi-auxiliary-block-filter', appendTo: this, innerHTML: '<header>按类型屏蔽</header>' });
 
     /** 滚动弹幕 */
-    private $scroll = Element.add('div', { class: 'bofqi-auxiliary-block-filter-type' }, this.$type, svg_danmaku_mode_1 + svg_danmaku_forbid);
+    #scroll = Element.add('div', { class: 'bofqi-auxiliary-block-filter-type', appendTo: this.#type, innerHTML: svg_48danmunormal + svg_24danmuforbid, data: { label: '滚动弹幕' } });
 
     /** 顶端弹幕 */
-    private $top = Element.add('div', { class: 'bofqi-auxiliary-block-filter-type' }, this.$type, svg_danmaku_mode_5 + svg_danmaku_forbid);
+    #top = Element.add('div', { class: 'bofqi-auxiliary-block-filter-type', appendTo: this.#type, innerHTML: svg_48danmutop + svg_24danmuforbid, data: { label: '顶端弹幕' } });
 
     /** 底端弹幕 */
-    private $bottom = Element.add('div', { class: 'bofqi-auxiliary-block-filter-type' }, this.$type, svg_danmaku_mode_4 + svg_danmaku_forbid);
+    #bottom = Element.add('div', { class: 'bofqi-auxiliary-block-filter-type', appendTo: this.#type, innerHTML: svg_48danmubottom + svg_24danmuforbid, data: { label: '底端弹幕' } });
 
     /** 彩色弹幕 */
-    private $color = Element.add('div', { class: 'bofqi-auxiliary-block-filter-type' }, this.$type, svg_danmaku_color + svg_danmaku_forbid);
+    #color = Element.add('div', { class: 'bofqi-auxiliary-block-filter-type', appendTo: this.#type, innerHTML: svg_48danmucolor + svg_24danmuforbid, data: { label: '彩色弹幕' } });
 
     /** 高级弹幕 */
-    private $mode7 = Element.add('div', { class: 'bofqi-auxiliary-block-filter-type' }, this.$type, svg_danmaku_normal + svg_danmaku_forbid);
+    #mode7 = Element.add('div', { class: 'bofqi-auxiliary-block-filter-type', appendTo: this.#type, innerHTML: svg_48danmunorm + svg_24danmuforbid, data: { label: '高级弹幕' } });
 
     /** 代码弹幕 */
-    private $mode8 = Element.add('div', { class: 'bofqi-auxiliary-block-filter-type' }, this.$type, svg_danmaku_mode_8 + svg_danmaku_forbid);
+    #mode8 = Element.add('div', { class: 'bofqi-auxiliary-block-filter-type', appendTo: this.#type, innerHTML: svg_48danmucode + svg_24danmuforbid, data: { label: '代码弹幕' } });
 
     /** BAS弹幕 */
-    private $mode9 = Element.add('div', { class: 'bofqi-auxiliary-block-filter-type' }, this.$type, svg_danmaku_mode_7 + svg_danmaku_forbid);
+    #mode9 = Element.add('div', { class: 'bofqi-auxiliary-block-filter-type', appendTo: this.#type, innerHTML: svg_48danmuspe + svg_24danmuforbid, data: { label: 'BAS弹幕' } });
 
     /** 高赞弹幕 */
-    private $like = Element.add('div', { class: 'bofqi-auxiliary-block-filter-type' }, this.$type, svg_danmaku_unregister + svg_danmaku_forbid);
+    #like = Element.add('div', { class: 'bofqi-auxiliary-block-filter-type', appendTo: this.#type, innerHTML: svg_48danmuunreg + svg_24danmuforbid, data: { label: '高赞弹幕' } });
 
     /** VIP弹幕 */
-    private $vip = Element.add('div', { class: 'bofqi-auxiliary-block-filter-type' }, this.$type, svg_danmaku_text + svg_danmaku_forbid);
+    #vip = Element.add('div', { class: 'bofqi-auxiliary-block-filter-type', appendTo: this.#type, innerHTML: svg_48danmutext + svg_24danmuforbid, data: { label: 'VIP弹幕' } });
 
     /** 等级屏蔽 */
-    private $level = Element.add('div', { class: 'bofqi-auxiliary-block-filter' }, this, `<header>等级屏蔽</header>`);
+    #level = Element.add('div', { class: 'bofqi-auxiliary-block-filter', appendTo: this, innerHTML: '<header>等级屏蔽</header>' });
 
     /** 等级滑块 */
-    private $weight = this.$level.appendChild(new Slider());
+    #weight = this.#level.appendChild(new Slider());
 
     constructor() {
         super();
 
         this.classList.add('bofqi-auxiliary-block');
 
-        this.$scroll.dataset.label = '滚动弹幕';
-        this.$top.dataset.label = '顶端弹幕';
-        this.$bottom.dataset.label = '底端弹幕';
-        this.$color.dataset.label = '彩色弹幕';
-        this.$mode7.dataset.label = '高级弹幕';
-        this.$mode8.dataset.label = '代码弹幕';
-        this.$mode9.dataset.label = 'BAS弹幕';
-        this.$like.dataset.label = '高赞弹幕';
-        this.$vip.dataset.label = 'VIP弹幕';
-        this.$weight.classList.add('bofqi-auxiliary-block-filter-weight');
-        this.$weight.max = '11';
-        this.$weight.$hint = true;
-        this.$weight.formatHint(v => {
+        this.#weight.classList.add('bofqi-auxiliary-block-filter-weight');
+        this.#weight.max = 11;
+        this.#weight.$hint = true;
+        this.#weight.formatHint(v => {
             switch (<number><unknown>v) {
                 case 0: {
                     return '关闭'
@@ -115,47 +104,47 @@ export class Block extends HTMLDivElement {
         ev.bind(PLAYER_EVENT.OPTINOS_CHANGE, ({ detail }) => {
             const { block, weight } = detail.danmaku;
 
-            this.$scroll.classList.toggle('block', Boolean(block & DANMAKU.SCROLL));
-            this.$top.classList.toggle('block', Boolean(block & DANMAKU.TOP));
-            this.$bottom.classList.toggle('block', Boolean(block & DANMAKU.BOTTOM));
-            this.$color.classList.toggle('block', Boolean(block & DANMAKU.COLOR));
-            this.$mode7.classList.toggle('block', Boolean(block & DANMAKU.ADVANCE));
-            this.$mode8.classList.toggle('block', Boolean(block & DANMAKU.SCRIPT));
-            this.$mode9.classList.toggle('block', Boolean(block & DANMAKU.BAS));
-            this.$like.classList.toggle('block', Boolean(block & DANMAKU.LIKE));
-            this.$vip.classList.toggle('block', Boolean(block & DANMAKU.VIP));
-            this.$weight.$value = <any>weight;
+            this.#scroll.classList.toggle('block', Boolean(block & DANMAKU.SCROLL));
+            this.#top.classList.toggle('block', Boolean(block & DANMAKU.TOP));
+            this.#bottom.classList.toggle('block', Boolean(block & DANMAKU.BOTTOM));
+            this.#color.classList.toggle('block', Boolean(block & DANMAKU.COLOR));
+            this.#mode7.classList.toggle('block', Boolean(block & DANMAKU.ADVANCE));
+            this.#mode8.classList.toggle('block', Boolean(block & DANMAKU.SCRIPT));
+            this.#mode9.classList.toggle('block', Boolean(block & DANMAKU.BAS));
+            this.#like.classList.toggle('block', Boolean(block & DANMAKU.LIKE));
+            this.#vip.classList.toggle('block', Boolean(block & DANMAKU.VIP));
+            this.#weight.$value = <any>weight;
         });
 
-        this.$scroll.addEventListener('click', () => {
+        this.#scroll.addEventListener('click', () => {
             options.danmaku.block ^= DANMAKU.SCROLL;
         });
-        this.$top.addEventListener('click', () => {
+        this.#top.addEventListener('click', () => {
             options.danmaku.block ^= DANMAKU.TOP;
         });
-        this.$bottom.addEventListener('click', () => {
+        this.#bottom.addEventListener('click', () => {
             options.danmaku.block ^= DANMAKU.BOTTOM;
         });
-        this.$color.addEventListener('click', () => {
+        this.#color.addEventListener('click', () => {
             options.danmaku.block ^= DANMAKU.COLOR;
         });
-        this.$mode7.addEventListener('click', () => {
+        this.#mode7.addEventListener('click', () => {
             options.danmaku.block ^= DANMAKU.ADVANCE;
         });
-        this.$mode8.addEventListener('click', () => {
+        this.#mode8.addEventListener('click', () => {
             options.danmaku.block ^= DANMAKU.SCRIPT;
         });
-        this.$mode9.addEventListener('click', () => {
+        this.#mode9.addEventListener('click', () => {
             options.danmaku.block ^= DANMAKU.BAS;
         });
-        this.$like.addEventListener('click', () => {
+        this.#like.addEventListener('click', () => {
             options.danmaku.block ^= DANMAKU.LIKE;
         });
-        this.$vip.addEventListener('click', () => {
+        this.#vip.addEventListener('click', () => {
             options.danmaku.block ^= DANMAKU.VIP;
         });
-        this.$weight.addEventListener('change', () => {
-            options.danmaku.weight = +this.$weight.$value || 0;
+        this.#weight.addEventListener('change', () => {
+            options.danmaku.weight = +this.#weight.$value || 0;
         });
     }
 }

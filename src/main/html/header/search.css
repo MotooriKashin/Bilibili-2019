@@ -1,0 +1,149 @@
+.search {
+    position: absolute;
+    inset-block-end: 70px;
+    inset-inline-end: 0;
+    border-radius: 6px;
+    background-color: var(--0000001f);
+    display: flex;
+    column-gap: 4px;
+
+    >a {
+        padding-inline: 3px;
+        border-radius: 4px;
+        color: var(--f25d8e);
+        background-color: var(--ffffffe0);
+        transition: background-color .2s;
+        display: flex;
+        align-items: center;
+
+        &::before {
+            content: "";
+            display: inline-block;
+            inline-size: 26px;
+            block-size: 26px;
+            background: url(//static.hdslb.com/images/base/icons.png) -659px -657px no-repeat;
+        }
+
+        &:hover {
+            background-color: var(--fff);
+        }
+    }
+
+    >form {
+        display: flex;
+        background-color: var(--ffffffe0);
+        border-radius: 4px;
+        transition: background-color .2s;
+        anchor-name: --keyword;
+
+        &:hover {
+            background-color: var(--fff);
+        }
+
+        >input {
+            inline-size: 200px;
+            line-height: 32px;
+            outline: 0;
+            border: 0;
+            padding-inline: 12px;
+            color: var(--222);
+            box-shadow: none;
+            background-color: transparent;
+        }
+
+        >button {
+            inline-size: 48px;
+            margin: 0;
+            padding: 0;
+            border: 0;
+            background: url(//static.hdslb.com/images/base/icons.png) -653px -720px;
+            cursor: pointer;
+
+            &:hover {
+                background-position: -718px -720px;
+            }
+        }
+
+        &:not(:has(:focus))~.suggest:not(:hover) {
+            display: none;
+            scale: 1 0;
+        }
+    }
+
+    >.suggest {
+        position: absolute;
+        position-anchor: --keyword;
+        position-area: block-end;
+        inline-size: anchor-size(inline);
+        margin-block-start: 2px;
+        border: 1px solid var(--e5e9ef);
+        border-radius: 4px;
+        box-shadow: 0 2px 4px var(--00000029);
+        background-color: var(--fff);
+        display: flex;
+        flex-direction: column;
+
+        transform-origin: center 0;
+        transition: all .3s allow-discrete;
+
+        @starting-style {
+            scale: 1 0;
+        }
+
+        >.line {
+            border-block-start: 1px solid var(--e5e9ef);
+            block-size: 0;
+            margin-inline: 10px;
+            margin-block: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            >span {
+                padding-inline: 10px;
+                color: var(--99a2aa);
+                background-color: var(--fff);
+            }
+        }
+
+        >.item {
+            padding-block: 0;
+            padding-inline: 10px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+
+            >:first-child {
+                flex: 1;
+                min-inline-size: 0;
+                block-size: 28px;
+                color: var(--222);
+                align-content: center;
+                overflow: clip;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                pointer-events: none;
+            }
+
+            >.cancel {
+                flex-shrink: 0;
+                inline-size: 38px;
+                block-size: 28px;
+                background: url(//static.hdslb.com/images/base/icons.png) -461px -530px no-repeat;
+            }
+
+            &:hover {
+                background-color: var(--e5e9ef);
+
+                >:last-child {
+                    background-position: -525px -530px;
+                }
+            }
+        }
+
+        &:empty {
+            display: none;
+            scale: 1 0;
+        }
+    }
+}

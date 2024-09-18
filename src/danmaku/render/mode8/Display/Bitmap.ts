@@ -1,9 +1,9 @@
-import { Element } from "../../../../utils/element";
 import { BitmapFilter } from "../filters/BitmapFilter";
 import { ColorTransform } from "../geom/ColorTransform";
 import { Matrix } from "../geom/Matrix";
 import { Point } from "../geom/Point";
 import { Rectangle } from "../geom/Rectangle";
+import { addElement } from "../Utils/element";
 import { BlendMode } from "./BlendMode";
 import { ByteArray } from "./ByteArray";
 import { DirtyArea } from "./DirtyArea";
@@ -983,7 +983,7 @@ export class Bitmap extends DisplayObject<HTMLCanvasElement> {
     }
 
     constructor(param: IBitmap) {
-        super(param, true, Element.add('canvas', { class: 'as3-danmaku-item' }));
+        super(param, true, addElement('canvas', { class: 'as3-danmaku-item' }));
         this.$host.style.cssText = `position: absolute; inset-block-start: 0; inset-inline-start: 0; transform-origin: 0 0 0;`;
         param.bitmapData && (this.bitmapData = param.bitmapData);
         this.init();

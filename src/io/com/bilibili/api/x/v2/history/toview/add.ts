@@ -1,4 +1,5 @@
 import { Api } from "../../../..";
+import { RestType } from "../../../../../../../code";
 
 /**
  * 添加稍后再看
@@ -7,7 +8,7 @@ import { Api } from "../../../..";
  * @param aid 视频aid
  * @returns 返回code，0 表示超过成功
  */
-export async function add(
+export async function toviewAdd(
     csrf: string,
     aid: number | string,
 ) {
@@ -24,5 +25,5 @@ export async function add(
         headers,
         body,
     });
-    return <number>(await response.json()).code;
+    return <RestType>await response.json();
 }

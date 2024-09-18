@@ -1,4 +1,5 @@
 import { Api } from "../../..";
+import { RestType } from "../../../../../../code";
 
 export async function action(
     csrf: string,
@@ -23,5 +24,5 @@ export async function action(
         headers,
         body,
     });
-    return <number>(await response.json()).code;
+    return <RestType>await response.json();
 }

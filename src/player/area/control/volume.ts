@@ -1,14 +1,14 @@
+import { Player } from "../..";
+import svg_24soundlarge from "../../../assets/svg/24soundlarge.svg";
+import svg_24soundoff from "../../../assets/svg/24soundoff.svg";
+import svg_24soundsmall from "../../../assets/svg/24soundsmall.svg";
 import { customElement } from "../../../utils/Decorator/customElement";
-import { Element } from "../../../utils/element";
-import svg_volume_large from "../../assets/svg/volume-large.svg";
-import svg_volume_muted from "../../assets/svg/volume-muted.svg";
-import svg_volume from "../../assets/svg/volume.svg";
+import { ev, PLAYER_EVENT } from "../../event";
 import { Slider } from "../../widget/slider";
-import { video } from "../wrap/video";
 
-/** 播放器音量控制 */
-@customElement('button')
-export class Volume extends HTMLButtonElement {
+/** 音量控制 */
+@customElement('label')
+export class Volume extends HTMLLabelElement {
 
     /**
      * 需要监听变动的属性。
@@ -24,75 +24,100 @@ export class Volume extends HTMLButtonElement {
      */
     // attributeChangedCallback(name: IobservedAttributes, oldValue: string, newValue: string) {}
 
-    /** 初始化标记 */
-    // #inited = false;
-
     /** 每当元素添加到文档中时调用。 */
-    // connectedCallback() { }
+    connectedCallback() {
+        this.insertAdjacentElement('afterend', this.#wrap);
+        self.addEventListener('keydown', this.#onKeyDown);
+    }
 
     /** 每当元素从文档中移除时调用。 */
-    // disconnectedCallback() {}
+    disconnectedCallback() {
+        this.#wrap.remove();
+        self.removeEventListener('keydown', this.#onKeyDown);
+    }
 
     /** 每当元素被移动到新文档中时调用。 */
     // adoptedCallback() {}
 
-    /** 浮动面板 */
-    $wrap = Element.add('div', { class: 'bofqi-control-volume-wrap' }, this);
+    #player: Player;
 
-    /** 音量条 */
-    $slider = this.$wrap.appendChild(new Slider());
+    #wrap = document.createElement('div');
 
-    constructor() {
+    #slider = this.#wrap.appendChild(new Slider());
+
+    constructor(player: Player) {
         super();
 
-        this.classList.add('bofqi-control-button', 'bofqi-control-volume');
-        this.insertAdjacentHTML('afterbegin', svg_volume + svg_volume_large + svg_volume_muted);
+        this.#player = player;
+        this.classList.add('bofqi-area-control-btn', 'bofqi-area-volume');
+        this.innerHTML = svg_24soundsmall + svg_24soundlarge + svg_24soundoff;
+        this.#wrap.classList.add('bofqi-volume-wrap');
+        this.#slider.classList.add('bofqi-volume-slider');
 
-        this.$slider.defaultValue = '0';
-        this.disabled = true;
-
-        video.addEventListener('loadstart', () => {
-            this.disabled = true;
-            this.classList.toggle('muted', video.muted);
-            this.classList.toggle('large', video.volume >= 0.5);
-            this.$slider.$value = <any>Math.floor(video.volume * 100);
-            this.$wrap.dataset.value = <any>Math.floor(video.volume * 100);
+        player.$video.addEventListener('volumechange', this.#volumeChange);
+        player.$video.addEventListener('canplay', () => {
+            this.classList.remove('disabled');
+            this.#volumeChange();
         });
-        video.addEventListener('loadeddata', () => {
-            this.disabled = false;
+        ev.bind(PLAYER_EVENT.VIDEO_DESTORY, this.#indetify);
+        this.addEventListener('click', this.#toggle);
+        this.#slider.addEventListener('change', () => {
+            player.$video.volume = +this.#slider.$value / 100;
         });
-        video.addEventListener('volumechange', () => {
-            this.classList.toggle('muted', video.muted);
-            this.classList.toggle('large', video.volume >= 0.5);
-            this.$slider.$value = <any>Math.floor(video.volume * 100);
-            this.$wrap.dataset.value = <any>Math.floor(video.volume * 100);
-        });
-
-        this.addEventListener('click', () => {
-            video.muted = !video.muted;
-        });
-        this.$wrap.addEventListener('click', e => {
-            e.stopPropagation();
-        })
-        this.$slider.addEventListener('change', () => {
-            video.volume = +this.$slider.$value / 100;
-        });
-        this.addEventListener('wheel', e => {
+        this.#wrap.addEventListener('wheel', e => {
             // 响应滚轮
             e.stopPropagation();
-            e.preventDefault();
-            this.wheel(e);
-        });
+            this.#wheel(e);
+        }, { passive: true });
+
+        this.#indetify();
+    }
+
+    /** 键盘事件回调 */
+    #onKeyDown = ({ key, shiftKey, ctrlKey, altKey, metaKey }: KeyboardEvent) => {
+        try {
+            const { activeElement } = document;
+            if (activeElement === document.body || activeElement === this.#player || this.#player.contains(activeElement) && !(activeElement?.hasAttribute('contenteditable') || activeElement instanceof HTMLInputElement || activeElement instanceof HTMLTextAreaElement)) {
+                switch (key) {
+                    // 不能区分小键盘，但能识别 Shift 后的值
+                    case 'M': case 'm': {
+                        // 音量开关
+                        shiftKey || ctrlKey || altKey || metaKey || this.#toggle();
+                        break;
+                    }
+                }
+                // switch (code) {
+                //     // 能区分小键盘，但不识别 Shift 后的值
+                // }
+            }
+        } catch { }
+    }
+
+    /** 开关切换 */
+    #toggle = () => {
+        this.#player.$video.muted = !this.#player.$video.muted;
+    }
+
+    /** 视频音量变动回调 */
+    #volumeChange = () => {
+        const { muted, volume } = this.#player.$video;
+        this.classList.toggle('muted', muted);
+        this.classList.toggle('large', volume >= 0.5);
+        this.#wrap.dataset.volume = this.#slider.$value = <any>Math.floor(volume * 100);
     }
 
     /** 滚轮响应 */
-    protected wheel = (e: WheelEvent) => {
+    #wheel = (e: WheelEvent) => {
         const { deltaY } = e;
         // 超出范围会报错，直接忽略
         if (deltaY < 0) {
-            video.volume = Math.min(1, video.volume + 0.1);
+            this.#player.$video.volume = Math.min(1, this.#player.$video.volume + 0.1);
         } else {
-            video.volume = Math.max(0, video.volume - 0.1);
+            this.#player.$video.volume = Math.max(0, this.#player.$video.volume - 0.1);
         }
+    }
+
+    #indetify = () => {
+        this.classList.add('disabled');
     }
 }

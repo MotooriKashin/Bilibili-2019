@@ -1,11 +1,11 @@
+import { Player } from "../..";
+import svg_24repeatoff from "../../../assets/svg/24repeatoff.svg";
+import svg_24repeaton from "../../../assets/svg/24repeaton.svg";
 import { customElement } from "../../../utils/Decorator/customElement";
-import svg_repeat_on from "../../assets/svg/repeat-on.svg";
-import svg_repeat from "../../assets/svg/repeat.svg";
-import { video } from "../wrap/video";
 
-/** 播放器洗脑循环控制 */
-@customElement('button')
-export class Repeat extends HTMLButtonElement {
+/** 洗脑循环 */
+@customElement('label')
+export class Repeat extends HTMLLabelElement {
 
     /**
      * 需要监听变动的属性。
@@ -21,11 +21,8 @@ export class Repeat extends HTMLButtonElement {
      */
     // attributeChangedCallback(name: IobservedAttributes, oldValue: string, newValue: string) {}
 
-    /** 初始化标记 */
-    // #inited = false;
-
     /** 每当元素添加到文档中时调用。 */
-    // connectedCallback() {}
+    // connectedCallback() { }
 
     /** 每当元素从文档中移除时调用。 */
     // disconnectedCallback() {}
@@ -33,26 +30,31 @@ export class Repeat extends HTMLButtonElement {
     /** 每当元素被移动到新文档中时调用。 */
     // adoptedCallback() {}
 
-    constructor() {
+    #player: Player;
+
+    constructor(player: Player) {
         super();
 
-        this.classList.add('bofqi-control-button');
-        this.insertAdjacentHTML('beforeend', video.loop ? svg_repeat_on : svg_repeat);
+        this.#player = player;
+        this.classList.add('bofqi-area-control-btn', 'bofqi-area-repeat');
+        this.innerHTML = svg_24repeatoff + svg_24repeaton;
 
-        this.disabled = true;
-
-        video.addEventListener('loadstart', () => {
-            this.disabled = true;
+        player.$video.addEventListener('loadstart', this.#indetify);
+        player.$video.addEventListener('loadeddata', () => {
+            this.classList.remove('disabled');
         });
-        video.addEventListener('loadeddata', () => {
-            this.disabled = false;
-        });
-        video.addEventListener('loopchange', () => {
-            this.innerHTML = video.loop ? svg_repeat_on : svg_repeat;
+        player.$video.addEventListener('loopchange', () => {
+            this.classList.toggle('on');
         });
 
         this.addEventListener('click', () => {
-            video.loop = !video.loop;
+            player.$video.loop = !player.$video.loop;
         });
+
+        this.#indetify();
+    }
+
+    #indetify = () => {
+        this.classList.add('disabled');
     }
 }
