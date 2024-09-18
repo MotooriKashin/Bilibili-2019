@@ -106,14 +106,20 @@ export class Info extends HTMLElement {
                 d.innerText = detail ? '已关注' : '+ 关注';
             }
         });
+        mainEv.bind(MAIN_EVENT.REQUSET_COIN, () => {
+            this.#coin.showPopover();
+        });
+        mainEv.bind(MAIN_EVENT.REQUEST_FAV, () => {
+            this.#collection.showPopover();
+        });
 
         this.#host.addEventListener('click', ({ target }) => {
             if (target instanceof HTMLElement) {
                 const coin = target.closest('.coin');
                 if (coin && !coin.classList.contains('d')) {
-                    this.#coin.showPopover();
+                    mainEv.trigger(MAIN_EVENT.REQUSET_COIN, void 0);
                 } else if (target.closest('.fav')) {
-                    this.#collection.showPopover();
+                    mainEv.trigger(MAIN_EVENT.REQUEST_FAV, void 0);
                 } else if (target.closest('.b-gz')) {
                     const gz = target.closest<HTMLElement>('.b-gz')!;
                     const csrf = cookie.get('bili_jct');

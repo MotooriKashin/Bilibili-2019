@@ -75,6 +75,12 @@ export enum MAIN_EVENT {
 
     /** 关注 */
     GUAN_ZHU,
+
+    /** 请求弹出投币窗口 */
+    REQUSET_COIN,
+
+    /** 请求弹出收藏窗口 */
+    REQUEST_FAV,
 }
 
 /** 播放器事件基类 */
@@ -86,4 +92,6 @@ export interface IPlayerEvent {
     4: [ROUTER, URL];
     5: void;
     6: boolean;
+    7: void;
+    8: void;
 }

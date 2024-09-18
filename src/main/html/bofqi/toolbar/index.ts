@@ -136,7 +136,13 @@ export class Toolbar extends HTMLDivElement {
                     }
                 }
             }
-        })
+        });
+        this.#favBox.addEventListener('click', () => {
+            mainEv.trigger(MAIN_EVENT.REQUEST_FAV, void 0);
+        });
+        this.#coinBox.addEventListener('click', () => {
+            this.#coinBox.classList.contains('d') || mainEv.trigger(MAIN_EVENT.REQUSET_COIN, void 0);
+        });
     }
 
     /** 页面路由 */
