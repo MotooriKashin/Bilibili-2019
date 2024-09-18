@@ -39,7 +39,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: 'latest'
 
       # 更新 npm 依赖
       - name: Update npm
@@ -47,7 +47,7 @@ jobs:
       
       # 生成网页资源
       - name: Build and release
-        run: npm run github-pages
+        run: npm run build
 
       # 上传网页资源（位于 /dist/options/ 目录）
       - name: Upload Artifact
