@@ -1,6 +1,6 @@
 .bpui-color {
     position-anchor: --bpui-color;
-    inset-area: block-start span-inline-end;
+    position-area: block-start span-inline-end;
     position-visibility: anchors-visible;
     padding-inline: 6px;
     padding-block-end: 10px;

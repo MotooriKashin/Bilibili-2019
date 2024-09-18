@@ -309,7 +309,7 @@
         >.staff {
             position: absolute;
             position-anchor: --up-info;
-            inset-area: inline-end span-block-end;
+            position-area: inline-end span-block-end;
             background-color: var(--fff);
             display: flex;
             flex-direction: column;

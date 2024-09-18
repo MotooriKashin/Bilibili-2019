@@ -114,7 +114,7 @@
             content: attr(data-index);
             position: absolute;
             position-anchor: --recommend-left;
-            inset-area: inline-start;
+            position-area: inline-start;
             display: flex;
             align-items: center;
             justify-content: center;

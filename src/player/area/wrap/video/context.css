@@ -32,7 +32,7 @@
                 margin-inline-end: 10px;
 
                 &.hint::after {
-                    inset-area: block-satrt;
+                    position-area: block-satrt;
                 }
             }
         }

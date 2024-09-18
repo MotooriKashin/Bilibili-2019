@@ -71,7 +71,7 @@
     >.video-info {
         position: absolute;
         position-anchor: --rank;
-        inset-area: block-start;
+        position-area: block-start;
         inline-size: 320px;
         border: 1px solid var(--ccd0d7);
         border-radius: 4px;

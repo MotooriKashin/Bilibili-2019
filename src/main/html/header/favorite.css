@@ -10,7 +10,7 @@
 .favorite-wrap {
     position: absolute;
     position-anchor: --favorite;
-    inset-area: block-end;
+    position-area: block-end;
     inline-size: 320px;
     background: var(--fff);
     box-shadow: 0 2px 4px var(--00000029);

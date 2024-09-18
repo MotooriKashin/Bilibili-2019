@@ -10,7 +10,7 @@
 .history-wrap {
     position: absolute;
     position-anchor: --history;
-    inset-area: block-end;
+    position-area: block-end;
     inline-size: 400px;
     background: var(--fff);
     box-shadow: 0 2px 4px var(--00000029);

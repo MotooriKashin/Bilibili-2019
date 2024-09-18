@@ -41,7 +41,7 @@
             >.snum {
                 position: absolute;
                 position-anchor: --img;
-                inset-area: block-end;
+                position-area: block-end;
                 translate: 0px calc(-100% - 2px);
                 inline-size: 100%;
                 block-size: 34px;

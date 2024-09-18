@@ -72,7 +72,7 @@
         >form {
             position: absolute;
             position-anchor: --carousel;
-            inset-area: block-end center;
+            position-area: block-end center;
             translate: 0 calc(-100% - 6px);
             inline-size: anchor-size(inline);
             padding-inline-end: 20px;

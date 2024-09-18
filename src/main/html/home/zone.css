@@ -129,7 +129,7 @@
             >.mask {
                 position: absolute;
                 position-anchor: --img;
-                inset-area: center;
+                position-area: center;
                 inline-size: anchor-size(inline);
                 block-size: anchor-size(block);
                 background-color: var(--00000033);
@@ -140,7 +140,7 @@
                 color: var(--fff);
                 position: absolute;
                 position-anchor: --img;
-                inset-area: block-end;
+                position-area: block-end;
                 translate: 0 calc(-100% - 2px);
                 inline-size: 100%;
                 padding-inline: 6px;
@@ -163,7 +163,7 @@
             >.wl {
                 position: absolute;
                 position-anchor: --img;
-                inset-area: block-end;
+                position-area: block-end;
                 translate: 0 calc(-100% - 2px);
                 inline-size: 22px;
                 block-size: 22px;

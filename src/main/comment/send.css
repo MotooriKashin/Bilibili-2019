@@ -140,7 +140,7 @@
 
         >.emoji-wrap {
             position-anchor: --emoji;
-            inset-area: block-end span-inline-end;
+            position-area: block-end span-inline-end;
             inline-size: 363px;
             padding: 0;
             margin-block-start: .5em;
@@ -233,7 +233,7 @@
     }
 
     &[popover] {
-        inset-area: block-end;
+        position-area: block-end;
         margin: 0;
         border: 0;
         box-shadow: 0 0 20px 3px var(--0000005c);

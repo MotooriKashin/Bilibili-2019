@@ -10,7 +10,7 @@
 .u-link-wrap {
     position: absolute;
     position-anchor: --u-link;
-    inset-area: block-end span-inline-start;
+    position-area: block-end span-inline-start;
     background: var(--fff);
     box-shadow: 0 2px 4px var(--00000029);
     border-end-start-radius: 4px;

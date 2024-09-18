@@ -98,7 +98,7 @@
         >.share-popup {
             position: absolute;
             position-anchor: --share-box;
-            inset-area: block-end span-inline-end;
+            position-area: block-end span-inline-end;
             border: 0 solid var(--e5e9ef);
             border-end-start-radius: 4px;
             border-end-end-radius: 4px;

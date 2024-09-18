@@ -95,7 +95,6 @@ export class Info extends HTMLElement {
 
         mainEv.bind(MAIN_EVENT.NAVIGATE, ({ detail }) => { this.$navigate(...detail) });
         mainEv.bind(MAIN_EVENT.RELATION_FLASH, () => {
-            relation.flesh();
             this.$aid = this.#aid;
         });
 

@@ -46,7 +46,7 @@
 .avatar-wrap {
     position: absolute;
     position-anchor: --avatar;
-    inset-area: block-end;
+    position-area: block-end;
     inline-size: 280px;
     padding-block-start: 40px;
     background-color: var(--fff);

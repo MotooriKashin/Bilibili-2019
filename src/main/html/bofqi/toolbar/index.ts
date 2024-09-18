@@ -70,6 +70,34 @@ export class Toolbar extends HTMLDivElement {
 
     #appBox = Element.add('a', { appendTo: this, class: ['app', 'box'], attribute: { href: '//app.bilibili.com', target: "_blank" }, innerHTML: '<div><span>用手机看</span><span>转移阵地~</span></div>' });
 
+    #aid = 0;
+
+    get $aid() {
+        return this.#aid
+    }
+
+    set $aid(v) {
+        this.#aid = v;
+        v && nav()
+            .then(({ code, message, data }) => {
+                if (code !== 0) throw new ReferenceError(message, { cause: { code, message, data } });
+                if (data.isLogin) {
+                    relation(v)
+                        .then(({ code, message, data }) => {
+                            if (code !== 0) throw new ReferenceError(message, { cause: { code, message, data } });
+                            const { favorite, coin } = data;
+                            this.#favBox.classList.toggle('d', Boolean(favorite));
+                            this.#coinBox.classList.toggle('d', Boolean(coin));
+                        })
+                        .catch(e => {
+                            toastr.error('获取互动状态出错', e);
+                            console.error(e);
+                        });
+                }
+            })
+            .catch(console.error);
+    }
+
     constructor() {
         super();
 
@@ -77,6 +105,9 @@ export class Toolbar extends HTMLDivElement {
         this.#shre.insertAdjacentHTML('afterend', '<div class="tb-line"></div>');
 
         mainEv.bind(MAIN_EVENT.NAVIGATE, ({ detail }) => { this.$navigate(...detail) });
+        mainEv.bind(MAIN_EVENT.RELATION_FLASH, () => {
+            this.$aid = this.#aid;
+        });
 
         this.#shre.addEventListener('click', ({ target }) => {
             if (target instanceof HTMLButtonElement) {
@@ -138,24 +169,7 @@ export class Toolbar extends HTMLDivElement {
                             this.#sharePopup.querySelector<HTMLInputElement>('#link2')!.value = `<iframe src="//player.bilibili.com/player.html?aid=${aid}&cid=${cid}&page=${p}"></iframe>`;
                             this.#favBox.innerHTML = `<div><span>收藏</span><span>${Format.carry(View.stat.favorite)}</span></div>`;
                             this.#coinBox.innerHTML = `<div><span>投币</span><span>${Format.carry(View.stat.coin)}</span></div>`;
-                            nav()
-                                .then(({ code, message, data }) => {
-                                    if (code !== 0) throw new ReferenceError(message, { cause: { code, message, data } });
-                                    if (data.isLogin) {
-                                        relation(aid)
-                                            .then(({ code, message, data }) => {
-                                                if (code !== 0) throw new ReferenceError(message, { cause: { code, message, data } });
-                                                const { favorite, coin } = data;
-                                                favorite && this.#favBox.classList.add('d');
-                                                coin && this.#coinBox.classList.add('d');
-                                            })
-                                            .catch(e => {
-                                                toastr.error('获取互动状态出错', e);
-                                                console.error(e);
-                                            });
-                                    }
-                                })
-                                .catch(console.error);
+                            this.$aid = aid;
                         })
                         .catch(e => {
                             toastr.error('获取视频信息失败', e);

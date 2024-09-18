@@ -150,7 +150,7 @@
     >.bofqi-volume-wrap {
         position: absolute;
         position-anchor: --bofqi-volume;
-        inset-area: block-start;
+        position-area: block-start;
         inline-size: 30px;
         block-size: 100px;
         background-color: var(--fff);
@@ -207,7 +207,7 @@
         padding: 0;
         position: absolute;
         position-anchor: --bofqi-quality;
-        inset-area: block-start;
+        position-area: block-start;
         color: var(--6d757a);
         background-color: var(--fff);
         border: 1px solid var(--e2e2e2);
@@ -263,8 +263,8 @@
     >.bofqi-danmaku-wrap {
         position: absolute;
         position-anchor: --bofqi-danmaku;
-        inset-area: block-start;
-        position-try: inset-area(block-start span-inline-start);
+        position-area: block-start;
+        position-try: block-start span-inline-start;
         padding-inline: 1.5em;
         padding-block-start: 1.5em;
         padding-block-end: 2em;
@@ -392,7 +392,7 @@
     >.bofqi-subtitle-wrap {
         position: absolute;
         position-anchor: --bofqi-subtitle;
-        inset-area: block-start span-inline-start;
+        position-area: block-start span-inline-start;
         inline-size: 280px;
         padding-inline: 1em;
         padding-block-start: 1em;
@@ -500,7 +500,7 @@
     >.bofqi-area-screen-web {
         position: absolute;
         position-anchor: --screen-full;
-        inset-area: block-start;
+        position-area: block-start;
         background-color: var(--fff);
         overflow: clip;
         transform-origin: center 100%;
@@ -527,7 +527,7 @@
     >.bofqi-area-screen-pip {
         position: absolute;
         position-anchor: --screen-web;
-        inset-area: block-start;
+        position-area: block-start;
         border-start-start-radius: 4px;
         border-start-end-radius: 4px;
         background-color: var(--fff);

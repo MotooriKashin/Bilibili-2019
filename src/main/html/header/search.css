@@ -73,7 +73,7 @@
     >.suggest {
         position: absolute;
         position-anchor: --keyword;
-        inset-area: block-end;
+        position-area: block-end;
         inline-size: anchor-size(inline);
         margin-block-start: 2px;
         border: 1px solid var(--e5e9ef);

@@ -53,7 +53,7 @@
     >.more {
         position: absolute;
         position-anchor: --part;
-        inset-area: inline-end;
+        position-area: inline-end;
         inline-size: 44px;
         block-size: 17px;
         padding-block: 3px;

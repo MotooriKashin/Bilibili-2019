@@ -50,7 +50,7 @@
 
     >.bofqi-more-wrap {
         position-anchor: --bofqi-more;
-        inset-area: block-end span-inline-start;
+        position-area: block-end span-inline-start;
         margin-block-start: 5px;
         padding-block: 10px;
         border: 1px solid var(--99a2aa);
@@ -106,7 +106,7 @@
         inline-size: 30px;
         aspect-ratio: 1;
         position-anchor: --bofqi-more;
-        inset-area: inline-start;
+        position-area: inline-start;
         transition: all .3s;
 
         >svg {
@@ -128,7 +128,7 @@
 
     >.bofqi-setting-wrap {
         position-anchor: --bofqi-auxiliary;
-        inset-area: center center;
+        position-area: center center;
         inline-size: anchor-size(--bofqi-auxiliary inline);
         block-size: anchor-size(--bofqi-auxiliary block);
         scrollbar-width: thin;

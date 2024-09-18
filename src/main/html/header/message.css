@@ -25,7 +25,7 @@
 .message-wrap {
     position: absolute;
     position-anchor: --message;
-    inset-area: block-end;
+    position-area: block-end;
     inline-size: 110px;
     background: var(--fff);
     box-shadow: 0 2px 4px var(--00000029);

@@ -187,7 +187,7 @@
 }
 
 .dialog-box[popover] {
-    inset-area: block-end;
+    position-area: block-end;
     max-inline-size: 25vi;
     max-block-size: 25vh;
     margin: 0;

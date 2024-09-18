@@ -27,7 +27,7 @@
 
 .sendbar-choose-wrap {
     position-anchor: --sendbar-choose;
-    inset-area: block-start span-inline-end;
+    position-area: block-start span-inline-end;
     position-visibility: anchors-visible;
     padding-inline: 10px;
     padding-block: 20px;

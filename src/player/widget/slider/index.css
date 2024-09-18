@@ -41,7 +41,7 @@
                     background-color: var(--fff);
                     position: absolute;
                     position-anchor: --slider-thumb;
-                    inset-area: block-start;
+                    position-area: block-start;
                     transition: all .3s;
                     opacity: 0;
                     padding-inline: 4px;

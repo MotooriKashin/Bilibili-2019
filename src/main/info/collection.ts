@@ -1,6 +1,7 @@
 import { folder } from "../../io/com/bilibili/api/x/v2/fav/folder";
 import { favAdd } from "../../io/com/bilibili/api/x/v2/fav/video/add";
 import { favDel } from "../../io/com/bilibili/api/x/v2/fav/video/del";
+import { relation } from "../../io/com/bilibili/api/x/web-interface/archive/relation";
 import { toastr } from "../../toastr";
 import { cookie } from "../../utils/cookie";
 import { customElement } from "../../utils/Decorator/customElement";
@@ -122,6 +123,7 @@ export class Collection extends HTMLDivElement {
                     }));
                 Promise.all(p)
                     .finally(() => {
+                        relation.flesh();
                         mainEv.trigger(MAIN_EVENT.RELATION_FLASH, void 0);
                     });
             }
