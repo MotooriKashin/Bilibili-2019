@@ -1,9 +1,12 @@
+import { toviewAdd } from "../../../../io/com/bilibili/api/x/v2/history/toview/add";
+import { toviewDel } from "../../../../io/com/bilibili/api/x/v2/history/toview/del";
 import { toviewWeb } from "../../../../io/com/bilibili/api/x/v2/history/toview/web";
 import { relation } from "../../../../io/com/bilibili/api/x/web-interface/archive/relation";
 import { nav } from "../../../../io/com/bilibili/api/x/web-interface/nav";
 import { detail } from "../../../../io/com/bilibili/api/x/web-interface/view/detail";
 import { toastr } from "../../../../toastr";
 import { AV } from "../../../../utils/av";
+import { cookie } from "../../../../utils/cookie";
 import { customElement } from "../../../../utils/Decorator/customElement";
 import { Element } from "../../../../utils/element";
 import { Format } from "../../../../utils/fomat";
@@ -142,6 +145,22 @@ export class Toolbar extends HTMLDivElement {
         });
         this.#coinBox.addEventListener('click', () => {
             this.#coinBox.classList.contains('d') || mainEv.trigger(MAIN_EVENT.REQUSET_COIN, void 0);
+        });
+        this.#waitBox.addEventListener('click', () => {
+            const csrf = cookie.get('bili_jct');
+            if (csrf && this.#aid) {
+                const i = this.#waitBox.classList.contains('d');
+                (i ? toviewDel(csrf, this.#aid) : toviewAdd(csrf, this.#aid))
+                    .then(({ code, message }) => {
+                        if (code !== 0) throw new ReferenceError(message, { cause: { code, message } });
+                        toastr.success(`已${i ? '移除' : '添加'}稍后再看`, `aid：${this.#aid}`);
+                        this.#waitBox.classList.toggle('d');
+                    })
+                    .catch(e => {
+                        toastr.error(`${i ? '移除' : '添加'}稍后再看失败`, e);
+                        console.error(e);
+                    });
+            }
         });
     }
 

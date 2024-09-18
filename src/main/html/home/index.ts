@@ -1,6 +1,6 @@
 import { Html } from "..";
-import { add } from "../../../io/com/bilibili/api/x/v2/history/toview/add";
-import { del } from "../../../io/com/bilibili/api/x/v2/history/toview/del";
+import { toviewAdd } from "../../../io/com/bilibili/api/x/v2/history/toview/add";
+import { toviewDel } from "../../../io/com/bilibili/api/x/v2/history/toview/del";
 import { toastr } from "../../../toastr";
 import { cookie } from "../../../utils/cookie";
 import { customElement } from "../../../utils/Decorator/customElement";
@@ -142,7 +142,7 @@ export class Home extends HTMLElement {
                 const csrf = cookie.get('bili_jct');
                 if (aid && csrf) {
                     if (d) {
-                        add(csrf, aid)
+                        toviewAdd(csrf, aid)
                             .then(({ code, message }) => {
                                 if (code !== 0) throw new ReferenceError(message, { cause: { code, message } });
                                 toastr.success(`已添加稍后再看：av${aid}`);
@@ -153,7 +153,7 @@ export class Home extends HTMLElement {
                                 toastr.error('添加稍后再看出错', e)
                             })
                     } else {
-                        del(csrf, aid)
+                        toviewDel(csrf, aid)
                             .then(({ code, message }) => {
                                 if (code !== 0) throw new ReferenceError(message, { cause: { code, message } });
                                 toastr.success(`已移除稍后再看：av${aid}`);

@@ -8,7 +8,7 @@ import { RestType } from "../../../../../../../code";
  * @param aid 视频aid
  * @returns 返回code，0 表示超过成功
  */
-export async function del(
+export async function toviewDel(
     csrf: string,
     aid: number | string,
 ) {
