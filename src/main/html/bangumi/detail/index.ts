@@ -137,7 +137,14 @@ export class Detail extends HTMLElement {
                         console.error(e);
                     });
             }
-        })
+        });
+        this.#container.addEventListener('click', ({ target }) => {
+            if (target instanceof HTMLElement) {
+                if (target.closest('.chengbao')) {
+                    toastr.warn('【承包】功能属于支付类风险操作！', '请移步到番剧详情页等原生页面进行，已保护您的财产安全~').$delay = 10;
+                }
+            }
+        });
 
         mainEv.bind(MAIN_EVENT.NAVIGATE, ({ detail }) => { this.$navigate(...detail) });
         mainEv.bind(MAIN_EVENT.ZHUI_FAN, ({ detail }) => {
@@ -217,7 +224,7 @@ export class Detail extends HTMLElement {
                             }
                             if (data.sponsor) {
                                 this.#container.appendChild(this.#sponsor);
-                                this.#sponsorRight.innerHTML = `<img src="//s1.hdslb.com/bfs/static/bangumi/play/asserts/chengbao.png"><div class="count">已有<span>${Format.carry(data.sponsor.total)}</span>人承包</div><button>我要承包</button>`;
+                                this.#sponsorRight.innerHTML = `<img src="//s1.hdslb.com/bfs/static/bangumi/play/asserts/chengbao.png"><div class="count">已有<span>${Format.carry(data.sponsor.total)}</span>人承包</div><button class="chengbao">我要承包</button>`;
                                 data.sponsor.list.forEach(d => {
                                     Element.add('div', {
                                         appendTo: this.#sponsorList, innerHTML: `<div><div class="avatar"><img loading="lazy" src="${https(d.face)}" class="avatar-face"></div></div>
