@@ -6,7 +6,8 @@
   "devDependencies": {
     "@types/fs-extra": "*",
     "esbuild": "*",
-    "fs-extra": "*"
+    "fs-extra": "*",
+    "ts-proto": "*"
   },
   "scripts": {
     "build": "node --no-warnings --experimental-strip-types ./src/build/index.ts",

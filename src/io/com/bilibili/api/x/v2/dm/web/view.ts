@@ -1,5 +1,5 @@
 import { Api } from "../../../..";
-import { DmWebViewReply } from "../../../../../../../protobuf/DmWebViewReply";
+import { DmWebViewReply } from "../../../../../../bapis/bilibili/community/service/dm/v1/DmWebViewReply";
 
 /**
  * 
@@ -13,5 +13,5 @@ export async function view(oid: number, pid = 0, type = 1) {
     url.searchParams.set('pid', <any>pid);
     url.searchParams.set('type', <any>type);
     const response = await fetch(url, { credentials: 'include' });
-    return DmWebViewReply.decode((await response.arrayBuffer()));
+    return DmWebViewReply.decode((new Uint8Array(await response.arrayBuffer())));
 }

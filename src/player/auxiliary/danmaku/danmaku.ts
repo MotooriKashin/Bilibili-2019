@@ -56,7 +56,7 @@ export class DanmakuElem extends HTMLDivElement {
 
         this.classList.add('danmaku-elem', `mode${$dm.mode}`);
         $dm.color && this.classList.add('color');
-        this.$progress.textContent = Format.fmSeconds($dm.progress / 1000);
+        this.$progress.textContent = Format.fmSeconds(($dm.progress ?? 0) / 1000);
         this.$content.appendChild(document.createElement('p')).textContent = $dm.content || '';
         if ($dm.attr) {
             if ($dm.attr & ATTR.PROTECT) {
@@ -75,10 +75,10 @@ export class DanmakuElem extends HTMLDivElement {
                 ? '代码弹幕'
                 : $dm.mode === 9
                     ? 'BAS弹幕'
-                    : this.getDate($dm.ctime * 1000);
+                    : this.getDate($dm.ctime * 1000n);
 
         this.addEventListener('dblclick', () => {
-            player.$video.$seek($dm.progress / 1000)
+            player.$video.$seek(($dm.progress ?? 0) / 1000)
         });
         this.addEventListener('contextmenu', () => {
             ev.trigger(PLAYER_EVENT.DANMAKU_CONTEXT, $dm);
@@ -90,8 +90,8 @@ export class DanmakuElem extends HTMLDivElement {
      * 
      * @param t 时间戳，毫秒
      */
-    private getDate(time: number) {
-        const date = new Date(time);
+    private getDate(time: number | bigint) {
+        const date = new Date(Number(time));
         return `${Format.integer(date.getMonth())}-${Format.integer(date.getDate())} ${Format.integer(date.getHours())}:${Format.integer(date.getMinutes())}`
     }
 }

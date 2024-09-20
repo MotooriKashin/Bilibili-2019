@@ -1,8 +1,8 @@
 import { BilibiliPlayer } from "..";
+import { IDanmaku } from "../../../danmaku";
 import { AnyType, IAnyType } from "../../../io/protobuf/AnyType";
 import { BroadcastFrame, IBroadcastFrame, PATH } from "../../../io/protobuf/BroadcastFrame";
 import { DanmakuEvent } from "../../../io/protobuf/DanmakuEvent";
-import { IDmSegMobileReply } from "../../../io/protobuf/DmSegMobileReply";
 import { MessageAckReq } from "../../../io/protobuf/MessageAckReq";
 import { RoomJoinEvent } from "../../../io/protobuf/RoomJoinEvent";
 import { RoomReq } from "../../../io/protobuf/RoomReq";
@@ -132,9 +132,8 @@ export class Danmaku {
                             if (msg) {
                                 switch (msg.targetPath) {
                                     case this.realdmPath: {
-                                        const d = (<IDmSegMobileReply>DanmakuEvent.decode(msg.body.value));
-                                        // console.log('实时弹幕', d);
-                                        this.player.addDanmaku(d.elems);
+                                        const d = (DanmakuEvent.decode(msg.body.value));
+                                        this.player.addDanmaku(<IDanmaku[]><unknown>DanmakuEvent.decode(msg.body.value).elems);
                                         break;
                                     }
                                 }

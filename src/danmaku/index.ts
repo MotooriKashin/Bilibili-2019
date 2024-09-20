@@ -470,7 +470,7 @@ export class Danmaku extends HTMLElement {
                 const dm: IDanmaku = {
                     pool: <0>Number(json[5]),
                     color: Number(json[3]),
-                    ctime: Number(json[4]),
+                    ctime: BigInt(Number(json[4])),
                     idStr: String(json[7]),
                     mode: <1>Number(json[1]),
                     fontsize: Number(json[2]),
@@ -544,9 +544,9 @@ export interface IDanmaku {
     /** 弹幕颜色 */
     color: number;
     /** 弹幕内容 */
-    content: string;
+    content?: string;
     /** 发送时间戳 */
-    ctime: number;
+    ctime: bigint;
     /** 字体大小 */
     fontsize: number;
     /** 唯一id，已超过JavaScript整数上限，如非必要切莫转化为数字 */
@@ -566,9 +566,9 @@ export interface IDanmaku {
      * | :-: | :-: | :-: |
      * | 普通弹幕 | 字幕弹幕 | 特殊弹幕 |
      */
-    pool: 0 | 1 | 2;
+    pool?: 0 | 1 | 2;
     /** 弹幕位于视频中的时间点（单位毫秒） */
-    progress: number;
+    progress?: number;
     /** 弹幕权重，越高显示优先级越高 */
     weight?: number;
     /** 待定 */

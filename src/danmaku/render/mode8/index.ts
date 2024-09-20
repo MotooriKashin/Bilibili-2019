@@ -26,21 +26,23 @@ export class Mode8 {
     }
 
     private async prase() {
-        const s = new Scanner(this.$dm.content
-            .replace(/(\/n|\\n|\n|\r\n)/g, '\n')
-            .replace(/(&amp;)|(&lt;)|(&gt;)|(&apos;)|(&quot;)/g, (a: string) => {
-                // 处理误当成xml非法字符的转义字符
-                return <string>{
-                    '&amp;': '&',
-                    '&lt;': '<',
-                    '&gt;': '>',
-                    '&apos;': '\'',
-                    '&quot;': '"'
-                }[a]
-            }));
-        const p = new Parser(s);
-        this.#vm.rewind();
-        this.#vm.setByteCode(p.parse(this.#vm));
+        if (this.$dm.content) {
+            const s = new Scanner(this.$dm.content
+                .replace(/(\/n|\\n|\n|\r\n)/g, '\n')
+                .replace(/(&amp;)|(&lt;)|(&gt;)|(&apos;)|(&quot;)/g, (a: string) => {
+                    // 处理误当成xml非法字符的转义字符
+                    return <string>{
+                        '&amp;': '&',
+                        '&lt;': '<',
+                        '&gt;': '>',
+                        '&apos;': '\'',
+                        '&quot;': '"'
+                    }[a]
+                }));
+            const p = new Parser(s);
+            this.#vm.rewind();
+            this.#vm.setByteCode(p.parse(this.#vm));
+        }
     }
 
     async execute() {

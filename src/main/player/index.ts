@@ -1,5 +1,6 @@
 import { IDanmaku } from "../../danmaku";
 import DashPlayer from "../../dash-player";
+import { DmSegMobileReply } from "../../io/com/bapis/bilibili/community/service/dm/v1/DmSegMobileReply";
 import { pgcPlayurl } from "../../io/com/bilibili/api/pgc/player/web/playurl";
 import { pgcAppSeason } from "../../io/com/bilibili/api/pgc/view/v2/app/season";
 import { IEpisode, pgcSection } from "../../io/com/bilibili/api/pgc/view/web/season/user/section";
@@ -12,7 +13,6 @@ import { dmPost } from "../../io/com/bilibili/api/x/v2/dm/post";
 import { segSo } from "../../io/com/bilibili/api/x/v2/dm/web/seg.so";
 import { view } from "../../io/com/bilibili/api/x/v2/dm/web/view";
 import { toviewWeb } from "../../io/com/bilibili/api/x/v2/history/toview/web";
-import { DmSegMobileReply } from "../../io/protobuf/DmSegMobileReply";
 import { Player } from "../../player";
 import { DashAgent } from "../../player/dash";
 import { ev, PLAYER_EVENT } from "../../player/event";
@@ -304,7 +304,7 @@ export class BilibiliPlayer extends Player {
             for (let i = 1; i <= total; i++) {
                 segSo(this.cid, this.aid, i)
                     .then(d => {
-                        this.addDanmaku(d.elems);
+                        this.addDanmaku(<IDanmaku[]>d.elems);
                     })
                     .catch(() => { })
             }
@@ -313,9 +313,9 @@ export class BilibiliPlayer extends Player {
         d?.specialDms?.forEach(d => {
             fetch(https(d)) // 此处不能携带cookie
                 .then(d => d.arrayBuffer())
-                .then(d => DmSegMobileReply.decode(d))
+                .then(d => DmSegMobileReply.decode(new Uint8Array(d)))
                 .then(d => {
-                    this.addDanmaku(d.elems);
+                    this.addDanmaku(<IDanmaku[]>d.elems);
                 })
                 .catch(() => { })
         });

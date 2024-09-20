@@ -46,9 +46,9 @@ export class CommentData {
 
     constructor(dm: IDanmaku) {
         this.size = dm.fontsize;
-        this.text = dm.content;
+        dm.content && (this.text = dm.content);
         this.mode = dm.mode;
-        this.stime = dm.progress / 1000;
-        this.date = dm.ctime;
+        dm.progress && (this.stime = dm.progress / 1000);
+        this.date = Number(dm.ctime);
     }
 }
