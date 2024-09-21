@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package bilibili.broadcast.v1;
+
+import "src/io/com/bapis/bilibili/rpc/status.proto";
+import "src/io/com/bapis/google/protobuf/any.proto";
+
+message BroadcastFrame {
+    /** 请求消息信息 */
+    FrameOption options = 1;
+    /** 业务target_path */
+    string target_path = 2;
+    /** 务pb内容 */
+    google.protobuf.Any body = 3;
+}
+
+/** 请求消息信息 */
+message FrameOption {
+    /**
+     * 消息id
+     * | | |
+     * | :-: | :-: |
+     * | client | 本次连接唯一的消息id，可用于回执 |
+     * | server | 唯一消息id，可用于上报或者回执 |
+     */
+    optional int64 message_id = 1;
+    /**
+     * frame序号
+     * | | |
+     * | :-: | :-: |
+     * | client | 客户端应该每次请求时frame seq++，会返回对应的对称req/resp |
+     * | server | 服务端下行消息，只会返回默认值：0 |
+     */
+    int64 sequence = 2;
+    /**
+     * 是否进行消息回执(发出MessageAckReq)  
+     * downstream 上只有服务端设置为true，客户端响应  
+     * upstream   上只有客户端设置为true，服务端响应  
+     * 响应帧禁止设置is_ack，协议上禁止循环  
+     * 通常只有业务帧才可能设置is_ack, 因为协议栈(例如心跳、鉴权)另有响应约定
+     */
+    optional bool is_ack = 3;
+    /** 业务状态码 */
+    optional bilibili.rpc.Status status = 4;
+    /** 业务ack来源, 仅downstream时候由服务端填写. */
+    optional string ack_origin = 5;
+}

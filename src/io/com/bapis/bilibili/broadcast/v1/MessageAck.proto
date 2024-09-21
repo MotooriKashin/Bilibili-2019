@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package bilibili.broadcast.v1;
+
+/** 消息回执 */
+message MessageAckReq {
+    /** 消息id */
+    int64 ack_id = 1;
+    /** ack来源，由业务指定用于埋点跟踪 */
+    string ack_origin = 2;
+    /** 消息对应的target_path，方便业务区分和监控统计 */
+    string target_path = 3;
+}

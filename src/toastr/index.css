@@ -24,31 +24,28 @@
 
     >div {
         inline-size: 300px;
-        /* block-size: calc-size(auto); */
         padding-block: 1.25em;
-        padding-inline-start: 4em;
-        padding-inline-end: 1.25em;
-        border-radius: .25em;
+        padding-inline-start: 48px;
+        padding-inline-end: 16px;
+        border-radius: 4px;
         background-color: #2f96b4;
         background-image: url(./assets/info.png);
-        background-position: 1.25em center;
+        background-position: 16px center;
         background-repeat: no-repeat;
         box-shadow: 0 0 12px #999;
         color: #fff;
         opacity: .8;
         box-sizing: border-box;
         pointer-events: auto;
-        overflow: clip;
         word-wrap: break-word;
-        transform-origin: center 0;
         cursor: pointer;
-        transition: all 0.7s allow-discrete;
+        transition: 0.7s;
         animation: toastr 0s linear var(--delay);
 
 
         @starting-style {
             opacity: 0;
-            scale: 1 0;
+            font-size: 0;
         }
 
         &.success {
@@ -78,7 +75,7 @@
 
         &.hide {
             opacity: 0;
-            scale: 1 0;
+            font-size: 0;
         }
     }
 

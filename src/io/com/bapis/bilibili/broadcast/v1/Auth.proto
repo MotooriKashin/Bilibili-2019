@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package bilibili.broadcast.v1;
+
+/** 鉴权请求，通过authorization验证绑定用户mid */
+message AuthReq {
+    /** 冷启动id，算法uuid，重新起启会变 */
+    string guid = 1;
+    /** 连接id，算法uuid，重连会变 */
+    string conn_id = 2;
+    /** 最后收到的消息id，用于过虑重连后获取未读的消息 */
+    int64 last_msg_id = 3;
+}
+
+/** 鉴权返回 */
+message AuthResp {}

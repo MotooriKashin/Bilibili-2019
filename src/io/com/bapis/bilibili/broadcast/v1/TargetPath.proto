@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package bilibili.broadcast.v1;
+
+/** 业务target_path */
+message TargetPath {
+    /** 需要订阅的target_paths */
+    repeated string target_paths = 1;
+}

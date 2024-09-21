@@ -1,21 +1,20 @@
 import { BilibiliPlayer } from "..";
-import { AnyType, IAnyType } from "../../../io/protobuf/AnyType";
-import { BroadcastFrame, IBroadcastFrame, PATH } from "../../../io/protobuf/BroadcastFrame";
-import { DanmakuEvent } from "../../../io/protobuf/DanmakuEvent";
-import { IDmSegMobileReply } from "../../../io/protobuf/DmSegMobileReply";
-import { MessageAckReq } from "../../../io/protobuf/MessageAckReq";
-import { RoomJoinEvent } from "../../../io/protobuf/RoomJoinEvent";
-import { RoomReq } from "../../../io/protobuf/RoomReq";
-import { RoomResp } from "../../../io/protobuf/RoomResp";
-import { TargetPath } from "../../../io/protobuf/TargetPath";
+import { IDanmaku } from "../../../danmaku";
+import { DanmakuEvent } from "../../../io/com/bapis/bilibili/broadcast/message/main/DanmakuEvent";
+import { BroadcastFrame } from "../../../io/com/bapis/bilibili/broadcast/v1/BroadcastFrame";
+import { MessageAckReq } from "../../../io/com/bapis/bilibili/broadcast/v1/MessageAck";
+import { PATH } from "../../../io/com/bapis/bilibili/broadcast/v1/PATH";
+import { RoomJoinEvent, RoomReq, RoomResp } from "../../../io/com/bapis/bilibili/broadcast/v1/Room";
+import { TargetPath } from "../../../io/com/bapis/bilibili/broadcast/v1/TargetPath";
+import { Any } from "../../../io/com/bapis/google/protobuf/any";
 import { ev, PLAYER_EVENT } from "../../../player/event";
 
-export class Danmaku {
+export class Broadcast {
 
     #ws?: WebSocket;
 
     /* 每次发送消息，唯一标识 */
-    private seq = 1;
+    private seq = 1n;
 
     /** 重连次数 每次重连，时间间隔递增 有最大值 */
     private retryCount = 0;
@@ -41,8 +40,15 @@ export class Danmaku {
     /** 心跳三次没收到回复，重连 */
     private beatCount = 0;
 
-    /** 是否已鉴权 */
-    private authed = false;
+    #init = false;
+
+    /** 是否已订阅 */
+    #subcribe = false;
+
+    /** 已进入房间 */
+    #room: string[] = [];
+
+    #rooming: string[] = [];
 
     private realdmPath = 'bilibili.broadcast.message.main.DanmukuEvent';
 
@@ -51,12 +57,7 @@ export class Danmaku {
         return this.#ws?.readyState;
     }
 
-    constructor(
-        private player: BilibiliPlayer,
-        private room: string[] = [],
-    ) {
-        this.init();
-
+    constructor(private player: BilibiliPlayer) {
         ev.one(PLAYER_EVENT.DANMAKU_IDENTIFY, this.dispose);
         ev.one(PLAYER_EVENT.LOAD_VIDEO_FILE, this.dispose);
     }
@@ -74,87 +75,15 @@ export class Danmaku {
         }
     }
 
-    private onopen = (e: Event) => {
-        this.retryCount = 0;
-        this.send({
-            options: {
-                sequence: ++this.seq,
-            },
-            targetPath: PATH.AUTH,
-            body: this.encodeAny(PATH.AUTHREQ, AnyType.encode({}))
-        })
-    }
-
-    private onmessage = (e: MessageEvent<ArrayBuffer>) => {
-        const message = BroadcastFrame.decode(e.data);
-        this.beatCount = 0;
-        this.retryTimer && clearTimeout(this.retryTimer);
-        this.heartBeat();
-        if (message) {
-            if (message.options.isAck) {
-                this.send({
-                    options: {
-                        sequence: ++this.seq,
-                    },
-                    targetPath: PATH.MSG_ACK,
-                    body: this.encodeAny(PATH.MSG_ACK_REQ, MessageAckReq.encode({
-                        ackId: message.options.messageId,
-                        ackOrigin: message.options.ackOrigin,
-                        targetPath: message.targetPath,
-                    }),
-                    ),
-                });
-            }
-            if (message.targetPath) {
-                switch (message.targetPath) {
-                    case PATH.AUTH: {
-                        this.onAuthed(message);
-                        break;
-                    }
-                    case PATH.HEARTBEAT: {
-                        // console.log(PATH.HEARTBEAT, message);
-                        break;
-                    }
-                    case PATH.SUBSCRIBE: {
-                        // console.log(PATH.SUBSCRIBE, message);
-                        break;
-                    }
-                    case PATH.UNSUBSCRIBE: {
-                        // console.log(PATH.UNSUBSCRIBE, message);
-                        break;
-                    }
-                    case PATH.ENTER: {
-                        if (message.body?.value) {
-                            const { id, msg, online } = RoomResp.decode(message.body.value);
-                            if (online) {
-                                console.log('在线人数', online); // 失效了？
-                            }
-                            if (msg) {
-                                switch (msg.targetPath) {
-                                    case this.realdmPath: {
-                                        const d = (<IDmSegMobileReply>DanmakuEvent.decode(msg.body.value));
-                                        // console.log('实时弹幕', d);
-                                        this.player.addDanmaku(d.elems);
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                        break;
-                    }
-                    default: {
-                        console.log(message);
-                        break;
-                    }
-                }
-            }
-        }
-    }
-
-    private onclose = (e: CloseEvent) => { }
-
-    private onerror = (e: Event) => {
-        console.error(e);
+    /** 重连 */
+    private retry() {
+        this.dispose();
+        this.init();
+        const time = Math.min(this.retryTime + this.retryCount * this.retryStep, this.maxTime);
+        this.retryCount++;
+        this.retryTimer = setTimeout(() => {
+            this.retry();
+        }, time);
     }
 
     /** 心跳 */
@@ -171,55 +100,18 @@ export class Danmaku {
                         sequence: ++this.seq,
                     },
                     targetPath: PATH.HEARTBEAT,
-                    body: this.encodeAny(PATH.HEARTBEATRES, AnyType.encode({})),
+                    body: Any.create({ typeUrl: `type.googleapis.com${PATH.HEARTBEATRES}` }),
                 });
                 this.heartBeat();
             }, this.heartTime);
         }
     }
 
-    /** 鉴权后执行订阅 以及进入房间 */
-    private onAuthed(msg: IBroadcastFrame) {
-        this.authed = true;
-
-        // 订阅
-        this.enSubscribe();
-
-        // 进入房间
-        this.enRoom();
-    }
-
-    /** 订阅，如果是初始化传入的subscribe，则不进行重复判断 */
-    private enSubscribe(subscribe = true) {
-        this.send({
-            options: {
-                sequence: ++this.seq
-            },
-            targetPath: subscribe ? PATH.SUBSCRIBE : PATH.UNSUBSCRIBE,
-            body: this.encodeAny(PATH.TARGETPATH, TargetPath.encode({
-                targetPaths: [this.realdmPath]
-            }))
-        })
-    }
-
-    /** 进入房间 */
-    private enRoom() {
-        for (const room of this.room) {
-            this.send({
-                options: {
-                    sequence: ++this.seq,
-                },
-                targetPath: PATH.ENTER,
-                body: this.encodeAny(PATH.ROOMREQ, RoomReq.encode({
-                    id: room,
-                    join: RoomJoinEvent.create({})
-                }))
-            })
-        }
-    }
-
-    private send(data: IBroadcastFrame, type = BroadcastFrame) {
-        const info = type.encode(data);
+    private send(
+        data: BroadcastFrame,
+        type = BroadcastFrame
+    ) {
+        const info = type.encode(data).finish();
         if (info) {
             switch (this.readyState) {
                 case 0:
@@ -237,23 +129,108 @@ export class Danmaku {
         }
     }
 
-    /** any 类型文件 */
-    private encodeAny(path: PATH, arrayBuffer: ArrayBuffer) {
-        return <IAnyType><unknown>AnyType.create({
-            type_url: `type.googleapis.com${path}`,
-            value: arrayBuffer
+    private onopen = (e: Event) => {
+        this.retryCount = 0;
+        this.send({
+            options: {
+                sequence: ++this.seq,
+            },
+            targetPath: PATH.AUTH,
+            body: Any.create({ typeUrl: `type.googleapis.com${PATH.AUTHREQ}` }),
         })
     }
 
-    /** 重连 */
-    private retry() {
-        this.dispose();
-        this.init();
-        const time = Math.min(this.retryTime + this.retryCount * this.retryStep, this.maxTime);
-        this.retryCount++;
-        this.retryTimer = setTimeout(() => {
-            this.retry();
-        }, time);
+    private onmessage = ({ data }: MessageEvent<ArrayBuffer>) => {
+        const { options, targetPath, body } = BroadcastFrame.decode(new Uint8Array(data));
+        this.beatCount = 0;
+        this.retryTimer && clearTimeout(this.retryTimer);
+        this.heartBeat();
+        if (options?.isAck) {
+            this.send({
+                options: {
+                    sequence: ++this.seq,
+                },
+                targetPath: PATH.MSG_ACK,
+                body: Any.create({
+                    typeUrl: `type.googleapis.com${PATH.MSG_ACK_REQ}`, value: MessageAckReq.encode({
+                        ackId: options.messageId!,
+                        ackOrigin: options.ackOrigin!,
+                        targetPath: targetPath,
+                    }).finish()
+                })
+            });
+        }
+        switch (targetPath) {
+            case PATH.AUTH: {
+                this.send({
+                    options: {
+                        sequence: ++this.seq
+                    },
+                    targetPath: PATH.SUBSCRIBE,
+                    body: Any.create({ typeUrl: `type.googleapis.com${PATH.TARGETPATH}`, value: TargetPath.encode({ targetPaths: [this.realdmPath] }).finish() }),
+                });
+                break;
+            }
+            case PATH.SUBSCRIBE: {
+                this.#subcribe = true;
+                while (this.#rooming.length) {
+                    const room = this.#rooming.pop();
+                    room && this.room(room);
+                }
+                break;
+            }
+            case PATH.UNSUBSCRIBE: {
+                this.#subcribe = false;
+                break;
+            }
+            case PATH.ENTER: {
+                if (body?.value) {
+                    const { msg } = RoomResp.decode(body.value);
+                    if (msg && msg.body) {
+                        switch (msg.targetPath) {
+                            case this.realdmPath: {
+                                const { elems } = DanmakuEvent.decode(msg.body.value);
+                                this.player.addDanmaku(<IDanmaku[]>elems);
+                                break;
+                            }
+                        }
+                    }
+                }
+                break;
+            }
+        }
+    }
+
+    private onclose = (e: CloseEvent) => {
+        this.#subcribe = false;
+        console.warn('实时弹幕已关闭', e);
+    }
+
+    private onerror = (e: Event) => {
+        this.#subcribe = false;
+        console.error('实时弹幕错误', e);
+    }
+
+    /** 进入房间 */
+    room(room: string) {
+        if (!this.#init) {
+            this.init();
+            this.#init = true;
+        }
+        if (!this.#room.includes(room)) {
+            if (this.#subcribe) {
+                this.send({
+                    options: {
+                        sequence: ++this.seq,
+                    },
+                    targetPath: PATH.ENTER,
+                    body: Any.create({ typeUrl: `type.googleapis.com${PATH.ROOMREQ}`, value: RoomReq.encode({ id: room, join: RoomJoinEvent.create() }).finish() }),
+                });
+                this.#room.push(room);
+            } else {
+                this.#rooming.push(room);
+            }
+        }
     }
 
     /** 销毁 */
