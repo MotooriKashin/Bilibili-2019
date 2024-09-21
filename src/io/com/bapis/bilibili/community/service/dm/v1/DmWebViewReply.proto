@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+package bilibili.community.service.dm.v1;
+
 /** 弹幕数据 */
 message DmWebViewReply {
     /** 弹幕区是否关闭 */
@@ -69,13 +71,13 @@ message CommandDm {
     string command = 4;
     /** 弹幕内容 */
     string content = 5;
-    /** 弹幕位置 */
+    /** 弹幕位置：/ms */
     int32 progress = 6;
     /** 创建时间 */
     string ctime = 7;
     /** 修改时间 */
     string mtime = 8;
-
+    /** 扩展json数据 */
     string extra = 9;
     /** 弹幕id_str */
     string idstr = 10;

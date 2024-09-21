@@ -7,7 +7,7 @@
 /* eslint-disable */
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
 
-export const protobufPackage = "";
+export const protobufPackage = "bilibili.community.service.dm.v1";
 
 export enum PostPanelBizType {
   PostPanelBizTypeNone = 0,
@@ -422,12 +422,13 @@ export interface CommandDm {
   command: string;
   /** 弹幕内容 */
   content: string;
-  /** 弹幕位置 */
+  /** 弹幕位置：/ms */
   progress: number;
   /** 创建时间 */
   ctime: string;
   /** 修改时间 */
   mtime: string;
+  /** 扩展json数据 */
   extra: string;
   /** 弹幕id_str */
   idstr: string;

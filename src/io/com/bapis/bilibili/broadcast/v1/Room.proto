@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package bilibili.broadcast.v1;
+
+import "src/io/com/bapis/google/protobuf/any.proto";
+import "src/io/com/bapis/bilibili/rpc/status.proto";
+
+message RoomReq {
+    /** {type}://{room_id} */
+    string id = 1;
+    oneof event {
+        RoomJoinEvent join = 2;
+        RoomLeaveEvent leave = 3;
+        RoomOnlineEvent online = 4;
+        RoomMessageEvent msg = 5;
+    }
+}
+
+message RoomResp {
+    /** {type}://{room_id} */
+    string id = 1;
+    oneof event {
+        RoomJoinEvent join = 2;
+        RoomLeaveEvent leave = 3;
+        RoomOnlineEvent online = 4;
+        RoomMessageEvent msg = 5;
+        RoomErrorEvent err = 6;
+    }
+}
+
+message RoomJoinEvent {}
+message RoomLeaveEvent {}
+message RoomOnlineEvent {
+    int32 online = 1;
+}
+message RoomMessageEvent {
+    string target_path = 1;
+    google.protobuf.Any body = 2;
+}
+message RoomErrorEvent {
+    bilibili.rpc.Status status = 1;
+}

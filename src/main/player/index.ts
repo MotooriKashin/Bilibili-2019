@@ -26,7 +26,7 @@ import { MAIN_EVENT, mainEv } from "../event";
 import { mainOptions } from "../option";
 import { POLICY } from "../policy";
 import { ROUTER } from "../router";
-import { Danmaku } from "./danmaku";
+import { Broadcast } from "./danmaku";
 import { HeartBeat } from "./heartbeat";
 import { GroupKind } from "./nano/GroupKind";
 import { Progress } from "./progress";
@@ -48,8 +48,11 @@ export class BilibiliPlayer extends Player {
 
     kind = GroupKind.Ugc;
 
-    // 视频推荐组件
+    /** 视频推荐组件 */
     #recommend = new Recommend(this);
+
+    /** 实时弹幕 */
+    #broadcast = new Broadcast(this);
 
     constructor() {
         super();
@@ -320,7 +323,7 @@ export class BilibiliPlayer extends Player {
                 .catch(() => { })
         });
         // 实时弹幕
-        new Danmaku(this, [`video://${this.aid}/${this.cid}${this.ssid ? `?sid=${this.ssid}&epid=${this.epid}` : ''}`]);
+        this.#broadcast.room(`video://${this.aid}/${this.cid}${this.ssid ? `?sid=${this.ssid}&epid=${this.epid}` : ''}`);
         // 观看人数
         total(this.aid, this.cid)
             .then(({ code, message, data }) => {

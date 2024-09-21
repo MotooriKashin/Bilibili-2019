@@ -1,7 +1,6 @@
 {
   "dependencies": {
-    "flv.js": "*",
-    "protobufjs": "*"
+    "flv.js": "*"
   },
   "devDependencies": {
     "@types/fs-extra": "*",

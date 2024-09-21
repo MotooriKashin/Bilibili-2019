@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+package bilibili.community.service.dm.v1;
+
 /** 弹幕分片数据 */
 message DmSegMobileReply {
     /** 弹幕列表 */
@@ -35,8 +37,7 @@ message DanmakuElem {
     int32 mode = 3;
     /** 弹幕字体 */
     int32 fontsize = 4;
-    // 弹幕颜色
-    /** 弹幕位置：/ms */
+    /** 弹幕颜色 */
     uint32 color = 5;
     /** 弹幕发送者crc32哈希 */
     string mid_hash = 6;

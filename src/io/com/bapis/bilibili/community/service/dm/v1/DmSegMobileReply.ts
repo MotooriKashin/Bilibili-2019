@@ -7,7 +7,7 @@
 /* eslint-disable */
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
 
-export const protobufPackage = "";
+export const protobufPackage = "bilibili.community.service.dm.v1";
 
 /** 弹幕渐变色 */
 export enum DmColorfulType {
@@ -86,7 +86,7 @@ export interface DanmakuElem {
   mode: number;
   /** 弹幕字体 */
   fontsize: number;
-  /** 弹幕位置：/ms */
+  /** 弹幕颜色 */
   color: number;
   /** 弹幕发送者crc32哈希 */
   midHash: string;
