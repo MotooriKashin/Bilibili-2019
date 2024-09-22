@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package bilibili.playershared;
+
+message Toast {
+    /** toast文案 */
+    string text = 1;
+    /** toast按钮 */
+    Button button = 2;
+}
+
+/** 按钮组件 */
+message Button {
+    /** 按钮文本 */
+    string text = 1;
+    /** 按钮跳转链接 */
+    string link = 2;
+    /** 埋点上报相关 */
+    map<string, string> report_params = 3;
+}

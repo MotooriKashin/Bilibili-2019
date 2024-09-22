@@ -1,0 +1,370 @@
+syntax = "proto3";
+
+package bilibili.pgc.gateway.player.v2;
+
+/** 其他业务信息 */
+message PlayViewBusinessInfo {
+    /** 当前视频是否是预览 */
+    bool is_preview = 1;
+    /** 用户是否承包过 */
+    bool bp = 2;
+    /** drm使用 */
+    string marlin_token = 3;
+    /** 倍速动效色值 */
+    string playback_speed_color = 4;
+
+    ContinuePlayInfo continue_play_info = 5;
+    /** 跳过片头/片尾配置 */
+    repeated ClipInfo clip_info = 6;
+
+    InlineType inline_type = 7;
+
+    int32 ep_whole_duration = 8;
+    /** 当前分辨率信息 */
+    Dimension dimension = 9;
+
+    map<int32, QualityExtInfo> quality_ext_map = 10;
+
+    map<string, int32> exp_map = 11;
+    /** DRM技术类型 */
+    DrmTechType drm_tech_type = 12;
+
+    int32 limit_action_type = 13;
+
+    bool is_drm = 14;
+
+    RecordInfo record_info = 15;
+
+    int32 vip_status = 16;
+
+    bool is_live_pre = 17;
+
+    EpisodeInfo episode_info = 18;
+
+    EpisodeAdvertisementInfo episode_advertisement_info = 19;
+
+    UserStatus user_status = 20;
+}
+
+message ContinuePlayInfo {
+
+    int64 continue_play_ep_id = 1;
+}
+
+/** 跳过片头/片尾配置 */
+message ClipInfo {
+
+    int64 material_no = 1;
+    /** DASH分段始 */
+    int32 start = 2;
+    /** DASH分段终 */
+    int32 end = 3;
+    /** Clip类型 */
+    ClipType clip_type = 4;
+    /** 跳过片头/片尾时的提示语 */
+    string toast_text = 5;
+
+    MultiView multi_view = 6;
+}
+
+/** 跳过片头/片尾配置: Clip类型 */
+enum ClipType {
+
+    NT_UNKNOWN = 0;
+    /** 跳过OP */
+    CLIP_TYPE_OP = 1;
+    /** 跳过ED */
+    CLIP_TYPE_ED = 2;
+
+    CLIP_TYPE_HE = 3;
+
+    CLIP_TYPE_MULTI_VIEW = 4;
+
+    CLIP_TYPE_AD = 5;
+}
+
+message MultiView {
+
+    string button_material = 1;
+
+    int64 ep_id = 2;
+
+    int64 cid = 3;
+
+    int64 avid = 4;
+}
+
+enum InlineType {
+
+    TYPE_UNKNOWN = 0;
+    
+    TYPE_WHOLE = 1;
+    
+    TYPE_HE_CLIP = 2;
+    
+    TYPE_PREVIEW = 3;
+}
+
+/** 当前分辨率信息 */
+message Dimension {
+    /** 宽 */
+    int32 width = 1;
+    /** 长 */
+    int32 height = 2;
+    /** 旋转角度 */
+    int32 rotate = 3;
+}
+
+/** 云控拓展视频画质信息 */
+message QualityExtInfo {
+    /** 是否支持试看 */
+    bool trial_support = 1;
+}
+
+/** DRM技术类型 */
+enum DrmTechType {
+    NON = 0;
+    
+    FAIR_PLAY = 1;
+    
+    WIDE_VINE = 2;
+    
+    BILI_DRM = 3;
+}
+
+/** 备案信息 */
+message RecordInfo {
+    /** 记录 */
+    string record = 1;
+    /** 记录图标 */
+    string record_icon = 2;
+}
+
+/** EP信息 */
+message EpisodeInfo {
+
+    int32 ep_id = 1;
+
+    int64 cid = 2;
+
+    int64 aid = 3;
+
+    int64 ep_status = 4;
+
+    SeasonInfo season_info = 5;
+
+    string cover = 6;
+
+    string title = 7;
+
+    Interaction interaction = 8;
+
+    string long_title = 9;
+}
+
+/** PGC SEASON 信息 */
+message SeasonInfo {
+    /** PGC SEASON ID */
+    int32 season_id = 1;
+    /** PGC SEASON 类型 */
+    int32 season_type = 2;
+    /** PGC SEASON 状态 */
+    int32 season_status = 3;
+    /** 封面 */
+    string cover = 4;
+    /** 标题 */
+    string title = 5;
+    /** 权限信息 */
+    Rights rights = 6;
+    /** 模式 */
+    int32 mode = 7;
+}
+
+/** 权限信息 */
+message Rights {
+    /** 是否可以观看 */
+    int32 can_watch = 1;
+}
+
+/** 交互信息 */
+message Interaction {
+    /** 历史节点 */
+    HistoryNode history_node = 1;
+    /** 版本 */
+    int64 graph_version = 2;
+    /** 交互消息 */
+    string msg = 3;
+    /** 是否为交互 */
+    bool is_interaction = 4;
+}
+
+/** 历史记录节点 */
+message HistoryNode {
+    /** 节点ID */
+    int64 node_id = 1;
+    /** 节点标题 */
+    string title = 2;
+    /** 对应CID */
+    int64 cid = 3;
+}
+
+/** 剧集广告信息 */
+message EpisodeAdvertisementInfo {
+
+    int64 aid = 1;
+
+    string title = 2;
+
+    string link = 3;
+
+    int32 follow_video_bnt_flag = 4;
+
+    string next_video_title = 5;
+
+    string next_video_link = 6;
+
+    int64 cid = 7;
+
+    int32 season_id = 8;
+
+    int32 follow = 9;
+}
+
+/** 用户状态信息 */
+message UserStatus {
+    /** 是否支付 */
+    bool pay_check = 1;
+    /** 是否承包 */
+    bool sponsor = 2;
+    /** 观看进度 */
+    WatchProgress watch_progress = 3;
+    /** 系列观看进度 */
+    WatchProgress aid_watch_progress = 4;
+}
+
+/** 观看进度信息 */
+message WatchProgress {
+    /** 上次观看的 EP ID */
+    int32 last_ep_id = 1;
+    /** 上次观看到的EP INDEX */
+    string last_ep_index = 2;
+    /** 上次观看的进度 */
+    int64 progress = 3;
+    /** 上次观看的 CID */
+    int64 last_play_cid = 4;
+    /** 带时间的提示信息 */
+    Toast toast = 5;
+    /** 不带时间的提示信息 */
+    Toast toast_without_time = 6;
+    /** 上次观看的 AID */
+    int64 last_play_aid = 7;
+}
+
+message Toast {
+    /** toast文案 老字段 */
+    string text = 1;
+    /** toast按钮 */
+    ButtonInfo button = 2;
+    /** 显示样式类型 */
+    int32 show_style_type = 3;
+    /** 图标 */
+    string icon = 4;
+    /** toast文案 新字段 */
+    TextInfo toast_text = 5;
+    /** 埋点上报信息 */
+    Report report = 6;
+
+    map<string, string> order_report_params = 7;
+}
+
+/** 按钮信息 */
+message ButtonInfo {
+    /** 按钮文案 */
+    string text = 1;
+    /** 按钮字体色值 */
+    string text_color = 2;
+    /** 按钮字体色值-夜间模式 */
+    string text_color_night = 3;
+    /** 按钮背景色 */
+    string bg_color = 4;
+    /** 按钮背景色-夜间模式 */
+    string bg_color_night = 5;
+    /** 按钮链接 */
+    string link = 6;
+    /** 按钮动作类型 */
+    string action_type = 7;
+    /** 角标信息 */
+    BadgeInfo badge_info = 8;
+    /** 埋点上报信息 */
+    Report report = 9;
+    /** 左侧删除线样式文案 */
+    string left_strikethrough_text = 10;
+    /** 缩略按钮文案信息 */
+    TextInfo simple_text_info = 11;
+    /** 缩略按钮背景色值 */
+    string simple_bg_color = 12;
+    /** 缩略按钮字体色值-夜间模式 */
+    string simple_bg_color_night = 13;
+
+    GradientColor bg_gradient_color = 14;
+
+    map<string, string> order_report_params = 15;
+
+    TaskParam task_param = 16;
+
+    string pc_link = 17;
+}
+
+/** 角标信息 */
+message BadgeInfo {
+    /** 角标文案 */
+    string text = 1;
+    /** 角标色值 */
+    string bg_color = 2;
+    /** 角标色值-夜间模式 */
+    string bg_color_night = 3;
+    /** 文案色值 */
+    string text_color = 4;
+    /** ? 新版本客户端已弃用此项 */
+    GradientColor bg_gradient_color = 5;
+
+    string img = 6;
+}
+
+/** 渐变色信息 */
+message GradientColor {
+
+    string start_color = 1;
+
+    string end_color = 2;
+}
+
+/** 埋点上报信息 */
+message Report {
+    /** 曝光事件 */
+    string show_event_id = 1;
+    /** 点击事件 */
+    string click_event_id = 2;
+    /** 埋点透传参数 */
+    string extends = 3;
+}
+
+/** 文案信息 */
+message TextInfo {
+    /** 文案 */
+    string text = 1;
+    /** 字体色值 */
+    string text_color = 2;
+    /** 字体色值-夜间模式 */
+    string text_color_night = 3;
+}
+
+/** 任务参数信息 */
+message TaskParam {
+    /** 任务类型 */
+    string task_type = 1;
+    /** 活动ID */
+    int64 activity_id = 2;
+    /** 提示ID */
+    int64 tips_id = 3;
+}

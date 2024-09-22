@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package bilibili.playershared;
+
+import "src/io/com/bapis/bilibili/playershared/Toast.proto";
+
+// 播放页信息-响应: 高画质试看信息
+message QnTrialInfo {
+    /** 能否试看高画质 */
+    bool trial_able = 1;
+
+    int32 remaining_times = 2;
+
+    int32 start = 3;
+
+    int32 time_length = 4;
+
+    Toast start_toast = 5;
+
+    Toast end_toast = 6;
+
+    Button quality_open_tip_btn = 8;
+}

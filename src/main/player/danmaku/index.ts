@@ -11,7 +11,7 @@ import { ev, PLAYER_EVENT } from "../../../player/event";
 
 export class Broadcast {
 
-    #ws?: WebSocket;
+    private ws?: WebSocket;
 
     /* 每次发送消息，唯一标识 */
     private seq = 1n;
@@ -40,8 +40,6 @@ export class Broadcast {
     /** 心跳三次没收到回复，重连 */
     private beatCount = 0;
 
-    #init = false;
-
     /** 是否已订阅 */
     #subcribe = false;
 
@@ -54,7 +52,11 @@ export class Broadcast {
 
     /** webSocket 状态 */
     private get readyState() {
-        return this.#ws?.readyState;
+        return this.ws?.readyState;
+    }
+
+    private get roomid() {
+        return `video://${this.player.aid}/${this.player.cid}${this.player.ssid ? `?sid=${this.player.ssid}&epid=${this.player.epid}` : ''}`
     }
 
     constructor(private player: BilibiliPlayer) {
@@ -64,15 +66,13 @@ export class Broadcast {
 
     private init() {
         try {
-            this.#ws = new WebSocket(`wss://broadcast.chat.bilibili.com:7826/sub?platform=web`, 'proto');
-            this.#ws.binaryType = 'arraybuffer';
-            this.#ws.addEventListener('open', this.onopen);
-            this.#ws.addEventListener('message', this.onmessage);
-            this.#ws.addEventListener('close', this.onclose);
-            this.#ws.addEventListener('error', this.onerror);
-        } catch (e) {
-            // TODO： 链接失败
-        }
+            this.ws = new WebSocket(`wss://broadcast.chat.bilibili.com:7826/sub?platform=web`, 'proto');
+            this.ws.binaryType = 'arraybuffer';
+            this.ws.addEventListener('open', this.onopen);
+            this.ws.addEventListener('message', this.onmessage);
+            this.ws.addEventListener('close', this.onclose);
+            this.ws.addEventListener('error', this.onerror);
+        } catch (e) { }
     }
 
     /** 重连 */
@@ -118,7 +118,7 @@ export class Broadcast {
                     console.warn('is CONNECTING');
                     break;
                 case 1:
-                    this.#ws?.send(info);
+                    this.ws?.send(info);
                     break;
                 default:
                     this.retry();
@@ -185,8 +185,8 @@ export class Broadcast {
             }
             case PATH.ENTER: {
                 if (body?.value) {
-                    const { msg } = RoomResp.decode(body.value);
-                    if (msg && msg.body) {
+                    const { msg, id } = RoomResp.decode(body.value);
+                    if (msg && msg.body && id === this.roomid) {
                         switch (msg.targetPath) {
                             case this.realdmPath: {
                                 const { elems } = DanmakuEvent.decode(msg.body.value);
@@ -203,20 +203,19 @@ export class Broadcast {
 
     private onclose = (e: CloseEvent) => {
         this.#subcribe = false;
+        delete this.ws;
         console.warn('实时弹幕已关闭', e);
     }
 
     private onerror = (e: Event) => {
         this.#subcribe = false;
+        delete this.ws;
         console.error('实时弹幕错误', e);
     }
 
     /** 进入房间 */
-    room(room: string) {
-        if (!this.#init) {
-            this.init();
-            this.#init = true;
-        }
+    room(room = this.roomid) {
+        this.ws || this.init();
         if (!this.#room.includes(room)) {
             if (this.#subcribe) {
                 this.send({
@@ -242,6 +241,7 @@ export class Broadcast {
 
     /** 关闭webSocket */
     private close() {
-        this.#ws?.close();
+        this.ws?.close();
+        delete this.ws;
     }
 }

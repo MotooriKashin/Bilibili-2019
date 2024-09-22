@@ -1,0 +1,304 @@
+syntax = "proto3";
+
+package bilibili.pgc.gateway.player.v2;
+
+import "src/io/com/bapis/bilibili/pgc/gateway/player/v2/PlayViewBusinessInfo.proto";
+
+/** 展示信息 */
+message ViewInfo {
+    /** 弹窗 */
+    Dialog dialog = 1;
+    /** Toast */
+    Toast toast = 2;
+    /** 优惠券信息 */
+    CouponInfo coupon_info = 3;
+    /** 未支付剧集ID列表 */
+    repeated int64 demand_no_pay_epids = 4;
+    /** 结束页 */
+    EndPage end_page = 5;
+    /** 扩展配置 */
+    map<string, bool> exp_config = 6;
+    /** 弹窗 */
+    PopWin pop_win = 7;
+    /** 试看提示栏 */
+    PromptBar try_watch_prompt_bar = 8;
+    /** 支付提示信息 */
+    PayTip pay_tip = 9;
+    /** 高清试看提示信息 */
+    HighDefinitionTrialInfo high_definition_trial_info = 10;
+    /** 弹窗扩展 */
+    map<string, Dialog> ext_dialog = 11;
+    /** 动画 */
+    Animation animation = 12;
+    /** Toast扩展 */
+    map<string, Toast> ext_toast = 13;
+}
+
+/** 鉴权浮层 */
+message Dialog {
+    /** 鉴权限制码 */
+    int64 code = 1;
+    /** 鉴权限制信息 */
+    string msg = 2;
+    /** 浮层类型 */
+    string type = 3;
+    /** 浮层样式类型 */
+    string style_type = 4;
+    /** 浮层配置 */
+    DialogConfig config = 5;
+    /** 标题 */
+    TextInfo title = 6;
+    /** 副标题 */
+    TextInfo subtitle = 7;
+    /** 图片信息 */
+    ImageInfo image = 8;
+    /** 按钮列表 */
+    repeated ButtonInfo button = 9;
+    /** 底部描述 */
+    ButtonInfo bottom_desc = 10;
+    /** 埋点上报信息 */
+    Report report = 11;
+    /** 倒计时 秒 */
+    int32 count_down_sec = 12;
+    /** 右下描述 */
+    TextInfo right_bottom_desc = 13;
+
+    repeated BottomDisplay bottom_display = 14;
+
+    repeated PlayList play_list = 15;
+}
+
+/** 鉴权浮层配置 */
+message DialogConfig {
+    /** 是否显示高斯模糊背景图 */
+    bool is_show_cover = 1;
+    /** 是否响应转屏 */
+    bool is_orientation_enable = 2;
+    /** 是否响应上滑吸顶 */
+    bool is_nested_scroll_enable = 3;
+    /** 是否强制竖屏 */
+    bool is_force_halfscreen_enable = 4;
+    /** 是否启用背景半透明 */
+    bool is_background_translucent_enable = 5;
+}
+
+/** 图片信息 */
+message ImageInfo {
+    /** 图片链接 */
+    string url = 1;
+}
+
+/** Dialog组件: 底部显示 */
+message BottomDisplay {
+    /** 文案 */
+    TextInfo title = 1;
+    /** 图标 */
+    string icon = 2;
+}
+
+message PlayList {
+
+    int32 season_id = 1;
+
+    string title = 2;
+
+    string cover = 3;
+
+    string link = 4;
+
+    BadgeInfo badge_info = 5;
+}
+
+/** 优惠券信息 */
+message CouponInfo {
+    /** 提示框信息 */
+    CouponToast toast = 1;
+    /** 弹窗信息 */
+    PopWin pop_win = 2;
+}
+
+/** 优惠券提示框信息 */
+message CouponToast {
+    /** 提示框文案信息 */
+    CouponTextInfo text_info = 1;
+    /** 提示框按钮 */
+    ButtonInfo button = 2;
+}
+
+/** 优惠券提示框文案信息 */
+message CouponTextInfo {
+    /** 提示框文案-播正片6分钟预览 */
+    string positive_preview = 1;
+    /** 提示框文案-播非正片分节ep */
+    string section = 2;
+}
+
+/** 弹窗信息 */
+message PopWin {
+    /** 弹窗标题 老字段 */
+    string title = 1;
+    /** 优惠券列表 */
+    repeated Coupon coupon = 2;
+    /** 弹窗按钮列表 */
+    repeated ButtonInfo button = 3;
+    /** 底部文案 老字段 */
+    string bottom_text = 4;
+    /** 弹窗标题 新字段 */
+    TextInfo pop_title = 5;
+    /** 弹窗副标题 */ 
+    TextInfo subtitle = 6;
+    /** 底部描述 新字段 */
+    ButtonInfo bottom_desc = 7;
+    /** 弹窗小图 */
+    string cover = 8;
+    /** 弹窗类型 */
+    string pop_type = 9;
+}
+
+/** 优惠券 */
+message Coupon {
+    /** 优惠券token */
+    string coupon_token = 1;
+    /**
+     * 优惠券类型
+     * | 1 | 2 | 3 |
+     * | :-: | :-: | :-: |
+     * | 折扣券 | 满减券 | 兑换券 |
+     */
+    int64 type = 2;
+    /** 优惠券面值 */
+    string value = 3;
+    /** 优惠券使用描述 */
+    string use_desc = 4;
+    /** 优惠券标题 */
+    string title = 5;
+    /** 优惠券描述 */
+    string desc = 6;
+    /** 优惠券支付按钮文案 */
+    string pay_button_text = 7;
+    /** 优惠券支付按钮删除线文案 */
+    string pay_button_text_line_through = 8;
+    /** 实付金额 */
+    string real_amount = 9;
+    /** 使用过期时间 */
+    Timestamp expire_time = 10;
+
+    int64 otype = 11;
+
+    string amount = 12;
+}
+
+/** 广告组件: 竖屏时视频下部提示栏 */
+message PromptBar {
+    /** 主标题, 如: "本片含大会员专享内容" */
+    TextInfo title = 1;
+    /** 副标题, 如: "成为大会员可免费看全部剧集" */
+    TextInfo sub_title = 2;
+    /** 副标题前面的icon */
+    string sub_title_icon = 3;
+    /** 背景图 */
+    string bg_image = 4;
+    /** 背景渐变色 */
+    GradientColor bg_gradient_color = 5;
+    /** 按钮 */
+    repeated ButtonInfo button = 6;
+    /** 埋点上报信息 */
+    Report report = 7;
+
+    string full_screen_ip_icon = 8;
+
+    GradientColor full_screen_bg_gradient_color = 9;
+}
+
+/** 大会员广告: 支付提示信息 */
+message PayTip {
+    /** 标题 */
+    string title = 1;
+    /** 跳转链接 */
+    string url = 2;
+    /** 图标 */
+    string icon = 3;
+    /** 浮层类型 */
+    int32 type = 4;
+    /** 显示类型 */
+    int32 show_type = 5;
+    /** 图片信息 */
+    string img = 6;
+    /** 白天背景颜色 */
+    string bg_day_color = 7;
+    /** 夜间背景颜色 */
+    string bg_night_color = 8;
+    /** 白天线条颜色 */
+    string bg_line_color = 9;
+    /** 夜间线条颜色 */
+    string bg_night_line_color = 10;
+    /** 文字颜色 */
+    string text_color = 11;
+    /** 夜间文字颜色 */
+    string text_night_color = 12;
+    /** 视图展示起始时间 */
+    int64 view_start_time = 13;
+    /** 按钮列表 */
+    repeated ButtonInfo button = 14;
+    /** 跳转链接打开方式 */
+    int32 url_open_type = 15;
+    /** 埋点上报信息 */
+    Report report = 16;
+    /** 角度样式 */
+    int32 angle_style = 17;
+    /** 埋点上报类型 */
+    int32 report_type = 18;
+    /** 订单埋点上报参数 */
+    map<string, string> order_report_params = 19;
+    /** 巨屏图片信息 */
+    string giant_screen_img = 20;
+}
+
+/** 高画质试看信息 */
+message HighDefinitionTrialInfo {
+
+    bool trial_able = 1;
+
+    int32 remaining_times = 2;
+
+    int32 start = 3;
+
+    int32 time_length = 4;
+
+    Toast start_toast = 5;
+
+    Toast end_toast = 6;
+
+    Report report = 7;
+
+    ButtonInfo quality_open_tip_btn = 8;
+
+    ButtonInfo no_longer_trial_btn = 9;
+}
+
+message Animation {
+
+    map<string, string> qn_svga_animation_map = 1;
+}
+
+/** 播放结束后的尾页Dialog */
+message EndPage {
+
+    Dialog dialog = 1;
+
+    bool hide = 2;
+}
+
+message Timestamp {
+
+  // Represents seconds of UTC time since Unix epoch
+  // 1970-01-01T00:00:00Z. Must be from 0001-01-01T00:00:00Z to
+  // 9999-12-31T23:59:59Z inclusive.
+  int64 seconds = 1;
+
+  // Non-negative fractions of a second at nanosecond resolution. Negative
+  // second values with fractions must still have non-negative nanos values
+  // that count forward in time. Must be from 0 to 999,999,999
+  // inclusive.
+  int32 nanos = 2;
+}

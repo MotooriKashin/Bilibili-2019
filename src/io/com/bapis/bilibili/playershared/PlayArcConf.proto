@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package bilibili.playershared;
+
+/** 播放页信息-响应: PlayArcConf */
+message PlayArcConf {
+    map<int32, ArcConf> arc_confs = 1;
+}
+
+/** ArcConf消息 */
+message ArcConf {
+    /** 是否支持 */
+    bool is_support = 1;
+    /** 是否禁用 */
+    bool disabled = 2;
+    /** 额外内容 */
+    ExtraContent extra_content = 3;
+    /** 不支持场景列表 */
+    repeated int32 unsupport_scene = 4;
+}
+
+/** ? 错误码补充信息 */
+message ExtraContent {
+
+    string disable_reason = 1;
+
+    int64 disable_code = 2;
+}

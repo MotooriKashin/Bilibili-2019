@@ -323,7 +323,7 @@ export class BilibiliPlayer extends Player {
                 .catch(() => { })
         });
         // 实时弹幕
-        this.#broadcast.room(`video://${this.aid}/${this.cid}${this.ssid ? `?sid=${this.ssid}&epid=${this.epid}` : ''}`);
+        this.#broadcast.room();
         // 观看人数
         total(this.aid, this.cid)
             .then(({ code, message, data }) => {

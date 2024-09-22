@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package bilibili.playershared;
+
+/** 播放页信息-请求: 音视频VOD */
+message VideoVod {
+    /** 视频aid */
+    int32 aid = 1;
+    /** 视频cid */
+    int32 cid = 2;
+    /** 清晰度 */
+    uint64 qn = 3;
+    /** 视频流版本 */
+    optional int32 fnver = 4;
+    /** 视频流格式 */
+    int32 fnval = 5;
+    /**
+     * 下载模式
+     * | 0 | 1 | 2 |
+     * | :-: | :-: | :-: |
+     * | 播放 | flv下载 | dash下载 |
+     */
+    optional uint32 download = 6;
+    /**
+     * 流url是否强制用域名
+     * | 0 | 1 | 2 |
+     * | :-: | :-: | :-: |
+     * | 允许使用 | 使用http | 使用https |
+     */
+    int32 force_host = 7;
+    /** 是否4K */
+    optional bool fourk = 8;
+    /** 视频编码 */
+    CodeType prefer_codec_type = 9;
+    /** 响度均衡 */
+    optional uint64 voice_balance = 10;
+    /** 大会员清晰度试用 */
+    optional int32 qn_trial = 11;
+}
+
+/** 视频编码 */
+enum CodeType {
+    /** 不指定 */
+    NOCODE = 0;
+    /** H264 */
+    CODE264 = 1;
+    /** H265 */
+    CODE265 = 2;
+    /** AV1 */
+    CODEAV1 = 3;
+}

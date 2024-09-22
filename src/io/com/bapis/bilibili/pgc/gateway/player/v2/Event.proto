@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package bilibili.pgc.gateway.player.v2;
+
+/** 事件 */
+message Event {
+    /** 震动 */
+    Shake shake = 1;
+}
+
+/** 震动 */
+message Shake {
+    /** 文件地址 */
+    string file = 1;
+}

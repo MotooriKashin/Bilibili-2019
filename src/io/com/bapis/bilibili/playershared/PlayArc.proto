@@ -1,0 +1,87 @@
+syntax = "proto3";
+
+package bilibili.playershared;
+
+message PlayArc {
+
+    BizType video_type = 1;
+
+    uint64 aid = 2;
+
+    uint64 cid = 3;
+
+    optional DrmTechType drm_tech_type = 4;
+
+    optional ArcType arc_type = 5;
+
+    optional Interaction interaction = 6;
+
+    Dimension dimension = 7;
+
+    int64 duration = 8;
+
+    optional bool is_preview = 9;
+
+    int64 watch_time_length = 10;
+
+    int64 duration_ms = 11;
+}
+
+enum BizType {
+
+    BIZ_TYPE_UNKNOWN = 0;
+
+    BIZ_TYPE_UGC = 1;
+
+    BIZ_TYPE_PGC = 2;
+
+    BIZ_TYPE_PUGV = 3;
+}
+
+enum DrmTechType {
+
+    UNKNOWN_DRM = 0;
+
+    FAIR_PLAY = 1;
+
+    WIDE_VINE = 2;
+    /** 哔哩哔哩自研DRM */
+    BILI_DRM = 3;
+}
+
+enum ArcType {
+
+    ARC_TYPE_NORMAL = 0;
+
+    ARC_TYPE_INTERACT = 1;
+}
+
+message Interaction {
+
+    Node history_node = 1;
+
+    int64 graph_version = 2;
+
+    string msg = 3;
+
+    int64 mark = 4;
+}
+
+message Node {
+
+    int64 node_id = 1;
+
+    string title = 2;
+
+    int64 cid = 3;
+}
+
+/** 当前分辨率信息 */
+message Dimension {
+    /** 宽 */
+    int32 width = 1;
+    /** 长 */
+    int32 height = 2;
+    /** 旋转角度 */
+    int32 rotate = 3;
+}

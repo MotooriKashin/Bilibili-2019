@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package bilibili.playershared;
+
+import "src/io/com/bapis/google/protobuf/any.proto";
+
+message Fragment {
+    repeated FragmentInfo infos = 1;
+}
+
+message FragmentInfo {
+
+    int32 index = 1;
+
+    FragmentPosition fragment_position = 2;
+
+    FragmentType fragment_type = 3;
+
+    int64 aid = 4;
+
+    int64 cid = 5;
+
+    int64 start_time = 6;
+
+    google.protobuf.Any report = 7;
+}
+
+enum FragmentPosition {
+    INVALID = 0;
+    PRE = 1;
+    MIDDLE = 2;
+    POST = 3;
+}
+
+enum FragmentType {
+    UNKNOWN = 0;
+    AD_FRAGMENT = 1;
+    OGV_FRAGMENT = 2;
+}
