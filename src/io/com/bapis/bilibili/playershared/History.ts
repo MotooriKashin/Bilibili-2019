@@ -12,8 +12,8 @@ export const protobufPackage = "bilibili.playershared";
 
 /** 播放历史 */
 export interface History {
-  currentVideo: HistoryInfo | undefined;
-  relatedVideo: HistoryInfo | undefined;
+  currentVideo?: HistoryInfo | undefined;
+  relatedVideo?: HistoryInfo | undefined;
 }
 
 export interface HistoryInfo {
@@ -25,7 +25,7 @@ export interface HistoryInfo {
 }
 
 function createBaseHistory(): History {
-  return { currentVideo: undefined, relatedVideo: undefined };
+  return {};
 }
 
 export const History: MessageFns<History> = {

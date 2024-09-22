@@ -25,14 +25,16 @@ export const protobufPackage = "bilibili.app.playerunite.v1";
 export interface PlayViewUniteReq {
   /** 请求资源VOD信息 */
   vod: VideoVod | undefined;
-  spmid: string;
-  fromSpmid: string;
+  spmid?: string | undefined;
+  fromSpmid?:
+    | string
+    | undefined;
   /** 补充信息, 如ep_id等 */
   extraContent: { [key: string]: string };
   bvid?: string | undefined;
   adExtra?: string | undefined;
-  fragment: Fragment | undefined;
-  fromScene: string;
+  fragment?: Fragment | undefined;
+  fromScene?: string | undefined;
 }
 
 export interface PlayViewUniteReq_ExtraContentEntry {
@@ -50,16 +52,16 @@ export interface PlayViewUniteResp {
     | Event
     | undefined;
   /** 使用 pgcanymodel / ugcanymodel 进行proto any转换成对应业务码结构体 */
-  supplement: Any | undefined;
+  supplement?: Any | undefined;
   playArc: PlayArc | undefined;
-  qnTrialInfo: QnTrialInfo | undefined;
-  history: History | undefined;
-  viewInfo: ViewInfo | undefined;
-  fragmentVideo: FragmentVideo | undefined;
+  qnTrialInfo?: QnTrialInfo | undefined;
+  history?: History | undefined;
+  viewInfo?: ViewInfo | undefined;
+  fragmentVideo?: FragmentVideo | undefined;
 }
 
 function createBasePlayViewUniteReq(): PlayViewUniteReq {
-  return { vod: undefined, spmid: "", fromSpmid: "", extraContent: {}, fragment: undefined, fromScene: "" };
+  return { vod: undefined, extraContent: {} };
 }
 
 export const PlayViewUniteReq: MessageFns<PlayViewUniteReq> = {
@@ -67,10 +69,10 @@ export const PlayViewUniteReq: MessageFns<PlayViewUniteReq> = {
     if (message.vod !== undefined) {
       VideoVod.encode(message.vod, writer.uint32(10).fork()).join();
     }
-    if (message.spmid !== "") {
+    if (message.spmid !== undefined) {
       writer.uint32(18).string(message.spmid);
     }
-    if (message.fromSpmid !== "") {
+    if (message.fromSpmid !== undefined) {
       writer.uint32(26).string(message.fromSpmid);
     }
     Object.entries(message.extraContent).forEach(([key, value]) => {
@@ -85,7 +87,7 @@ export const PlayViewUniteReq: MessageFns<PlayViewUniteReq> = {
     if (message.fragment !== undefined) {
       Fragment.encode(message.fragment, writer.uint32(58).fork()).join();
     }
-    if (message.fromScene !== "") {
+    if (message.fromScene !== undefined) {
       writer.uint32(66).string(message.fromScene);
     }
     return writer;
@@ -169,8 +171,8 @@ export const PlayViewUniteReq: MessageFns<PlayViewUniteReq> = {
   fromJSON(object: any): PlayViewUniteReq {
     return {
       vod: isSet(object.vod) ? VideoVod.fromJSON(object.vod) : undefined,
-      spmid: isSet(object.spmid) ? globalThis.String(object.spmid) : "",
-      fromSpmid: isSet(object.fromSpmid) ? globalThis.String(object.fromSpmid) : "",
+      spmid: isSet(object.spmid) ? globalThis.String(object.spmid) : undefined,
+      fromSpmid: isSet(object.fromSpmid) ? globalThis.String(object.fromSpmid) : undefined,
       extraContent: isObject(object.extraContent)
         ? Object.entries(object.extraContent).reduce<{ [key: string]: string }>((acc, [key, value]) => {
           acc[key] = String(value);
@@ -180,7 +182,7 @@ export const PlayViewUniteReq: MessageFns<PlayViewUniteReq> = {
       bvid: isSet(object.bvid) ? globalThis.String(object.bvid) : undefined,
       adExtra: isSet(object.adExtra) ? globalThis.String(object.adExtra) : undefined,
       fragment: isSet(object.fragment) ? Fragment.fromJSON(object.fragment) : undefined,
-      fromScene: isSet(object.fromScene) ? globalThis.String(object.fromScene) : "",
+      fromScene: isSet(object.fromScene) ? globalThis.String(object.fromScene) : undefined,
     };
   },
 
@@ -189,10 +191,10 @@ export const PlayViewUniteReq: MessageFns<PlayViewUniteReq> = {
     if (message.vod !== undefined) {
       obj.vod = VideoVod.toJSON(message.vod);
     }
-    if (message.spmid !== "") {
+    if (message.spmid !== undefined) {
       obj.spmid = message.spmid;
     }
-    if (message.fromSpmid !== "") {
+    if (message.fromSpmid !== undefined) {
       obj.fromSpmid = message.fromSpmid;
     }
     if (message.extraContent) {
@@ -213,7 +215,7 @@ export const PlayViewUniteReq: MessageFns<PlayViewUniteReq> = {
     if (message.fragment !== undefined) {
       obj.fragment = Fragment.toJSON(message.fragment);
     }
-    if (message.fromScene !== "") {
+    if (message.fromScene !== undefined) {
       obj.fromScene = message.fromScene;
     }
     return obj;
@@ -225,8 +227,8 @@ export const PlayViewUniteReq: MessageFns<PlayViewUniteReq> = {
   fromPartial<I extends Exact<DeepPartial<PlayViewUniteReq>, I>>(object: I): PlayViewUniteReq {
     const message = createBasePlayViewUniteReq();
     message.vod = (object.vod !== undefined && object.vod !== null) ? VideoVod.fromPartial(object.vod) : undefined;
-    message.spmid = object.spmid ?? "";
-    message.fromSpmid = object.fromSpmid ?? "";
+    message.spmid = object.spmid ?? undefined;
+    message.fromSpmid = object.fromSpmid ?? undefined;
     message.extraContent = Object.entries(object.extraContent ?? {}).reduce<{ [key: string]: string }>(
       (acc, [key, value]) => {
         if (value !== undefined) {
@@ -241,7 +243,7 @@ export const PlayViewUniteReq: MessageFns<PlayViewUniteReq> = {
     message.fragment = (object.fragment !== undefined && object.fragment !== null)
       ? Fragment.fromPartial(object.fragment)
       : undefined;
-    message.fromScene = object.fromScene ?? "";
+    message.fromScene = object.fromScene ?? undefined;
     return message;
   },
 };
@@ -325,17 +327,7 @@ export const PlayViewUniteReq_ExtraContentEntry: MessageFns<PlayViewUniteReq_Ext
 };
 
 function createBasePlayViewUniteResp(): PlayViewUniteResp {
-  return {
-    vodInfo: undefined,
-    playArcConf: undefined,
-    playDeviceConf: undefined,
-    supplement: undefined,
-    playArc: undefined,
-    qnTrialInfo: undefined,
-    history: undefined,
-    viewInfo: undefined,
-    fragmentVideo: undefined,
-  };
+  return { vodInfo: undefined, playArcConf: undefined, playDeviceConf: undefined, playArc: undefined };
 }
 
 export const PlayViewUniteResp: MessageFns<PlayViewUniteResp> = {

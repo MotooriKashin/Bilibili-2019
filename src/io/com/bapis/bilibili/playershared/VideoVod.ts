@@ -62,9 +62,9 @@ export function codeTypeToJSON(object: CodeType): string {
 /** 播放页信息-请求: 音视频VOD */
 export interface VideoVod {
   /** 视频aid */
-  aid: number;
+  aid: bigint;
   /** 视频cid */
-  cid: number;
+  cid: bigint;
   /** 清晰度 */
   qn: bigint;
   /** 视频流版本 */
@@ -88,7 +88,9 @@ export interface VideoVod {
    * | :-: | :-: | :-: |
    * | 允许使用 | 使用http | 使用https |
    */
-  forceHost: number;
+  forceHost?:
+    | number
+    | undefined;
   /** 是否4K */
   fourk?:
     | boolean
@@ -104,16 +106,22 @@ export interface VideoVod {
 }
 
 function createBaseVideoVod(): VideoVod {
-  return { aid: 0, cid: 0, qn: 0n, fnval: 0, forceHost: 0, preferCodecType: 0 };
+  return { aid: 0n, cid: 0n, qn: 0n, fnval: 0, preferCodecType: 0 };
 }
 
 export const VideoVod: MessageFns<VideoVod> = {
   encode(message: VideoVod, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.aid !== 0) {
-      writer.uint32(8).int32(message.aid);
+    if (message.aid !== 0n) {
+      if (BigInt.asUintN(64, message.aid) !== message.aid) {
+        throw new globalThis.Error("value provided for field message.aid of type uint64 too large");
+      }
+      writer.uint32(8).uint64(message.aid);
     }
-    if (message.cid !== 0) {
-      writer.uint32(16).int32(message.cid);
+    if (message.cid !== 0n) {
+      if (BigInt.asUintN(64, message.cid) !== message.cid) {
+        throw new globalThis.Error("value provided for field message.cid of type uint64 too large");
+      }
+      writer.uint32(16).uint64(message.cid);
     }
     if (message.qn !== 0n) {
       if (BigInt.asUintN(64, message.qn) !== message.qn) {
@@ -130,7 +138,7 @@ export const VideoVod: MessageFns<VideoVod> = {
     if (message.download !== undefined) {
       writer.uint32(48).uint32(message.download);
     }
-    if (message.forceHost !== 0) {
+    if (message.forceHost !== undefined) {
       writer.uint32(56).int32(message.forceHost);
     }
     if (message.fourk !== undefined) {
@@ -163,14 +171,14 @@ export const VideoVod: MessageFns<VideoVod> = {
             break;
           }
 
-          message.aid = reader.int32();
+          message.aid = reader.uint64() as bigint;
           continue;
         case 2:
           if (tag !== 16) {
             break;
           }
 
-          message.cid = reader.int32();
+          message.cid = reader.uint64() as bigint;
           continue;
         case 3:
           if (tag !== 24) {
@@ -246,13 +254,13 @@ export const VideoVod: MessageFns<VideoVod> = {
 
   fromJSON(object: any): VideoVod {
     return {
-      aid: isSet(object.aid) ? globalThis.Number(object.aid) : 0,
-      cid: isSet(object.cid) ? globalThis.Number(object.cid) : 0,
+      aid: isSet(object.aid) ? BigInt(object.aid) : 0n,
+      cid: isSet(object.cid) ? BigInt(object.cid) : 0n,
       qn: isSet(object.qn) ? BigInt(object.qn) : 0n,
       fnver: isSet(object.fnver) ? globalThis.Number(object.fnver) : undefined,
       fnval: isSet(object.fnval) ? globalThis.Number(object.fnval) : 0,
       download: isSet(object.download) ? globalThis.Number(object.download) : undefined,
-      forceHost: isSet(object.forceHost) ? globalThis.Number(object.forceHost) : 0,
+      forceHost: isSet(object.forceHost) ? globalThis.Number(object.forceHost) : undefined,
       fourk: isSet(object.fourk) ? globalThis.Boolean(object.fourk) : undefined,
       preferCodecType: isSet(object.preferCodecType) ? codeTypeFromJSON(object.preferCodecType) : 0,
       voiceBalance: isSet(object.voiceBalance) ? BigInt(object.voiceBalance) : undefined,
@@ -262,11 +270,11 @@ export const VideoVod: MessageFns<VideoVod> = {
 
   toJSON(message: VideoVod): unknown {
     const obj: any = {};
-    if (message.aid !== 0) {
-      obj.aid = Math.round(message.aid);
+    if (message.aid !== 0n) {
+      obj.aid = message.aid.toString();
     }
-    if (message.cid !== 0) {
-      obj.cid = Math.round(message.cid);
+    if (message.cid !== 0n) {
+      obj.cid = message.cid.toString();
     }
     if (message.qn !== 0n) {
       obj.qn = message.qn.toString();
@@ -280,7 +288,7 @@ export const VideoVod: MessageFns<VideoVod> = {
     if (message.download !== undefined) {
       obj.download = Math.round(message.download);
     }
-    if (message.forceHost !== 0) {
+    if (message.forceHost !== undefined) {
       obj.forceHost = Math.round(message.forceHost);
     }
     if (message.fourk !== undefined) {
@@ -303,13 +311,13 @@ export const VideoVod: MessageFns<VideoVod> = {
   },
   fromPartial<I extends Exact<DeepPartial<VideoVod>, I>>(object: I): VideoVod {
     const message = createBaseVideoVod();
-    message.aid = object.aid ?? 0;
-    message.cid = object.cid ?? 0;
+    message.aid = object.aid ?? 0n;
+    message.cid = object.cid ?? 0n;
     message.qn = object.qn ?? 0n;
     message.fnver = object.fnver ?? undefined;
     message.fnval = object.fnval ?? 0;
     message.download = object.download ?? undefined;
-    message.forceHost = object.forceHost ?? 0;
+    message.forceHost = object.forceHost ?? undefined;
     message.fourk = object.fourk ?? undefined;
     message.preferCodecType = object.preferCodecType ?? 0;
     message.voiceBalance = object.voiceBalance ?? undefined;

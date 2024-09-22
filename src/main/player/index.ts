@@ -262,6 +262,7 @@ export class BilibiliPlayer extends Player {
         cid && (this.cid = cid);
         epid && (this.epid = epid);
         kind && (this.kind = kind);
+
         // 请求 playurl
         const qn = +cookie.get('CURRENT_QUALITY') || 0;
         if (this.kind === GroupKind.Pugv && this.epid) {

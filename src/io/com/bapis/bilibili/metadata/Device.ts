@@ -27,7 +27,9 @@ export interface Device {
   /** 平台：ios/android */
   platform: string;
   /** 运行设备 */
-  device: string;
+  device?:
+    | string
+    | undefined;
   /** 渠道 */
   channel: string;
   /** 手机品牌 */
@@ -55,7 +57,6 @@ function createBaseDevice(): Device {
     buvid: "",
     mobiApp: "",
     platform: "",
-    device: "",
     channel: "",
     brand: "",
     model: "",
@@ -85,7 +86,7 @@ export const Device: MessageFns<Device> = {
     if (message.platform !== "") {
       writer.uint32(42).string(message.platform);
     }
-    if (message.device !== "") {
+    if (message.device !== undefined) {
       writer.uint32(50).string(message.device);
     }
     if (message.channel !== "") {
@@ -249,7 +250,7 @@ export const Device: MessageFns<Device> = {
       buvid: isSet(object.buvid) ? globalThis.String(object.buvid) : "",
       mobiApp: isSet(object.mobiApp) ? globalThis.String(object.mobiApp) : "",
       platform: isSet(object.platform) ? globalThis.String(object.platform) : "",
-      device: isSet(object.device) ? globalThis.String(object.device) : "",
+      device: isSet(object.device) ? globalThis.String(object.device) : undefined,
       channel: isSet(object.channel) ? globalThis.String(object.channel) : "",
       brand: isSet(object.brand) ? globalThis.String(object.brand) : "",
       model: isSet(object.model) ? globalThis.String(object.model) : "",
@@ -279,7 +280,7 @@ export const Device: MessageFns<Device> = {
     if (message.platform !== "") {
       obj.platform = message.platform;
     }
-    if (message.device !== "") {
+    if (message.device !== undefined) {
       obj.device = message.device;
     }
     if (message.channel !== "") {
@@ -322,7 +323,7 @@ export const Device: MessageFns<Device> = {
     message.buvid = object.buvid ?? "";
     message.mobiApp = object.mobiApp ?? "";
     message.platform = object.platform ?? "";
-    message.device = object.device ?? "";
+    message.device = object.device ?? undefined;
     message.channel = object.channel ?? "";
     message.brand = object.brand ?? "";
     message.model = object.model ?? "";

@@ -6,7 +6,8 @@
     "@types/fs-extra": "*",
     "esbuild": "*",
     "fs-extra": "*",
-    "ts-proto": "*"
+    "ts-proto": "*",
+    "@types/chrome": "*"
   },
   "scripts": {
     "build": "node --no-warnings --experimental-strip-types ./src/build/index.ts",

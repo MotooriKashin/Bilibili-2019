@@ -20,9 +20,9 @@ message PlayViewUniteReq {
     /** 请求资源VOD信息 */
     bilibili.playershared.VideoVod vod = 1;
 
-    string spmid = 2;
+    optional string spmid = 2;
 
-    string from_spmid = 3;
+    optional string from_spmid = 3;
     /** 补充信息, 如ep_id等 */
     map<string, string> extra_content = 4;
 
@@ -30,9 +30,9 @@ message PlayViewUniteReq {
 
     optional string ad_extra = 6;
 
-    bilibili.playershared.Fragment fragment = 7;
+    optional bilibili.playershared.Fragment fragment = 7;
 
-    string from_scene = 8;
+    optional string from_scene = 8;
 }
 
 /** 统一视频url */
@@ -46,15 +46,15 @@ message PlayViewUniteResp {
 
     optional bilibili.playershared.Event event = 4;
     /** 使用 pgcanymodel / ugcanymodel 进行proto any转换成对应业务码结构体 */
-    google.protobuf.Any supplement = 5;
+    optional google.protobuf.Any supplement = 5;
 
     bilibili.playershared.PlayArc play_arc = 6;
 
-    bilibili.playershared.QnTrialInfo qn_trial_info = 7;
+    optional bilibili.playershared.QnTrialInfo qn_trial_info = 7;
 
-    bilibili.playershared.History history = 8;
+    optional bilibili.playershared.History history = 8;
 
-    bilibili.playershared.ViewInfo view_info = 9;
+    optional bilibili.playershared.ViewInfo view_info = 9;
 
-    bilibili.playershared.FragmentVideo fragment_video = 10;
+    optional bilibili.playershared.FragmentVideo fragment_video = 10;
 }

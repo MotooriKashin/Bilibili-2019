@@ -5,9 +5,9 @@ package bilibili.playershared;
 /** 播放页信息-请求: 音视频VOD */
 message VideoVod {
     /** 视频aid */
-    int32 aid = 1;
+    uint64 aid = 1;
     /** 视频cid */
-    int32 cid = 2;
+    uint64 cid = 2;
     /** 清晰度 */
     uint64 qn = 3;
     /** 视频流版本 */
@@ -27,7 +27,7 @@ message VideoVod {
      * | :-: | :-: | :-: |
      * | 允许使用 | 使用http | 使用https |
      */
-    int32 force_host = 7;
+    optional int32 force_host = 7;
     /** 是否4K */
     optional bool fourk = 8;
     /** 视频编码 */

@@ -6,7 +6,21 @@
         }
     },
     "author": "Akari",
+    "background": {
+        "service_worker": "sw/index.js",
+        "type": "module"
+    },
     "content_scripts": [
+        {
+            "all_frames": true,
+            "js": [
+                "isolated/index.js"
+            ],
+            "matches": [
+                "*://*.bilibili.com/*"
+            ],
+            "run_at": "document_start"
+        },
         {
             "all_frames": true,
             "js": [

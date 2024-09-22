@@ -29,11 +29,38 @@ const cssConstructStylesheetPlugin = {
     }
 }
 
-// 编译资源文件
-await build({
+const key = crypto.randomUUID();
+
+build({
     entryPoints: [
+        'src/sw/index.ts',
         'src/sidebar/index.ts',
         'src/options/index.ts',
+    ],
+    outdir: 'dist',
+    outbase: "src",
+    bundle: true,
+    minify: true,
+    format: 'esm',
+    sourcemap: true,
+    treeShaking: true,
+    charset: 'utf8',
+    supported: {
+        decorators: false, // 装饰器暂未得到任何浏览器支持
+    },
+    plugins: [cssConstructStylesheetPlugin],
+    define: {
+        __TOTP_KEY__: `'${key}'`, // 基于哈希消息认证码的一次性口令的密钥
+    },
+    loader: {
+        '.svg': 'text',
+    },
+})
+
+// 编译资源文件
+build({
+    entryPoints: [
+        'src/isolated/index.ts',
         'src/main/index.ts',
     ],
     outdir: 'dist',
@@ -49,7 +76,7 @@ await build({
     },
     plugins: [cssConstructStylesheetPlugin],
     define: {
-        __TOTP_KEY__: `'${crypto.randomUUID()}'`, // 基于哈希消息认证码的一次性口令的密钥
+        __TOTP_KEY__: `'${key}'`, // 基于哈希消息认证码的一次性口令的密钥
     },
     loader: {
         '.svg': 'text',

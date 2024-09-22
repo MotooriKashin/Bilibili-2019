@@ -20,7 +20,7 @@ message Device {
     /** 平台：ios/android */
     string platform = 5;
     /** 运行设备 */
-    string device = 6;
+    optional string device = 6;
     /** 渠道 */
     string channel = 7;
     /** 手机品牌 */

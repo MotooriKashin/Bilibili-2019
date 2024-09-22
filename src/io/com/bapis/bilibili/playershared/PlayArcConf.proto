@@ -14,7 +14,7 @@ message ArcConf {
     /** 是否禁用 */
     bool disabled = 2;
     /** 额外内容 */
-    ExtraContent extra_content = 3;
+    optional ExtraContent extra_content = 3;
     /** 不支持场景列表 */
     repeated int32 unsupport_scene = 4;
 }

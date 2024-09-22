@@ -1,0 +1,1 @@
+export const Grpc = 'https://grpc.biliapi.net';

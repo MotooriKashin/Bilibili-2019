@@ -50,7 +50,7 @@ message StreamInfo {
     /** 错误码 */
     optional uint32 err_code = 4;
     /** 不满足条件信息 */
-    StreamLimit limit = 5;
+    optional StreamLimit limit = 5;
     /** 是否需要vip */
     bool need_vip = 6;
     /** 是否需要登录 */
@@ -72,7 +72,7 @@ message StreamInfo {
 
     optional string subtitle = 15;
     /** 方案 */
-    Scheme scheme = 16;
+    optional Scheme scheme = 16;
     /** 支持drm */
     bool support_drm = 17;
 }
@@ -210,7 +210,7 @@ message LossLessItem {
     /** 是否为hires */
     bool is_lossless_audio = 1;
     /** 音频流信息 */
-    DashItem audio = 2;
+    optional DashItem audio = 2;
     /** 是否需要大会员 */
     bool need_vip = 3;
 }

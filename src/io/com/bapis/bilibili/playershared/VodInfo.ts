@@ -66,7 +66,7 @@ export interface StreamInfo {
     | number
     | undefined;
   /** 不满足条件信息 */
-  limit:
+  limit?:
     | StreamLimit
     | undefined;
   /** 是否需要vip */
@@ -94,7 +94,7 @@ export interface StreamInfo {
     | string
     | undefined;
   /** 方案 */
-  scheme:
+  scheme?:
     | Scheme
     | undefined;
   /** 支持drm */
@@ -305,7 +305,7 @@ export interface LossLessItem {
   /** 是否为hires */
   isLosslessAudio: boolean;
   /** 音频流信息 */
-  audio:
+  audio?:
     | DashItem
     | undefined;
   /** 是否需要大会员 */
@@ -619,14 +619,12 @@ function createBaseStreamInfo(): StreamInfo {
     quality: 0,
     format: "",
     description: "",
-    limit: undefined,
     needVip: false,
     needLogin: false,
     intact: false,
     newDescription: "",
     displayDesc: "",
     superscript: "",
-    scheme: undefined,
     supportDrm: false,
   };
 }
@@ -1952,7 +1950,7 @@ export const VolumeInfo: MessageFns<VolumeInfo> = {
 };
 
 function createBaseLossLessItem(): LossLessItem {
-  return { isLosslessAudio: false, audio: undefined, needVip: false };
+  return { isLosslessAudio: false, needVip: false };
 }
 
 export const LossLessItem: MessageFns<LossLessItem> = {

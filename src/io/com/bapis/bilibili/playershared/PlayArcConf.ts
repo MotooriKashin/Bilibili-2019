@@ -26,7 +26,7 @@ export interface ArcConf {
   /** 是否禁用 */
   disabled: boolean;
   /** 额外内容 */
-  extraContent:
+  extraContent?:
     | ExtraContent
     | undefined;
   /** 不支持场景列表 */
@@ -194,7 +194,7 @@ export const PlayArcConf_ArcConfsEntry: MessageFns<PlayArcConf_ArcConfsEntry> = 
 };
 
 function createBaseArcConf(): ArcConf {
-  return { isSupport: false, disabled: false, extraContent: undefined, unsupportScene: [] };
+  return { isSupport: false, disabled: false, unsupportScene: [] };
 }
 
 export const ArcConf: MessageFns<ArcConf> = {

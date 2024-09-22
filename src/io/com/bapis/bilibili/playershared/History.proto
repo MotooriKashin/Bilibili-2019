@@ -7,9 +7,9 @@ import "src/io/com/bapis/bilibili/playershared/Toast.proto";
 /** 播放历史 */
 message History {
 
-    HistoryInfo current_video = 1;
+    optional HistoryInfo current_video = 1;
 
-    HistoryInfo related_video = 2;
+    optional HistoryInfo related_video = 2;
 }
 
 message HistoryInfo {
