@@ -28,7 +28,7 @@ export namespace base64 {
      * @param buffer Uint8Array
      * @returns 编码结果
      */
-    export function encodeFromUint8Array(buffer: Uint8Array) {
+    export function fromUint8Array(buffer: Uint8Array) {
         return btoa(String.fromCharCode(...buffer));
     }
 
@@ -37,7 +37,7 @@ export namespace base64 {
      * @param str 
      * @returns 
      */
-    export function decodeToUint8Array(str: string) {
+    export function toUint8Array(str: string) {
         return new Uint8Array(atob(str).split('').map(d => d.charCodeAt(0)));
     }
 }

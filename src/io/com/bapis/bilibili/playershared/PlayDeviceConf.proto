@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package bilibili.playershared;
+
+message PlayDeviceConf {
+
+    map<int32, DeviceConf> device_confs = 1;
+}
+
+message DeviceConf {
+
+    ConfValue conf_value = 1;
+}
+
+message ConfValue {
+    oneof value {
+
+        int32 switch_val = 1;
+
+        int32 selected_val = 2;
+    }
+}

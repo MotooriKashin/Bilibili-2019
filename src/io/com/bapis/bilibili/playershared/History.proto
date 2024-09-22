@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package bilibili.playershared;
+
+import "src/io/com/bapis/bilibili/playershared/Toast.proto";
+
+/** 播放历史 */
+message History {
+
+    optional HistoryInfo current_video = 1;
+
+    optional HistoryInfo related_video = 2;
+}
+
+message HistoryInfo {
+
+    int64 progress = 1;
+
+    int64 last_play_cid = 2;
+
+    Toast toast = 3;
+
+    Toast toast_without_time = 4;
+
+    int64 last_play_aid = 5;
+}

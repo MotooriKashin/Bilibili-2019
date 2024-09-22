@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package bilibili.playershared;
+
+import "src/io/com/bapis/bilibili/playershared/Fragment.proto";
+import "src/io/com/bapis/bilibili/playershared/VodInfo.proto";
+import "src/io/com/bapis/bilibili/playershared/PlayArcConf.proto";
+import "src/io/com/bapis/bilibili/playershared/PlayArc.proto";
+
+message FragmentVideo {
+
+    repeated FragmentVideoInfo videos = 1;
+}
+
+message FragmentVideoInfo {
+
+    FragmentInfo fragment_info = 1;
+
+    VodInfo vod_info = 2;
+
+    PlayArcConf play_arc_conf = 3;
+
+    Dimension dimension = 4;
+
+    int64 timelength = 5;
+
+    BizType video_type = 6;
+
+    bool playable_status = 7;
+}

@@ -262,6 +262,7 @@ export class BilibiliPlayer extends Player {
         cid && (this.cid = cid);
         epid && (this.epid = epid);
         kind && (this.kind = kind);
+
         // 请求 playurl
         const qn = +cookie.get('CURRENT_QUALITY') || 0;
         if (this.kind === GroupKind.Pugv && this.epid) {
@@ -323,7 +324,7 @@ export class BilibiliPlayer extends Player {
                 .catch(() => { })
         });
         // 实时弹幕
-        this.#broadcast.room(`video://${this.aid}/${this.cid}${this.ssid ? `?sid=${this.ssid}&epid=${this.epid}` : ''}`);
+        this.#broadcast.room();
         // 观看人数
         total(this.aid, this.cid)
             .then(({ code, message, data }) => {

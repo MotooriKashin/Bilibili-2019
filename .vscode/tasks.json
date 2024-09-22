@@ -18,6 +18,13 @@
 			"command": "./protoc --ts_proto_opt=forceLong=bigint --ts_proto_opt=initializeFieldsAsUndefined=false --plugin=protoc-gen-ts_proto=\".\\\\node_modules\\\\.bin\\\\protoc-gen-ts_proto.cmd\" --ts_proto_out=. ${relativeFile}",
 			"problemMatcher": [],
 			"detail": "编译当前 proto 文件到 typescript 文件（依赖根目录下的 protoc 编译器）"
+		},
+		{
+			"label": "esbuild",
+			"type": "shell",
+			"command": "npx esbuild ${file} --bundle --tree-shaking=true --charset=utf8 --outfile=${fileDirname}/${fileBasenameNoExtension}.js",
+			"problemMatcher": [],
+			"detail": "编译当前 ts 文件用于临时测试"
 		}
 	]
 }

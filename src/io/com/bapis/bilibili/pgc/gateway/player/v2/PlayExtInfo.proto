@@ -1,0 +1,70 @@
+syntax = "proto3";
+
+package bilibili.pgc.gateway.player.v2;
+
+/** 播放扩展信息 */
+message PlayExtInfo {
+    /** 播放配音信息 */
+    PlayDubbingInfo play_dubbing_info = 1;
+}
+
+/** 播放配音信息 */
+message PlayDubbingInfo {
+    /** 背景音频 */
+    AudioMaterialProto background_audio = 1;
+    /** 角色音频列表 */
+    repeated RoleAudioProto role_audio_list = 2;
+    /** 引导文本 */
+    string guide_text = 3;
+}
+
+message AudioMaterialProto {
+
+    string audio_id = 1;
+
+    string title = 2;
+
+    string edition = 3;
+
+    uint64 person_id = 4;
+
+    string person_name = 5;
+
+    string person_avatar = 6;
+
+    repeated DashItem audio = 7;
+}
+
+/** dash条目 */
+message DashItem {
+    /** 清晰度 */
+    uint32 id = 1;
+    /** 主线流 */
+    string base_url = 2;
+    /** 备用流 */
+    repeated string backup_url = 3;
+    /** 带宽 */
+    uint32 bandwidth = 4;
+    /** 编码id */
+    uint32 codecid = 5;
+    /** md5 */
+    string md5 = 6;
+    /** 视频大小 */
+    uint64 size = 7;
+    /** 帧率 */
+    string frame_rate = 8;
+    /** DRM widevine 密钥 */
+    string widevine_pssh = 9;
+}
+
+/** 角色配音信息 */
+message RoleAudioProto {
+    /** 角色ID */
+    int64 role_id = 1;
+    /** 角色名称 */
+    string role_name = 2;
+    /** 角色头像 */
+    string role_avatar = 3;
+    /** 音频素材列表 */
+    repeated AudioMaterialProto audio_material_list = 4;
+}

@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package bilibili.metadata.network;
+
+message Network {
+    /** 网络类型 */
+    NetworkType type = 1;
+    /** 免流类型 */
+    optional TFType tf = 2;
+    /** 运营商 */
+    optional string oid = 3;
+}
+
+/** 网络类型 */
+enum NetworkType {
+    /** 未知 */
+    NT_UNKNOWN = 0;
+    /** WIFI */
+    WIFI = 1;
+    /** 移动网络 */
+    CELLULAR = 2;
+    /** 未连接 */
+    OFFLINE = 3;
+    /** 其他网络 */
+    OTHERNET = 4;
+    /** 以太网 */
+    ETHERNET = 5;
+}
+
+/** 免流类型 */
+enum TFType {
+    /** 正常计费 */
+    TF_UNKNOWN = 0;
+    /** 联通卡 */
+    U_CARD = 1;
+    /** 联通包 */
+    U_PKG = 2;
+    /** 移动卡 */
+    C_CARD = 3;
+    /** 移动包 */
+    C_PKG = 4;
+    /** 电信卡 */
+    T_CARD = 5;
+    /** 电信包 */
+    T_PKG = 6;
+}

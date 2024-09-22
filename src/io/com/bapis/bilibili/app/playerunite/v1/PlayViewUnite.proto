@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+package bilibili.app.playerunite.v1;
+
+import "src/io/com/bapis/google/protobuf/any.proto";
+import "src/io/com/bapis/bilibili/playershared/VideoVod.proto";
+import "src/io/com/bapis/bilibili/playershared/Fragment.proto";
+import "src/io/com/bapis/bilibili/playershared/VodInfo.proto";
+import "src/io/com/bapis/bilibili/playershared/PlayArcConf.proto";
+import "src/io/com/bapis/bilibili/playershared/PlayDeviceConf.proto";
+import "src/io/com/bapis/bilibili/playershared/Event.proto";
+import "src/io/com/bapis/bilibili/playershared/PlayArc.proto";
+import "src/io/com/bapis/bilibili/playershared/QnTrialInfo.proto";
+import "src/io/com/bapis/bilibili/playershared/History.proto";
+import "src/io/com/bapis/bilibili/playershared/ViewInfo.proto";
+import "src/io/com/bapis/bilibili/playershared/FragmentVideo.proto";
+
+/** 统一视频url */
+message PlayViewUniteReq {
+    /** 请求资源VOD信息 */
+    bilibili.playershared.VideoVod vod = 1;
+
+    optional string spmid = 2;
+
+    optional string from_spmid = 3;
+    /** 补充信息, 如ep_id等 */
+    map<string, string> extra_content = 4;
+
+    optional string bvid = 5;
+
+    optional string ad_extra = 6;
+
+    optional bilibili.playershared.Fragment fragment = 7;
+
+    optional string from_scene = 8;
+}
+
+/** 统一视频url */
+message PlayViewUniteResp {
+    /** 音视频流信息 */
+    bilibili.playershared.VodInfo vod_info = 1;
+
+    bilibili.playershared.PlayArcConf play_arc_conf = 2;
+
+    bilibili.playershared.PlayDeviceConf play_device_conf = 3;
+
+    optional bilibili.playershared.Event event = 4;
+    /** 使用 pgcanymodel / ugcanymodel 进行proto any转换成对应业务码结构体 */
+    optional google.protobuf.Any supplement = 5;
+
+    bilibili.playershared.PlayArc play_arc = 6;
+
+    optional bilibili.playershared.QnTrialInfo qn_trial_info = 7;
+
+    optional bilibili.playershared.History history = 8;
+
+    optional bilibili.playershared.ViewInfo view_info = 9;
+
+    optional bilibili.playershared.FragmentVideo fragment_video = 10;
+}

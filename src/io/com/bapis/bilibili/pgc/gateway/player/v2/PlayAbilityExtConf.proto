@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package bilibili.pgc.gateway.player.v2;
+
+/** 云控扩展配置信息 */
+message PlayAbilityExtConf {
+
+    bool allow_close_subtitle = 1;
+
+    FreyaConfig freya_config = 2;
+
+    CastTips cast_tips = 3;
+}
+
+/** 放映室提示语 */
+message FreyaConfig {
+
+    string desc = 1;
+
+    int32 type = 2;
+
+    int32 issued_cnt = 3;
+
+    bool is_always_show = 4;
+
+    int32 screen_number = 5;
+
+    int32 full_screen_number = 6;
+}
+
+
+/** 投屏限制 */
+message CastTips {
+    /** 0 时为无限制, 否则表示不不允许投屏并提示message */
+    int32 code = 1;
+    /** 提示 */
+    string message = 2;
+}
