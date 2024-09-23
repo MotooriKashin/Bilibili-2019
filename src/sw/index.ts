@@ -13,7 +13,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             }
             case 'removeSessionRules': {
                 chrome.declarativeNetRequest.updateSessionRules({
-                    removeRuleIds: message.data
+                    removeRuleIds: message.data,
                 })
                 break;
             }
