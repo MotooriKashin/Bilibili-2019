@@ -6,9 +6,9 @@
  */
 export function updateSessionRules(tabId: number, rules: chrome.declarativeNetRequest.Rule[], tab = true) {
     // 有规则添加规则
-    tab && rules.forEach(d => {
-        // 为每条规则限定标签ID
-        d.condition.tabIds = [tabId];
+    rules.forEach(d => {
+        tab && (d.condition.tabIds = [tabId]); // 为每条规则限定标签ID
+        d.condition.resourceTypes = Object.values(chrome.declarativeNetRequest.ResourceType);
     });
     return chrome.declarativeNetRequest.updateSessionRules({ addRules: rules });
 }
