@@ -53,15 +53,11 @@
     "manifest_version": 3,
     "minimum_chrome_version": "125",
     "name": "__MSG_name__",
-    "options_page": "options/index.html",
     "permissions": [
         "declarativeNetRequest",
         "declarativeNetRequestWithHostAccess",
         "sidePanel"
     ],
-    "side_panel": {
-        "default_path": "sidebar/index.html"
-    },
     "version": "1.0.4.0",
     "web_accessible_resources": [
         {

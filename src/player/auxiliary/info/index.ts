@@ -35,7 +35,7 @@ export class Info extends HTMLDivElement {
 
     #number: Number;
 
-    #more: More;
+    $more: More;
 
     $setting: Setting;
 
@@ -45,7 +45,7 @@ export class Info extends HTMLDivElement {
         this.#player = player;
         this.classList.add('bofqi-info');
         this.#number = this.appendChild(new Number(player));
-        this.#more = this.appendChild(new More(player));
+        this.$more = this.appendChild(new More(player));
         this.$setting = this.appendChild(new Setting(player));
     }
 }

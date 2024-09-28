@@ -158,7 +158,12 @@ export interface DashVideo {
   backupUrl: string[];
   /** 带宽 */
   bandwidth: number;
-  /** 编码id */
+  /**
+   * 编码id
+   * | 7 | 12 | 13 |
+   * | :-: | :-: | :-: |
+   * | AVC | HEVC | AV1 |
+   */
   codecid: number;
   /** md5 */
   md5?:

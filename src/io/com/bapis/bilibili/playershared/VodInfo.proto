@@ -107,7 +107,12 @@ message DashVideo {
     repeated string backup_url = 2;
     /** 带宽 */
     uint32 bandwidth = 3;
-    /** 编码id */
+    /**
+     * 编码id
+     * | 7 | 12 | 13 |
+     * | :-: | :-: | :-: |
+     * | AVC | HEVC | AV1 |
+     */
     uint32 codecid = 4;
     /** md5 */
     optional string md5 = 5;

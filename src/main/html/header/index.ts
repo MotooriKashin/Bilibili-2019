@@ -130,11 +130,10 @@ export class Header extends HTMLElement {
                     for (const { resources, scale, rotate, translate, blur, opacity } of animatedBannerConfig.layers) {
                         const div = Element.add('div', { class: 'layer', appendTo: this.#banner });
                         for (const { id, src } of resources) {
-                            const $scale = (scale?.initial || 0) + (scale?.offset || 0);
-                            const $rotate = (rotate?.initial || 0) + (rotate?.offset || 0);
-                            const $translate = [((translate?.initial?.[0] || 0) + (translate?.offset?.[0] || 0)) * ($scale || 1), (translate?.initial?.[1] || 0) + (translate?.offset?.[1] || 0) * ($scale || 1)];
-                            const $blur = blur?.wrap === 'alternate' ? Math.abs((blur.initial || 0) + (blur.offset || 0)) : Math.max(0, (blur?.initial || 0) + (blur?.offset || 0));
-                            const x = (opacity?.initial === undefined ? 1 : opacity.initial) + (opacity?.offset || 0);
+                            // const $scale = (scale?.initial || 1);
+                            const $translate = [translate?.initial?.[0] || 0, translate?.initial?.[1] || 0];
+                            const $blur = blur?.wrap === 'alternate' ? Math.abs(blur.initial || 0) : Math.max(0, blur?.initial || 0);
+                            const x = opacity?.initial === undefined ? 1 : opacity.initial;
                             let y = Math.abs(x % 1);
                             if (Math.abs(x % 2) >= 1) {
                                 y = 1 - y;
@@ -146,14 +145,14 @@ export class Header extends HTMLElement {
                                 video.loop = true;
                                 video.playsInline = true;
 
-                                $rotate && (video.style.rotate = $rotate + 'deg');
+                                // $scale === 1 || (video.style.scale = <any>$scale);
                                 ($translate[0] || $translate[1]) && (video.style.translate = `calc(100cqb / 155 * (${$translate[0]})) calc(100cqb / 155 * (${$translate[1]}))`);
                                 ($blur < 1e-4) || (video.style.filter = `blur(${$blur}px)`);
                                 video.style.opacity = opacity?.wrap === 'alternate' ? <any>y : <any>Math.max(0, Math.min(1, x));
                             } else {
                                 const img = Element.add('img', { attribute: { src, id: <any>id }, appendTo: div },);
-                                $rotate && (img.style.rotate = $rotate + 'deg');
-                                // ($translate[0] || $translate[1]) && (img.style.translate = `calc(100cqb / 155 * (${$translate[0]})) calc(100cqb / 155 * (${$translate[1]}))`);
+                                // $scale === 1 || (img.style.scale = <any>$scale);
+                                ($translate[0] || $translate[1]) && (img.style.translate = `calc(100cqb / 155 * (${$translate[0]})) calc(100cqb / 155 * (${$translate[1]}))`);
                                 ($blur < 1e-4) || (img.style.filter = `blur(${$blur}px)`);
                                 img.style.opacity = opacity?.wrap === 'alternate' ? <any>y : <any>Math.max(0, Math.min(1, x));
                             }

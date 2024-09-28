@@ -80,7 +80,6 @@
     background-color: var(--eee);
     aspect-ratio: 32 / 3;
     anchor-name: --head-banner;
-    container: banner / size;
     position: relative;
     overflow: clip;
 
@@ -92,10 +91,10 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        container: layer / size;
 
         >img,
         >video {
-            inline-size: 100%;
             block-size: 100%;
         }
     }

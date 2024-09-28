@@ -95,7 +95,12 @@ export interface VideoVod {
   fourk?:
     | boolean
     | undefined;
-  /** 视频编码 */
+  /**
+   * 视频编码
+   * | 0 | 1 | 2 | 3 |
+   * | :-: | :-: | :-: | :-: |
+   * | 不指定 | AVC | HEVC | AV1 |
+   */
   preferCodecType: CodeType;
   /** 响度均衡 */
   voiceBalance?:

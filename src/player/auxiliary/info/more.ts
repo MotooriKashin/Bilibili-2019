@@ -51,9 +51,10 @@ export class More extends HTMLButtonElement {
 
         this.#wrap.addEventListener('click', () => this.#wrap.hidePopover());
 
-        this.#add(
+        this.add(
             {
-                text: '加载文件', callback: () => {
+                text: '加载文件',
+                callback: () => {
                     toastr.info('请选择要打开的视频、弹幕或字幕文件');
                     showOpenFilePicker({
                         multiple: true,
@@ -102,7 +103,7 @@ export class More extends HTMLButtonElement {
     }
 
     /** 添加选项 */
-    #add(...items: Item[]) {
+    add(...items: Item[]) {
         const f = document.createDocumentFragment();
         items.forEach(({ text, disable, callback }) => {
             const button = document.createElement('button');

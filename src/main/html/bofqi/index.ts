@@ -1,5 +1,6 @@
 import { customElement } from "../../../utils/Decorator/customElement";
 import { Element } from "../../../utils/element";
+import { Download } from "../../download";
 import { BilibiliPlayer } from "../../player";
 import stylesheet from "./index.css" with {type: 'css'};
 import { Part } from "./part";
@@ -17,12 +18,21 @@ export class Bofqi extends HTMLElement {
 
     #toolbar = new Toolbar();
 
-    #playerBox = Element.add('div', { class: 'player-box', appendTo: this.#host, children: [this.#part, this.#player, this.#toolbar] });
+    #download = new Download();
+
+    #playerBox = Element.add('div', { class: 'player-box', appendTo: this.#host, children: [this.#part, this.#player, this.#toolbar, this.#download] });
 
     constructor() {
         super();
 
         this.#host.adoptedStyleSheets = [stylesheet];
         this.#player.classList.add('bilibili-player');
+
+        this.#player.$auxiliary.$info.$more.add({
+            text: '下载视频',
+            callback: () => {
+                this.#download.showPopover();
+            }
+        })
     }
 }
