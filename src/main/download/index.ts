@@ -54,6 +54,7 @@ export class Download extends HTMLElement {
         appendTo: this.#from, data: { label: '下载方式' }, innerHTML: `<select name="method" title="要使用的下载方法。\n">
     <option value="0" disabled>浏览器</option>
     <option value="1" selected>IDM</option>
+    <option value="2">curl</option>
 </select>` });
 
     #playurl = Element.add('label', {
@@ -475,6 +476,21 @@ export class Download extends HTMLElement {
         switch (method) {
             case '1': {
                 IDM.download({ url, fileName, userAgent, referer, origin: referer });
+                break;
+            }
+            case '2': {
+                const arr = ['curl', '-C', '-', `"${url}"`];
+                fileName && arr.push('-o', `"${fileName}"`);
+                referer && arr.push('--referer', `"${referer}"`);
+                userAgent && arr.push('--user-agent', `"${userAgent}"`);
+                navigator.clipboard.writeText(arr.join(' '))
+                    .then(() => {
+                        toastr.success('已复制 curl 命令行到剪切板，可粘贴到任意终端进行下载');
+                    })
+                    .catch(e => {
+                        toastr.error('已复制 curl 命令行到剪切板失败', e);
+                        console.error(e);
+                    })
                 break;
             }
         }
