@@ -109,7 +109,7 @@ interface IMPDJsonData {
     duration: number;
     dolby?: {
         type: number;
-        audio: IAVStreamSegment[];
+        audio?: IAVStreamSegment[];
     };
     flac?: {
         display: boolean;

@@ -21,7 +21,7 @@ export class Progress {
     }
 
     #init = () => {
-        videoshot(this.player.cid, this.player.aid)
+        videoshot(this.player.$cid, this.player.$aid)
             .then(d => {
                 this.pvData = d;
             })

@@ -22,6 +22,7 @@ import { AV } from "../../utils/av";
 import { cookie } from "../../utils/cookie";
 import { customElement } from "../../utils/Decorator/customElement";
 import { https } from "../../utils/https";
+import { Download } from "./download";
 import { MAIN_EVENT, mainEv } from "../event";
 import { mainOptions } from "../option";
 import { POLICY } from "../policy";
@@ -38,21 +39,26 @@ import { V2 } from "./v2";
 @customElement(undefined, `bilibili-player-${Date.now()}`)
 export class BilibiliPlayer extends Player {
 
-    aid = 0;
+    $aid = 0;
 
-    cid = 0;
+    $cid = 0;
 
-    ssid = 0;
+    $ssid = 0;
 
-    epid = 0;
+    $epid = 0;
 
-    kind = GroupKind.Ugc;
+    $kind = GroupKind.Ugc;
+
+    $title = '';
 
     /** 视频推荐组件 */
     #recommend = new Recommend(this);
 
     /** 实时弹幕 */
     #broadcast = new Broadcast(this);
+
+    /** 下载组件 */
+    #download = new Download(this);
 
     constructor() {
         super();
@@ -65,18 +71,26 @@ export class BilibiliPlayer extends Player {
         new Progress(this);
         // v2 接口
         new V2(this);
+
+        this.$auxiliary.$info.$more.add({
+            text: '下载视频',
+            callback: () => {
+                this.#download.showPopover();
+            }
+        })
+
         mainEv.trigger(MAIN_EVENT.OPTINOS_CHANGE, mainOptions);
         ev.bind(PLAYER_EVENT.LOAD_VIDEO_FILE, () => {
-            this.aid = this.cid = this.ssid = this.epid = 0;
-            this.kind = GroupKind.Ugc;
+            this.$aid = this.$cid = this.$ssid = this.$epid = 0;
+            this.$kind = GroupKind.Ugc;
         });
         ev.bind(PLAYER_EVENT.DANMAKU_INPUT, ({ detail }) => {
             const csrf = cookie.get('bili_jct');
             if (csrf) {
                 dmPost({
                     csrf,
-                    aid: this.aid,
-                    oid: this.cid,
+                    aid: this.$aid,
+                    oid: this.$cid,
                     ...detail,
                 })
                     .then(({ code, message, data }) => {
@@ -101,32 +115,32 @@ export class BilibiliPlayer extends Player {
                 const path = url.pathname.split('/');
                 switch (true) {
                     case /^av\d+$/i.test(path[2]): {
-                        this.aid = +path[2].slice(2);
+                        this.$aid = +path[2].slice(2);
                         break;
                     }
                     case /^bv1[a-z0-9]{9}$/i.test(path[2]): {
-                        this.aid = +AV.fromBV(path[2]);
+                        this.$aid = +AV.fromBV(path[2]);
                         break;
                     }
                 }
-                if (this.aid) {
-                    Promise.allSettled([cards({ av: this.aid }), pagelist(this.aid)])
+                if (this.$aid) {
+                    Promise.allSettled([cards({ av: this.$aid }), pagelist(this.$aid)])
                         .then(([cards, pagelist]) => {
                             const card = cards.status === "fulfilled" && cards.value;
                             const page = pagelist.status === "fulfilled" && pagelist.value;
                             if (page) {
                                 const p = Number(new URLSearchParams(url.search).get('p')) || 1;
-                                this.cid = page.data[p - 1].cid;
+                                this.$cid = page.data[p - 1].cid;
                             }
                             if (card) {
-                                const d = card.data[`av${this.aid}`];
-                                this.cid || (this.cid = d.cid);
+                                const d = card.data[`av${this.$aid}`];
+                                this.$cid || (this.$cid = d.cid);
                                 if (d.redirect_url) {
                                     const path = d.redirect_url.split('/');
-                                    /^ep\d+$/i.test(path[5]) && (this.epid = +path[5].slice(2));
+                                    /^ep\d+$/i.test(path[5]) && (this.$epid = +path[5].slice(2));
                                 }
                                 navigator.mediaSession.metadata = new MediaMetadata({
-                                    album: d.title,
+                                    album: this.$title = d.title,
                                     artist: d.owner.name,
                                     artwork: [{
                                         src: d.pic
@@ -134,16 +148,16 @@ export class BilibiliPlayer extends Player {
                                     title: d.title,
                                 });
                             }
-                            if (!this.cid) throw new ReferenceError(`cid 无效`, { cause: [cards, pagelist] });
+                            if (!this.$cid) throw new ReferenceError(`cid 无效`, { cause: [cards, pagelist] });
                             this.$connect();
                             this.#recommend.av();
                         })
                         .catch(e => {
-                            toastr.error('请求 aid 数据错误~', `aid: ${this.aid}`, e);
+                            toastr.error('请求 aid 数据错误~', `aid: ${this.$aid}`, e);
                             console.error(e);
                         });
                 } else {
-                    toastr.error('识别 aid 信息错误~', `aid: ${this.aid}`);
+                    toastr.error('识别 aid 信息错误~', `aid: ${this.$aid}`);
                 }
                 break;
             }
@@ -151,51 +165,67 @@ export class BilibiliPlayer extends Player {
                 const path = url.pathname.split('/');
                 switch (true) {
                     case /^ss\d+$/i.test(path[3]): {
-                        this.ssid = +path[3].slice(2);
+                        this.$ssid = +path[3].slice(2);
                         break;
                     }
                     case /^ep\d+$/i.test(path[3]): {
-                        this.epid = +path[3].slice(2);
+                        this.$epid = +path[3].slice(2);
                         break;
                     }
                 }
-                if (this.ssid || this.epid) {
-                    pgcAppSeason(this.ssid ? { season_id: this.ssid } : { ep_id: this.epid })
+                if (this.$ssid || this.$epid) {
+                    pgcAppSeason(this.$ssid ? { season_id: this.$ssid } : { ep_id: this.$epid })
                         .then(({ code, message, data }) => {
                             if (code !== 0) throw new ReferenceError(message, { cause: { code, message, data } });
-                            this.ssid || (this.ssid = data.season_id);
-                            this.epid || (data.user_status.progress?.last_ep_id && (this.epid = data.user_status.progress?.last_ep_id));
+                            this.$ssid || (this.$ssid = data.season_id);
+                            this.$epid || (data.user_status.progress?.last_ep_id && (this.$epid = data.user_status.progress?.last_ep_id));
                             data.modules.forEach(d => {
                                 switch (d.style) {
                                     case "positive":
                                     case "section": {
-                                        this.epid || (this.epid = d.data.episodes[0]?.ep_id);
-                                        if (this.epid) {
-                                            const ep = d.data.episodes.find(d => d.ep_id === this.epid);
+                                        this.$epid || (this.$epid = d.data.episodes[0]?.ep_id);
+                                        if (this.$epid) {
+                                            const ep = d.data.episodes.find(d => d.ep_id === this.$epid);
                                             if (ep) {
-                                                this.aid = ep.aid;
-                                                this.cid = ep.cid;
+                                                this.$aid = ep.aid;
+                                                this.$cid = ep.cid;
+                                                navigator.mediaSession.metadata = new MediaMetadata({
+                                                    album: this.$title = `${data.title}：${isNaN(+ep.title) ? ep.title : `第${ep.title}话`} ${ep.long_title}`,
+                                                    artist: data.title,
+                                                    artwork: [{
+                                                        src: ep.cover
+                                                    }],
+                                                    title: ep.title,
+                                                });
                                             }
                                         }
                                         break;
                                     }
                                 }
                             });
-                            if (this.cid && this.epid) {
+                            if (this.$cid && this.$epid) {
                                 this.$connect();
                                 this.#recommend.bangumi();
-                            } else if (this.ssid) {
-                                pgcSection(this.ssid)
+                            } else if (this.$ssid) {
+                                pgcSection(this.$ssid)
                                     .then(({ code, message, result }) => {
                                         if (code !== 0) throw new ReferenceError(message, { cause: { code, message, result } });
                                         const eps = (<IEpisode[]>[]).concat(...(result.main_section?.episodes || []), ...result.section.map(d => d.episodes));
-                                        const ep = this.epid ? eps.find(d => d.id === this.epid) : eps[0];
+                                        const ep = this.$epid ? eps.find(d => d.id === this.$epid) : eps[0];
                                         if (ep) {
-                                            this.epid = ep.id;
-                                            this.aid = ep.aid;
-                                            this.cid = ep.cid;
+                                            this.$epid = ep.id;
+                                            this.$aid = ep.aid;
+                                            this.$cid = ep.cid;
                                             this.$connect();
                                             this.#recommend.bangumi();
+                                            navigator.mediaSession.metadata = new MediaMetadata({
+                                                album: this.$title = `${data.title}：${isNaN(+ep.title) ? ep.title : `第${ep.title}话`} ${ep.long_title}`,
+                                                artist: data.title,
+                                                artwork: [{
+                                                    src: ep.cover
+                                                }],
+                                                title: ep.title,
+                                            });
                                         }
                                     })
                                     .catch(e => {
@@ -207,11 +237,11 @@ export class BilibiliPlayer extends Player {
                             }
                         })
                         .catch(e => {
-                            toastr.error('请求 Bangumi 信息错误~', `ssid: ${this.ssid}`, `epid: ${this.epid}`, e);
+                            toastr.error('请求 Bangumi 信息错误~', `ssid: ${this.$ssid}`, `epid: ${this.$epid}`, e);
                             console.error(e);
                         });
                 } else {
-                    toastr.error('识别 Bangumi 信息错误~', `ssid: ${this.ssid}`, `epid: ${this.epid}`);
+                    toastr.error('识别 Bangumi 信息错误~', `ssid: ${this.$ssid}`, `epid: ${this.$epid}`);
                 }
                 break;
             }
@@ -219,11 +249,11 @@ export class BilibiliPlayer extends Player {
                 const path = url.hash.split('/');
                 switch (true) {
                     case /^av\d+$/i.test(path[1]): {
-                        this.aid = +path[1].slice(2);
+                        this.$aid = +path[1].slice(2);
                         break;
                     }
                     case /^bv1[a-z0-9]{9}$/i.test(path[1]): {
-                        this.aid = +AV.fromBV(path[1]);
+                        this.$aid = +AV.fromBV(path[1]);
                         break;
                     }
                 }
@@ -231,12 +261,12 @@ export class BilibiliPlayer extends Player {
                 toviewWeb()
                     .then(({ code, message, data }) => {
                         if (code !== 0) throw new ReferenceError(message, { cause: { code, message, data } });
-                        this.aid || (this.aid = data.list[0].aid);
-                        const { cid, redirect_url, pages } = data.list.find(d => d.aid === this.aid) || data.list[0];
-                        this.cid = pages[p - 1].cid || cid;
+                        this.$aid || (this.$aid = data.list[0].aid);
+                        const { cid, redirect_url, pages } = data.list.find(d => d.aid === this.$aid) || data.list[0];
+                        this.$cid = pages[p - 1].cid || cid;
                         if (redirect_url) {
                             const path = redirect_url.split('/');
-                            /^ep\d+$/i.test(path[5]) && (this.epid = +path[5].slice(2));
+                            /^ep\d+$/i.test(path[5]) && (this.$epid = +path[5].slice(2));
                         }
                         if (!cid) throw new ReferenceError(`cid 无效`, { cause: data });
                         this.$connect();
@@ -258,15 +288,15 @@ export class BilibiliPlayer extends Player {
         epid?: number,
         kind?: GroupKind,
     ) {
-        aid && (this.aid = aid);
-        cid && (this.cid = cid);
-        epid && (this.epid = epid);
-        kind && (this.kind = kind);
+        aid && (this.$aid = aid);
+        cid && (this.$cid = cid);
+        epid && (this.$epid = epid);
+        kind && (this.$kind = kind);
 
         // 请求 playurl
         const qn = +cookie.get('CURRENT_QUALITY') || 0;
-        if (this.kind === GroupKind.Pugv && this.epid) {
-            pugvPlayurl(this.aid, this.cid, this.epid, qn)
+        if (this.$kind === GroupKind.Pugv && this.$epid) {
+            pugvPlayurl(this.$aid, this.$cid, this.$epid, qn)
                 .then(({ code, message, data }) => {
                     if (code !== 0) throw new ReferenceError(message, { cause: { code, message, data } });
                     data.is_preview && toastr.warn('正在观看预览片段~', '可能需要开通大会员或者付费才能观看全片');
@@ -277,8 +307,8 @@ export class BilibiliPlayer extends Player {
                     console.error(e);
                     new FlvAgent(this.$video, { type: 'mp4', url: '//s1.hdslb.com/bfs/static/player/media/error.mp4' });
                 })
-        } else if (this.epid) {
-            pgcPlayurl(this.aid, this.cid, this.epid, qn)
+        } else if (this.$epid) {
+            pgcPlayurl(this.$aid, this.$cid, this.$epid, qn)
                 .then(({ code, message, result }) => {
                     if (code !== 0) throw new ReferenceError(message, { cause: { code, message, result } });
                     result.is_preview && toastr.warn('正在观看预览片段~', '可能需要开通大会员或者付费才能观看全片');
@@ -290,7 +320,7 @@ export class BilibiliPlayer extends Player {
                     new FlvAgent(this.$video, { type: 'mp4', url: '//s1.hdslb.com/bfs/static/player/media/error.mp4' });
                 });
         } else {
-            playurl(this.aid, this.cid, qn)
+            playurl(this.$aid, this.$cid, qn)
                 .then(({ code, message, data }) => {
                     if (code !== 0) throw new ReferenceError(message, { cause: { code, message, data } });
                     this.#attachMedia(data);
@@ -302,11 +332,11 @@ export class BilibiliPlayer extends Player {
                 });
         }
         // 请求弹幕
-        const d = await view(this.cid, this.aid);
+        const d = await view(this.$cid, this.$aid);
         if (d.dmSge) {
             const { total } = d.dmSge;
             for (let i = 1; i <= total; i++) {
-                segSo(this.cid, this.aid, i)
+                segSo(this.$cid, this.$aid, i)
                     .then(d => {
                         this.addDanmaku(<IDanmaku[]>d.elems);
                     })
@@ -326,7 +356,7 @@ export class BilibiliPlayer extends Player {
         // 实时弹幕
         this.#broadcast.room();
         // 观看人数
-        total(this.aid, this.cid)
+        total(this.$aid, this.$cid)
             .then(({ code, message, data }) => {
                 if (code !== 0) throw new ReferenceError(message, { cause: { code, message, data } });
                 ev.trigger(PLAYER_EVENT.ONLINE_NUMBER, data);
@@ -417,8 +447,8 @@ export class BilibiliPlayer extends Player {
      * @param fail 获取对应画质失败回调
      */
     updateSource(qn?: number, success?: Function, fail?: Function) {
-        if (this.kind === GroupKind.Pugv && this.epid) {
-            pugvPlayurl(this.aid, this.cid, this.epid, qn)
+        if (this.$kind === GroupKind.Pugv && this.$epid) {
+            pugvPlayurl(this.$aid, this.$cid, this.$epid, qn)
                 .then(({ code, message, data }) => {
                     if (code !== 0) throw new ReferenceError(message, { cause: { code, message, result: data } });
                     this.#attachMedia(data, this.$video.currentTime);
@@ -434,8 +464,8 @@ export class BilibiliPlayer extends Player {
                     toastr.error('请求更新画质失败~', e)
                     fail?.();
                 });
-        } else if (this.epid) {
-            pgcPlayurl(this.aid, this.cid, this.epid, qn)
+        } else if (this.$epid) {
+            pgcPlayurl(this.$aid, this.$cid, this.$epid, qn)
                 .then(({ code, message, result }) => {
                     if (code !== 0) throw new ReferenceError(message, { cause: { code, message, result } });
                     this.#attachMedia(result, this.$video.currentTime);
@@ -452,7 +482,7 @@ export class BilibiliPlayer extends Player {
                     fail?.();
                 });
         } else {
-            playurl(this.aid, this.cid, qn)
+            playurl(this.$aid, this.$cid, qn)
                 .then(({ code, message, data }) => {
                     if (code !== 0) throw new ReferenceError(message, { cause: { code, message, result: data } });
                     this.#attachMedia(data, this.$video.currentTime);
@@ -473,9 +503,10 @@ export class BilibiliPlayer extends Player {
 
     /** 重置媒体信息 */
     identify() {
-        this.aid = this.cid = this.ssid = this.epid = 0;
-        this.kind = GroupKind.Ugc;
+        this.$aid = this.$cid = this.$ssid = this.$epid = 0;
+        this.$kind = GroupKind.Ugc;
         super.identify();
+        this.#download.identify();
         mainEv.trigger(MAIN_EVENT.IDENTIFY, void 0);
         ev.trigger(PLAYER_EVENT.CALL_NEXT_REGISTER, void 0);
     }

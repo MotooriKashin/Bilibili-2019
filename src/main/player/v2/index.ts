@@ -12,7 +12,7 @@ export class V2 {
     }
 
     private connect = () => {
-        v2(this.player.cid, this.player.aid, this.player.ssid)
+        v2(this.player.$cid, this.player.$aid, this.player.$ssid)
             .then(({ code, message, data }) => {
                 if (code !== 0) throw new ReferenceError(message, { cause: { code, message, data } });
                 this.subtitle(data.subtitle)

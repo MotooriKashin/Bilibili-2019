@@ -138,6 +138,14 @@ export class Nano {
                         if (ep) {
                             this.#aid = ep.aid;
                             this.#cid = ep.cid;
+                            navigator.mediaSession.metadata = new MediaMetadata({
+                                album: this.#player!.$title = `${data.title}：${isNaN(+ep.title) ? ep.title : `第${ep.title}话`} ${ep.subtitle}`,
+                                artist: data.title,
+                                artwork: [{
+                                    src: ep.cover
+                                }],
+                                title: ep.title,
+                            });
                         }
                         if (this.#epid && this.#cid) {
                             this.#player?.$connect(this.#aid, this.#cid, this.#epid, GroupKind.Pugv);
@@ -168,6 +176,14 @@ export class Nano {
                                     if (ep) {
                                         this.#aid = ep.aid;
                                         this.#cid = ep.cid;
+                                        navigator.mediaSession.metadata = new MediaMetadata({
+                                            album: this.#player!.$title = `${data.title}：${isNaN(+ep.title) ? ep.title : `第${ep.title}话`} ${ep.long_title}`,
+                                            artist: data.title,
+                                            artwork: [{
+                                                src: ep.cover
+                                            }],
+                                            title: ep.title,
+                                        });
                                     }
                                 }
                                 break;
@@ -188,6 +204,14 @@ export class Nano {
                                     this.#aid = ep.aid;
                                     this.#cid = ep.cid;
                                     this.#player?.$connect(this.#aid, this.#cid, this.#epid);
+                                    navigator.mediaSession.metadata = new MediaMetadata({
+                                        album: this.#player!.$title = `${data.title}：${isNaN(+ep.title) ? ep.title : `第${ep.title}话`} ${ep.long_title}`,
+                                        artist: data.title,
+                                        artwork: [{
+                                            src: ep.cover
+                                        }],
+                                        title: ep.title,
+                                    });
                                 }
                             })
                             .catch(e => {
@@ -219,7 +243,7 @@ export class Nano {
                             /^ep\d+$/i.test(path[5]) && (this.#epid = +path[5].slice(2));
                         }
                         navigator.mediaSession.metadata = new MediaMetadata({
-                            album: d.title,
+                            album: this.#player!.$title = d.title,
                             artist: d.owner.name,
                             artwork: [{
                                 src: d.pic

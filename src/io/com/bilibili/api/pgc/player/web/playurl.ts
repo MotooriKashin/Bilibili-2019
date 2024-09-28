@@ -116,7 +116,7 @@ export interface IDash {
         width: number;
     }[];
     dolby: {
-        audio: IDash['audio'];
+        audio?: IDash['audio'];
         type: number;
     };
     duration: number;
