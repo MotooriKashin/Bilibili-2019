@@ -54,7 +54,8 @@ export class Download extends HTMLElement {
         appendTo: this.#from, data: { label: '下载方式' }, innerHTML: `<select name="method" title="要使用的下载方法。\n">
     <option value="0" disabled>浏览器</option>
     <option value="1" selected>IDM</option>
-    <option value="2">curl</option>
+    <option value="2">curl 命令</option>
+    <option value="3">aria2c 命令</option>
 </select>` });
 
     #playurl = Element.add('label', {
@@ -485,12 +486,27 @@ export class Download extends HTMLElement {
                 userAgent && arr.push('--user-agent', `"${userAgent}"`);
                 navigator.clipboard.writeText(arr.join(' '))
                     .then(() => {
-                        toastr.success('已复制 curl 命令行到剪切板，可粘贴到任意终端进行下载');
+                        toastr.success('已复制 curl 命令行到剪切板，可粘贴到终端进行下载', '当然前提是您安装了 curl 程序', 'Windows 下情使用 cmd 而不是 PowerShell');
                     })
                     .catch(e => {
                         toastr.error('已复制 curl 命令行到剪切板失败', e);
                         console.error(e);
+                    });
+                break;
+            }
+            case '3': {
+                const arr = ['aria2c', `"${url}"`];
+                fileName && arr.push(`--out="${fileName}"`);
+                referer && arr.push(`--referer="${referer}"`);
+                userAgent && arr.push(`--user-agent="${userAgent}"`);
+                navigator.clipboard.writeText(arr.join(' '))
+                    .then(() => {
+                        toastr.success('已复制 aria2c 命令行到剪切板，可粘贴到终端进行下载', '当然前提是您安装了 aria2c 程序');
                     })
+                    .catch(e => {
+                        toastr.error('已复制 aria2c 命令行到剪切板失败', e);
+                        console.error(e);
+                    });
                 break;
             }
         }
