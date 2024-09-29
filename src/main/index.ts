@@ -1,4 +1,6 @@
+import { AccessKey } from "./accessKey";
 import { InitComment } from "./comment/initComment";
+import { MAIN_EVENT, mainEv } from "./event";
 import { Av } from "./html/av";
 import { Bangumi } from "./html/bangumi";
 import { BiliHeader } from "./html/header/BiliHeader";
@@ -52,3 +54,9 @@ switch (location.hostname) {
         break;
     }
 }
+
+let accessKey: AccessKey;
+
+mainEv.bind(MAIN_EVENT.ACCESS_KEY, () => {
+    (accessKey || (accessKey = new AccessKey())).showPopover();
+})

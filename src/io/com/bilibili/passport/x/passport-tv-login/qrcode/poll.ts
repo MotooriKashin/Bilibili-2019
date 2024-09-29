@@ -29,7 +29,7 @@ interface IPoll extends RestType {
      */
     code: number;
     /** 当且仅当 code===0 时登录成功 */
-    data?: IPollData;
+    data: IPollData;
 }
 
 interface IPollData {

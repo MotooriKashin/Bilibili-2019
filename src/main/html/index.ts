@@ -36,8 +36,6 @@ export class Html extends HTMLHtmlElement {
 
     private $body = Element.add('body', { appendTo: this });
 
-    // private $goTop = Element.add('div', { class: 'go-top-m', title: '返回顶部' }, undefined, svg_sent);
-
     constructor() {
         super();
 

@@ -1,21 +1,16 @@
 import { pgcPlayurl } from "../../../io/com/bilibili/api/pgc/player/web/playurl";
-import { IModulePositiveEpisode, pgcAppSeason } from "../../../io/com/bilibili/api/pgc/view/v2/app/season";
-import { IEpisode, pgcSection } from "../../../io/com/bilibili/api/pgc/view/web/season/user/section";
 import { pugvPlayurl } from "../../../io/com/bilibili/api/pugv/player/web/playurl";
 import { playurl } from "../../../io/com/bilibili/api/x/player/playurl";
-import { toviewWeb } from "../../../io/com/bilibili/api/x/v2/history/toview/web";
-import { detail } from "../../../io/com/bilibili/api/x/web-interface/view/detail";
 import { PlayViewUnite } from "../../../io/net/biliapi/grpc/bilibili.app.playerunite.v1.Player/PlayViewUnite";
 import { toastr } from "../../../toastr";
-import { AV } from "../../../utils/av";
 import { customElement } from "../../../utils/Decorator/customElement";
 import { Element } from "../../../utils/element";
 import { Format } from "../../../utils/fomat";
 import { IDM } from "../../IDM";
 import { BilibiliPlayer } from "..";
 import { GroupKind } from "../nano/GroupKind";
-import { ROUTER } from "../../router";
 import stylesheet from "./index.css" with {type: 'css'};
+import { MAIN_EVENT, mainEv } from "../../event";
 
 /** 下载功能 */
 @customElement(undefined, `download-${Date.now()}`)
@@ -73,9 +68,11 @@ export class Download extends HTMLElement {
     <option value="3">AV1</option>
 </select>` });
 
-    // #idm = Element.add('fieldset', { appendTo: this.#from, attribute: { name: 'idm' }, innerHTML: '<legend>IDM</legend>' });
+    #accessKey = Element.add('input', { appendTo: Element.add('label', { appendTo: this.#from, data: { label: 'access_key' }, attribute: { title: '移动端鉴权。\n使用非网页端下载流接口时可能需要。' } }), attribute: { name: 'access_key', placeholder: 'APP端鉴权' } });
 
-    #fileName = Element.add('input', { appendTo: Element.add('label', { appendTo: this.#from, data: { label: '文件名' }, attribute: { title: '指定要保存的文件名（不含拓展名）。\n一般点击【获取】按钮会自动生成，可以在其基础上修改。\n另外，不是所有下载方式都支持指定文件名。' } }), attribute: { name: 'filename' } });
+    #accessKeyButton = Element.add('button', { insertTo: { target: this.#accessKey, where: 'beforebegin' }, attribute: { type: 'button' }, innerText: '获取' })
+
+    #fileName = Element.add('input', { appendTo: Element.add('label', { appendTo: this.#from, data: { label: '文件名' }, attribute: { title: '指定要保存的文件名（不含拓展名）。\n一般点击【获取】按钮会自动生成，可以在其基础上修改。\n另外，不是所有下载方式都支持指定文件名。' } }), attribute: { name: 'filename', placeholder: '文件名（不含拓展名）' } });
 
     #referer = Element.add('input', { appendTo: Element.add('label', { appendTo: this.#from, data: { label: 'Referer' }, attribute: { title: '鉴权请求头之一。\n不正确的数值将导致服务器拒绝下载请求，除非你明确知道正确数值，否则不建议修改。\n该请求头包含了当前下载请求的来源页面的地址，即表示当前下载是通过此来源页面里的链接发起的。' } }), attribute: { name: 'referer' } });
 
@@ -103,7 +100,12 @@ export class Download extends HTMLElement {
         });
         this.addEventListener('toggle', () => {
             this.#fileName.value = this.player.$title;
-        })
+            const accessKey = localStorage.getItem('access_key');
+            accessKey && (this.#accessKey.value = accessKey);
+        });
+        this.#accessKeyButton.addEventListener('click', () => {
+            mainEv.trigger(MAIN_EVENT.ACCESS_KEY, void 0);
+        });
     }
 
     private getp(v: number) {
@@ -166,7 +168,7 @@ export class Download extends HTMLElement {
                 break;
             }
             case '1': {
-                const accessKey = localStorage.getItem('access_key');
+                const accessKey = String(form.get('access_key'));
                 if (!accessKey) throw new ReferenceError('请先获取移动端鉴权~');
                 PlayViewUnite({ accessKey, aid: BigInt(this.player.$aid), cid: BigInt(this.player.$cid), preferCodecType: Number(form.get('codetype')) || 0 })
                     .then(({ vodInfo }) => {
