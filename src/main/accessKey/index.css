@@ -1,0 +1,164 @@
+@scope {
+    :scope {
+        color-scheme: light dark;
+
+        --000000a6: #000000a6;
+        --999: #999;
+        --00a1d6: #00a1d6;
+        --e7e7e7: #e7e7e7;
+        --212121: #212121;
+        --ffffffe6: #ffffffe6;
+        --fff: #fff;
+        --505050: #505050;
+
+        border: 0;
+        border-radius: 8px;
+        box-shadow: 0 0 6px rgba(0, 0, 0, .1);
+        padding: 52px 65px 29px 92px;
+        background-image: url(https://s1.hdslb.com/bfs/seed/jinkela/short/mini-login/img/22_open.72c00877.png), url(https://s1.hdslb.com/bfs/seed/jinkela/short/mini-login/img/33_open.43a09438.png);
+        background-position: 0 100%, 100% 100%;
+        background-repeat: no-repeat, no-repeat;
+        background-size: 14%;
+    }
+
+    &::backdrop {
+        background-color: var(--000000a6);
+    }
+
+    a {
+        text-decoration: none;
+    }
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    row-gap: 40px;
+
+    >.wrap {
+        display: flex;
+        column-gap: 40px;
+
+        >.left {
+            display: flex;
+            flex-direction: column;
+            row-gap: 18px;
+
+            >header {
+                text-align: center;
+                font-size: 18px;
+                color: var(--212121);
+            }
+
+            >.panel {
+                inline-size: 173px;
+                block-size: 173px;
+                border-radius: 8px;
+                border: 1px solid var(--e7e7e7);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                position: relative;
+
+                >.qrcode {
+                    inline-size: 160px;
+                    block-size: 160px;
+
+                    >canvas {
+                        inline-size: inherit;
+                        block-size: inherit;
+                    }
+                }
+
+                >.qrtip {
+                    position: absolute;
+                    block-size: 173px;
+                }
+
+                >.progress {
+                    position: absolute;
+                    inline-size: inherit;
+                    block-size: inherit;
+                    background-color: var(--ffffffe6);
+                    border: 1px solid var(--e7e7e7);
+                    border-radius: 8px;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    row-gap: 4px;
+
+                    &:not(.d) {
+                        display: none;
+                    }
+
+                    >:first-child {
+                        inline-size: 56px;
+                        block-size: 56px;
+                        background-position: center;
+                        background-repeat: no-repeat;
+                        background-color: var(--fff);
+                        border-radius: 50%;
+                    }
+
+                    &.to>:first-child {
+                        background-image: url(../../assets/flesh.png);
+                    }
+
+                    &.sd>:first-child {
+                        background-image: url(../../assets/checked.png);
+                    }
+
+                    >:not(:first-child) {
+                        font-size: 13px;
+                        color: var(--505050);
+                    }
+
+                }
+
+                &:not(:has(~footer a:hover))>.qrtip {
+                    display: none;
+                }
+            }
+
+            >footer {
+                color: var(--212121);
+                font-size: 14px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+
+                a {
+                    color: var(--00a1d6);
+                }
+            }
+        }
+
+        >.line {
+            background-color: var(--e7e7e7);
+            inline-size: 1px;
+        }
+
+        >.right {
+            inline-size: 400px;
+
+            >header {
+                text-align: center;
+                font-size: 18px;
+                color: var(--212121);
+            }
+        }
+    }
+
+    >.buttom {
+        font-size: 13px;
+        color: var(--999);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        a {
+            color: var(--00a1d6);
+        }
+    }
+}

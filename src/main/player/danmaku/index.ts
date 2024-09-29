@@ -56,7 +56,7 @@ export class Broadcast {
     }
 
     private get roomid() {
-        return `video://${this.player.aid}/${this.player.cid}${this.player.ssid ? `?sid=${this.player.ssid}&epid=${this.player.epid}` : ''}`
+        return `video://${this.player.$aid}/${this.player.$cid}${this.player.$ssid ? `?sid=${this.player.$ssid}&epid=${this.player.$epid}` : ''}`
     }
 
     constructor(private player: BilibiliPlayer) {

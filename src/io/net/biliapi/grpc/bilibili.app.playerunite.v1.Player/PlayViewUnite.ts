@@ -13,11 +13,12 @@ export async function PlayViewUnite(
         cid,
         qn = QUALITY.P_8K,
         extraContent = {},
+        preferCodecType = 0,
         mid = 0n,
         fnval = FNVAL.DASH_H265 ^ FNVAL.HDR ^ FNVAL.DASH_4K ^ FNVAL.DOLBY_AUDIO ^ FNVAL.DOLBY_VIDEO ^ FNVAL.DASH_8K ^ FNVAL.DASH_AV1
     }: IPlayViewUnite) {
     const rep = PlayViewUniteReq.encode({
-        vod: VideoVod.create({ aid, cid, qn: BigInt(qn), fnval, forceHost: 2, qnTrial: 1 }),
+        vod: VideoVod.create({ aid, cid, qn: BigInt(qn), fnval, forceHost: 2, preferCodecType, qnTrial: 1 }),
         extraContent,
     }).finish();
     const body = new Uint8Array(await new Response(new Blob([rep]).stream().pipeThrough(new CompressionStream('gzip'))).arrayBuffer());
@@ -40,4 +41,11 @@ interface IPlayViewUnite {
     mid?: bigint;
     /** 视频流格式 */
     fnval?: number;
+    /**
+     * 视频编码
+     * | 0 | 1 | 2 | 3 |
+     * | :-: | :-: | :-: | :-: |
+     * | 不指定 | AVC | HEVC | AV1 |
+     */
+    preferCodecType?: number;
 }

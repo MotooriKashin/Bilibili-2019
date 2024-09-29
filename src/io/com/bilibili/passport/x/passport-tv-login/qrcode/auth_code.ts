@@ -1,4 +1,5 @@
 import { Passport } from "../../..";
+import { RestType } from "../../../../../../code";
 import { sign } from "../../../../../../sign";
 
 /** TV端扫码登录 */
@@ -13,12 +14,14 @@ export async function auth_code() {
             ts: (Date.now() / 1000).toFixed(0),
         }), '27eb53fc9058f8c3'),
     });
-    return <IAuthCode>(await response.json()).data;
+    return <IAuthCode>await response.json();
 }
 
-interface IAuthCode {
-    /** 二维码内容 url */
-    url: string;
-    /** 扫码登录秘钥 */
-    auth_code: string;
+interface IAuthCode extends RestType {
+    data: {
+        /** 二维码内容 url */
+        url: string;
+        /** 扫码登录秘钥 */
+        auth_code: string;
+    }
 }

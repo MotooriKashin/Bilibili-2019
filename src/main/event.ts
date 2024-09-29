@@ -84,6 +84,9 @@ export enum MAIN_EVENT {
 
     /** 追番 */
     ZHUI_FAN,
+
+    /** APP登录 */
+    ACCESS_KEY,
 }
 
 /** 播放器事件基类 */
@@ -98,4 +101,5 @@ export interface IPlayerEvent {
     7: void;
     8: void;
     9: boolean;
+    10: void;
 }

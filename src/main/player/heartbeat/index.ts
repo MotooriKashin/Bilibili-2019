@@ -57,57 +57,57 @@ export class HeartBeat {
 
     private onPlay = () => {
         this.heartbeatSeek = true;
-        this.player.cid && this.heartbeat && this.$csrf && heartbeat(
+        this.player.$cid && this.heartbeat && this.$csrf && heartbeat(
             this.$csrf,
-            this.player.aid,
-            this.player.cid,
+            this.player.$aid,
+            this.player.$cid,
             this.player.$video.currentTime,
             HEARTBEAT_PLAY_TYPE.CONTINUE,
-            this.player.epid ? HEARTBEAT_TYPE.BANGUMI : HEARTBEAT_TYPE.AV
+            this.player.$epid ? HEARTBEAT_TYPE.BANGUMI : HEARTBEAT_TYPE.AV
         );
     }
 
     private onPause = () => {
-        this.player.cid && this.heartbeat && this.$csrf && heartbeat(
+        this.player.$cid && this.heartbeat && this.$csrf && heartbeat(
             this.$csrf,
-            this.player.aid,
-            this.player.cid,
+            this.player.$aid,
+            this.player.$cid,
             this.player.$video.currentTime,
             HEARTBEAT_PLAY_TYPE.PAUSE,
-            this.player.epid ? HEARTBEAT_TYPE.BANGUMI : HEARTBEAT_TYPE.AV
+            this.player.$epid ? HEARTBEAT_TYPE.BANGUMI : HEARTBEAT_TYPE.AV
         );
     }
 
     private onSeeking = () => {
-        this.player.cid && this.heartbeat && this.heartbeatSeek && this.$csrf && heartbeat(
+        this.player.$cid && this.heartbeat && this.heartbeatSeek && this.$csrf && heartbeat(
             this.$csrf,
-            this.player.aid,
-            this.player.cid,
+            this.player.$aid,
+            this.player.$cid,
             this.player.$video.currentTime,
             HEARTBEAT_PLAY_TYPE.START,
-            this.player.epid ? HEARTBEAT_TYPE.BANGUMI : HEARTBEAT_TYPE.AV
+            this.player.$epid ? HEARTBEAT_TYPE.BANGUMI : HEARTBEAT_TYPE.AV
         );
     }
 
     private onSeeked = () => {
-        this.player.cid && this.heartbeat && this.heartbeatSeek && this.$csrf && heartbeat(
+        this.player.$cid && this.heartbeat && this.heartbeatSeek && this.$csrf && heartbeat(
             this.$csrf,
-            this.player.aid,
-            this.player.cid,
+            this.player.$aid,
+            this.player.$cid,
             this.player.$video.currentTime,
             HEARTBEAT_PLAY_TYPE.PLAYING,
-            this.player.epid ? HEARTBEAT_TYPE.BANGUMI : HEARTBEAT_TYPE.AV
+            this.player.$epid ? HEARTBEAT_TYPE.BANGUMI : HEARTBEAT_TYPE.AV
         );
     }
 
     private onEnded = () => {
-        this.player.cid && this.heartbeat && this.$csrf && heartbeat(
+        this.player.$cid && this.heartbeat && this.$csrf && heartbeat(
             this.$csrf,
-            this.player.aid,
-            this.player.cid,
+            this.player.$aid,
+            this.player.$cid,
             -1,
             HEARTBEAT_PLAY_TYPE.ENDED,
-            this.player.epid ? HEARTBEAT_TYPE.BANGUMI : HEARTBEAT_TYPE.AV
+            this.player.$epid ? HEARTBEAT_TYPE.BANGUMI : HEARTBEAT_TYPE.AV
         );
     }
 }
