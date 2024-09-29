@@ -94,7 +94,7 @@ export class AccessKey extends HTMLElement {
             .then(({ code, message, data }) => {
                 if (code !== 0) throw new ReferenceError(message, { cause: { code, message, data } });
                 const { url, auth_code } = data;
-                this.#QRCode ? this.#QRCode.makeCode(url) : (this.#QRCode = new QRCode(this.#qrcode, { text: url, width: 160, height: 160, correctLevel: QRCode.CorrectLevel.H }));
+                this.#QRCode ? this.#QRCode.makeCode(url) : (this.#QRCode = new QRCode(this.#qrcode, { text: url, correctLevel: QRCode.CorrectLevel.H }));
                 this.poll(auth_code);
                 this.#timeout.classList.remove('d');
                 this.#scaned.classList.remove('d');

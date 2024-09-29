@@ -1,3 +1,4 @@
+import QRCode from "easyqrcodejs";
 import { toviewAdd } from "../../../../io/com/bilibili/api/x/v2/history/toview/add";
 import { toviewDel } from "../../../../io/com/bilibili/api/x/v2/history/toview/del";
 import { toviewWeb } from "../../../../io/com/bilibili/api/x/v2/history/toview/web";
@@ -72,6 +73,8 @@ export class Toolbar extends HTMLDivElement {
     #waitBox = Element.add('div', { appendTo: this, class: ['wait', 'box'], innerHTML: '<div><span>稍后再看</span><span>马克一下~</span></div>' });
 
     #appBox = Element.add('a', { appendTo: this, class: ['app', 'box'], attribute: { href: '//app.bilibili.com', target: "_blank" }, innerHTML: '<div><span>用手机看</span><span>转移阵地~</span></div>' });
+
+    #qrcode?: QRCode;
 
     #aid = 0;
 
@@ -190,10 +193,11 @@ export class Toolbar extends HTMLDivElement {
                             const { View } = data;
                             cid = View.pages[p - 1].cid;
                             this.#shareText.querySelector<HTMLSpanElement>('.num')!.textContent = <string>Format.carry(View.stat.share);
-                            this.#sharePopup.querySelector<HTMLInputElement>('#link0')!.value = `https://www.bilibili.com/video/av${aid}/`;
+                            this.#sharePopup.querySelector<HTMLInputElement>('#link0')!.value = `https://www.bilibili.com/video/av${aid}`;
                             this.#sharePopup.querySelector<HTMLInputElement>('#link2')!.value = `<iframe src="//player.bilibili.com/player.html?aid=${aid}&cid=${cid}&page=${p}"></iframe>`;
                             this.#favBox.innerHTML = `<div><span>收藏</span><span>${Format.carry(View.stat.favorite)}</span></div>`;
                             this.#coinBox.innerHTML = `<div><span>投币</span><span>${Format.carry(View.stat.coin)}</span></div>`;
+                            this.#qrcode ? this.#qrcode.makeCode(`https://www.bilibili.com/video/av${aid}`) : (this.#qrcode = new QRCode(this.#sharePopup.querySelector('.or-code-pic'), { text: `https://www.bilibili.com/video/av${aid}`, correctLevel: QRCode.CorrectLevel.H }));
                             this.$aid = aid;
                         })
                         .catch(e => {

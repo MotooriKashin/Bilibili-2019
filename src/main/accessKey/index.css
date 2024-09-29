@@ -63,6 +63,11 @@
                 >.qrcode {
                     inline-size: 160px;
                     block-size: 160px;
+
+                    >canvas {
+                        inline-size: inherit;
+                        block-size: inherit;
+                    }
                 }
 
                 >.qrtip {
