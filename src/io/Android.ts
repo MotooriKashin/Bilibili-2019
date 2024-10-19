@@ -5,6 +5,8 @@ import { FawkesReq } from "./com/bapis/bilibili/metadata/Fawkes";
 import { Locale, LocaleIds } from "./com/bapis/bilibili/metadata/Locale";
 import { Metadata } from "./com/bapis/bilibili/metadata/Metadata";
 import { Network, NetworkType } from "./com/bapis/bilibili/metadata/Network";
+import { Status } from "./com/bapis/bilibili/rpc/status";
+import { Status as StatusGoogle } from "./com/bapis/google/protobuf/status";
 import { genAuroraEid } from "./sign/genAuroraEid";
 import { genTraceId } from "./sign/genTraceId";
 
@@ -211,6 +213,19 @@ export namespace Andoroid {
                 }
             ]
         );
+        const bin = response.headers.get('grpc-status-details-bin');
+        if (bin) {
+            const { details } = StatusGoogle.decode(base64.toUint8Array(bin));
+            for (const detail of details) {
+                const { typeUrl, value } = detail;
+                switch (typeUrl) {
+                    case 'type.googleapis.com/bilibili.rpc.Status': {
+                        const { code, message } = Status.decode(value);
+                        throw new ReferenceError(message, { cause: { code, message } });
+                    }
+                }
+            }
+        }
         const arraybuffer = await response.arrayBuffer();
         // 需要剔除5字节的grpc压缩及字节标记！
         const uint8Array = new Uint8Array(arraybuffer.slice(5));
